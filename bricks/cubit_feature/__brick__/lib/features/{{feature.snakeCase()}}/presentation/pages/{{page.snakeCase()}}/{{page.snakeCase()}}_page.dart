@@ -4,18 +4,12 @@ import 'package:clean_architecture/shared_ui/ui/base/base_scaffold.dart';
 import 'package:material_ui/material_ui.dart';
 
 @RoutePage()
-class {{page.pascalCase()}}Page extends StatelessWidget {
-  const {{page.pascalCase()}}Page({super.key});
-
+class const {{page.pascalCase()}}Page({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const BaseScaffold(
-      appBar: BaseAppBar(title: "{{page.pascalCase()}}"),
-      body: SafeArea(
-        child: Column(
-          children: [],
-        ),
-      ),
+      appBar: BaseAppBar(title: '{{page.pascalCase()}}'),
+      body: SafeArea(child: Column()),
     );
   }
 }

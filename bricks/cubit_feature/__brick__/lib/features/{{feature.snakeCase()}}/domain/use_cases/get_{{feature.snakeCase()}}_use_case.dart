@@ -5,12 +5,9 @@ import 'package:clean_architecture/features/{{feature.snakeCase()}}/domain/repos
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
-class Get{{feature.pascalCase()}}UseCase implements UseCase<String, String> {
-  Get{{feature.pascalCase()}}UseCase({required {{feature.pascalCase()}}Repository {{feature.camelCase()}}Repository})
-      : _{{feature.camelCase()}}Repository = {{feature.camelCase()}}Repository;
-
-  final {{feature.pascalCase()}}Repository _{{feature.camelCase()}}Repository;
-
+class Get{{feature.pascalCase()}}UseCase({
+  required final {{feature.pascalCase()}}Repository _{{feature.camelCase()}}Repository,
+}) implements UseCase<String, String> {
   @override
-  FutureData<String> call(String request) async => const SuccessState(data: "");
+  FutureData<String> call(String request) async => const SuccessState(data: '');
 }

@@ -6,16 +6,9 @@ import 'package:clean_architecture/features/{{feature.snakeCase()}}/data/data_so
 import 'package:clean_architecture/features/{{feature.snakeCase()}}/domain/repositories/{{feature.snakeCase()}}_repository.dart';
 import 'package:injectable/injectable.dart';
 
-
 @LazySingleton(as: {{feature.pascalCase()}}Repository)
-final class {{feature.pascalCase()}}RepositoryImpl implements {{feature.pascalCase()}}Repository {
-  {{feature.pascalCase()}}RepositoryImpl({
-    required this._internet,
-    required this._remoteDataSource,
-    required this._localDataSource,
-  });
-
-  final ConnectivityClient _internet;
-  final {{feature.pascalCase()}}RemoteDataSource _remoteDataSource;
-  final {{feature.pascalCase()}}LocalDataSource _localDataSource;
-}
+final class {{feature.pascalCase()}}RepositoryImpl({
+  required final ConnectivityClient _internet,
+  required final {{feature.pascalCase()}}RemoteDataSource _remoteDataSource,
+  required final {{feature.pascalCase()}}LocalDataSource _localDataSource,
+}) implements {{feature.pascalCase()}}Repository;

@@ -1,10 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 
-class {{feature.pascalCase()}} extends StatelessWidget {
-  const {{feature.pascalCase()}}({super.key});
-
+class const {{feature.pascalCase()}}({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return const SizedBox.shrink();
   }
 }

@@ -1,17 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 {{#entity}}
-class {{name.pascalCase()}} extends Equatable {
-  const {{name.pascalCase()}}({
-    {{#variables}}
-    required this.{{name.camelCase()}},
-    {{/variables}}
-  });
-
+class const {{name.pascalCase()}}({
   {{#variables}}
-  final {{{type}}} {{name.camelCase()}};
+  required final {{{type}}} {{name.camelCase()}},
   {{/variables}}
-
+}) extends Equatable {
   @override
   List<Object?> get props => [
     {{#variables}}

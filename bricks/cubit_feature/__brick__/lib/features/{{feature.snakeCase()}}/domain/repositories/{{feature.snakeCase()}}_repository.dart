@@ -1,1 +1,1 @@
-abstract interface class {{feature.pascalCase()}}Repository {}
+abstract interface class {{feature.pascalCase()}}Repository;
