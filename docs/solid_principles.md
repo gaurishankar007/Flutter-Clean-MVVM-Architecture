@@ -316,11 +316,10 @@ abstract class NewsRepository {
 }
 
 // Low-level module (e.g., in the Data layer)
-// It depends on the abstraction.
-class NewsRepositoryImpl implements NewsRepository {
-  final NewsApiService _apiService; // Depends on another low-level detail
-  NewsRepositoryImpl(this._apiService);
-
+// It depends on the abstraction (and on another low-level detail, `NewsApiService`).
+// `final` in the primary constructor declares the field.
+class NewsRepositoryImpl(final NewsApiService _apiService)
+    implements NewsRepository {
   @override
   Future<List<Article>> fetchArticles() {
     return _apiService.fetchArticles();
@@ -328,13 +327,11 @@ class NewsRepositoryImpl implements NewsRepository {
 }
 
 // High-level module (e.g., in the Presentation layer)
-// It also depends on the abstraction.
-class NewsCubit extends Cubit<NewsState> {
-  final NewsRepository _repository; // Dependency is inverted!
+// It also depends on the abstraction, injected via the constructor: dependency is inverted!
+class NewsCubit(final NewsRepository _repository) extends Cubit<NewsState> {
+  this : super(const NewsState.initial());
 
-  NewsCubit(this._repository); // Injected via constructor
-
-  void getNews() async {
+  Future<void> getNews() async {
     final articles = await _repository.fetchArticles();
     // emit state
   }

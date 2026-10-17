@@ -18,6 +18,7 @@
 
 - **BEFORE** performing any task, **ALWAYS** consult `README.md` (Project Structure, State Management, Data Handling sections) and `docs/` (`testing.md` for test conventions, `solid_principles.md` for the SOLID rationale) for established patterns. Only read what's needed to minimize context usage.
 - **AFTER** a code change is finalized and validated by the user, update the relevant docs (`README.md`, `docs/`) to reflect it. Do **NOT** update docs while the change is still being iterated on (the user is reviewing it, asking for tweaks, or follow-up revisions are expected) — update them in one pass once the implementation is confirmed. A self-contained task with no expected follow-up (e.g. a one-off doc fix) updates docs immediately, as normal.
+- **ALWAYS** write code for the installed SDK (Dart `>=3.13`, see `pubspec.yaml`) using the idioms in "Modern Dart & Flutter" below. Never fall back to pre-3.13 constructor/field boilerplate.
 - **NEVER** use relative imports. Always use package imports (enforced by the `always_use_package_imports` lint rule):
   ```dart
   // ✅ Correct
@@ -40,10 +41,18 @@ This project uses `leancode_lint` (see `analysis_options.yaml`) plus a few extra
 - **Constants:** Prefer `const` constructors and declarations wherever possible.
 - **Control flow:** Always put `if`, `for`, and `while` bodies on a new line.
 - **Constructors:** Always sort constructors first in class declarations.
-- **Private fields:** Initialize them with private named parameters (`Foo({required this._bar})`), not an initializer list (`Foo({required Bar bar}) : _bar = bar`). Callers still pass `bar:` (enforced by `prefer_initializing_formals`; needs Dart `>=3.12`).
+- **Private fields:** Declare them as private named parameters of a primary constructor (`class Foo({required final Bar _bar})`), never an initializer list (`Foo({required Bar bar}) : _bar = bar`). Callers still pass `bar:`.
 - **Post-frame callbacks:** Use `runAfterBuild(...)` (`shared_ui/utils/frame_callback.dart`) instead of calling `WidgetsBinding.instance.addPostFrameCallback` directly.
 - **Lambdas:** Avoid unnecessary lambdas; prefer method tearoffs.
 - **Comments:** Keep them short, straight to the point, and single-line wherever possible. Don't write multi-line prose explaining what the code already shows — only note the non-obvious "why" (an edge case, a workaround, a load-bearing ordering), and say it in as few words as it takes.
+
+### Modern Dart & Flutter (Dart 3.13)
+
+- **Primary constructors:** declare fields in the class header — `class const Foo({required final int id, super.key}) extends Bar;`. Need a `super(...)` call, an `assert` or a body? Add `this : super(...);` inside the class (see `LoginCubit`). A class with several constructors keeps its fields and uses `new(...)`/`new named(...)`/`factory named(...)` in the body (see `LoginState`, `FailureState`). Classes with no constructor stay plain (`use_primary_constructors` is off on purpose).
+- **Exceptions:** a field whose initializer isn't const (`final id = id ?? const Uuid().v4()`) means the class can't be `const`. Generated files (`*.g.dart`, `*.gr.dart`, `*.config.dart`) are never hand-edited.
+- **Dot shorthands:** write `.center`, `.all(8)`, `.initial()` where the context type is that exact type (enum values, `EdgeInsets`, a state's named constructor passed to `super`). Keep the type name when the context is a supertype or there is none (`Tween(begin: x, end: Offset.zero)`, `String` constants like `LocalDbKeys.userData`).
+- **Patterns:** prefer switch expressions for value-producing branches (`switch (this) { SuccessState(:final data) => ... }` on the sealed `DataState`, no "unknown subtype" fallback), `if (x case {'message': final String? m})` over `is` + `as`/index chains. Keep side-effecting switches as statements.
+- **Declaring parameters:** `final`/`var` on a parameter now declares a field (primary constructors only); never use them on ordinary parameters.
 
 ---
 
@@ -280,6 +289,6 @@ flutter test
 | Call a use case/repository from a widget            | Route it through a Cubit                                                      |
 | Hardcode a `TextStyle` in a widget                  | Use `BaseText`'s factories                                                    |
 | Extract a widget as a private `_buildX()` method    | Extract it as its own widget class                                            |
-| Assign private fields in an initializer list        | Use private named parameters (`required this._field`)                         |
+| Assign private fields in an initializer list        | Use primary-constructor private params (`required final Bar _bar`)            |
 | Hardcode header names / request flags              | Use `HttpKeys`                                                                |
 | Commit `fastlane/.env` or `fastlane/keys/`          | Keep them local (gitignored); CI uses GitHub secrets                          |

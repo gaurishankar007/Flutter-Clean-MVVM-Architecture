@@ -26,6 +26,7 @@ For more details on specific commands and guidelines, refer to the following doc
     - [Prerequisites](#prerequisites)
     - [Installation \& Setup](#installation--setup)
   - [Project Structure](#project-structure)
+  - [Modern Dart Conventions](#modern-dart-conventions)
   - [State Management with Bloc (Cubit)](#state-management-with-bloc-cubit)
   - [App Flavors](#app-flavors)
   - [Responsiveness](#responsiveness)
@@ -243,6 +244,23 @@ Notes:
 - Dependency injection typically uses `get_it` + `injectable` and is wired in `config/injector` and `app_initializer.dart`.
 - Presentation layer (Cubits) should only depend on domain use cases and navigation/UI utilities (not on feature data implementations). Data layer implements domain repository interfaces.
 
+## Modern Dart Conventions
+
+The code targets Dart `3.13` and uses its newest idioms (the full rules live in `CLAUDE.md`/`AGENTS.md`, "Modern Dart & Flutter"):
+
+- **Primary constructors** declare fields in the class header, including injected private dependencies (callers still pass `useCases:`):
+  ```dart
+  @injectable
+  class LoginCubit({required final LoginCubitUseCases _useCases})
+      extends BaseCubit<LoginState> {
+    this : super(const .initial());
+  }
+  ```
+  Classes with several constructors keep their fields and use `new(...)`/`new named(...)`/`factory named(...)` in the body (see `LoginState`, `FailureState`).
+- **Dot shorthands** (`.center`, `.all(8)`, `.initial()`) wherever the context type is that exact type.
+- **Switch expressions & patterns** for value-producing branches, e.g. `DataState.when`/`map` switch exhaustively over the sealed `DataState`.
+- Lints: `use_declaring_parameters` is on; `use_primary_constructors` is off (it would flag every class without a constructor). The Mason bricks generate code in the same style.
+
 ## State Management with Bloc (Cubit)
 
 - The app uses **Bloc** (specifically Cubit) for state management within the Presentation Layer of its Clean Architecture.
@@ -396,11 +414,9 @@ flowchart TD
 
 ```dart
 @injectable
-class LoginCubit extends BaseCubit<LoginState> {
-  LoginCubit({required this._useCases})
-    : super(const LoginState.initial());
-
-  final LoginCubitUseCases _useCases;
+class LoginCubit({required final LoginCubitUseCases _useCases})
+    extends BaseCubit<LoginState> {
+  this : super(const .initial());
 
   /// Returns whether login succeeded — the calling widget decides whether
   /// to navigate. Never called by the Cubit itself.
