@@ -3,19 +3,13 @@ import 'package:clean_architecture/shared_ui/ui/base/text/base_text.dart';
 import 'package:clean_architecture/shared_ui/utils/ui_helpers.dart';
 import 'package:material_ui/material_ui.dart';
 
-class BaseCheckbox extends StatelessWidget {
-  const BaseCheckbox({
-    super.key,
-    this.scale = .85,
-    required this.value,
-    this.onChanged,
-    this.title,
-  });
-  final double? scale;
-  final bool value;
-  final void Function(bool?)? onChanged;
-  final String? title;
-
+class const BaseCheckbox({
+  super.key,
+  final double? scale = .85,
+  required final bool value,
+  final void Function(bool?)? onChanged,
+  final String? title,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget child = Transform.scale(

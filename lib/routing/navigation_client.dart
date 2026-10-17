@@ -34,11 +34,8 @@ abstract class NavigationClientModule {
 }
 
 @LazySingleton(as: NavigationClient)
-final class NavigationClientImpl implements NavigationClient {
-  NavigationClientImpl({required this._appRouter});
-
-  final AppRouter _appRouter;
-
+final class NavigationClientImpl({required final AppRouter _appRouter})
+    implements NavigationClient {
   /// A delegate that configures a widget, typically a [Navigator]
   @override
   AutoRouterDelegate get routerDelegate => _appRouter.delegate();

@@ -47,16 +47,13 @@ void main() {
         mainAxisSpacing: 25,
       );
 
-      test(
-        'should return a copy with the same values when no arguments are provided',
-        () {
-          final newArgs = initialArgs.copyWith();
-          expect(newArgs.crossAxisCount, initialArgs.crossAxisCount);
-          expect(newArgs.childAspectRatio, initialArgs.childAspectRatio);
-          expect(newArgs.crossAxisSpacing, initialArgs.crossAxisSpacing);
-          expect(newArgs.mainAxisSpacing, initialArgs.mainAxisSpacing);
-        },
-      );
+      test('should return a copy with the same values when no arguments are provided', () {
+        final newArgs = initialArgs.copyWith();
+        expect(newArgs.crossAxisCount, initialArgs.crossAxisCount);
+        expect(newArgs.childAspectRatio, initialArgs.childAspectRatio);
+        expect(newArgs.crossAxisSpacing, initialArgs.crossAxisSpacing);
+        expect(newArgs.mainAxisSpacing, initialArgs.mainAxisSpacing);
+      });
 
       test('should return a copy with only specified values updated', () {
         final newArgs = initialArgs.copyWith(

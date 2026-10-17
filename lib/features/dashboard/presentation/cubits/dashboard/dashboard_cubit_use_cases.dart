@@ -3,11 +3,7 @@ import 'package:clean_architecture/features/auth/domain/use_cases/log_out_use_ca
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
-class DashboardCubitUseCases {
-  const DashboardCubitUseCases({
-    required this.checkAuthentication,
-    required this.logOut,
-  });
-  final CheckAuthenticationUseCase checkAuthentication;
-  final LogOutUseCase logOut;
-}
+class const DashboardCubitUseCases({
+  required final CheckAuthenticationUseCase checkAuthentication,
+  required final LogOutUseCase logOut,
+});

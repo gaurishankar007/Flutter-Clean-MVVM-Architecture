@@ -24,15 +24,10 @@ abstract class LocalStorageClientModule {
 }
 
 @LazySingleton(as: LocalStorageClient)
-final class LocalStorageClientImpl implements LocalStorageClient {
-  const LocalStorageClientImpl({
-    required this._sharedPreferences,
-    required this._encryptionService,
-  });
-
-  final SharedPreferences _sharedPreferences;
-  final EncryptionService _encryptionService;
-
+final class const LocalStorageClientImpl({
+  required final SharedPreferences _sharedPreferences,
+  required final EncryptionService _encryptionService,
+}) implements LocalStorageClient {
   @override
   Future<void> setString(String key, String value) =>
       _sharedPreferences.setString(key, value);

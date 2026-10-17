@@ -2,16 +2,11 @@ import 'package:clean_architecture/core/data/models/domain_convertible.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// A simple domain class for testing purposes.
-class TestDomainEntity {
-  const TestDomainEntity(this.id);
-  final String id;
-}
+class const TestDomainEntity(final String id);
 
 /// A concrete implementation of [DomainConvertible] for testing.
-class TestDto implements DomainConvertible<TestDomainEntity> {
-  const TestDto(this.id);
-  final String id;
-
+class const TestDto(final String id)
+    implements DomainConvertible<TestDomainEntity> {
   @override
   TestDomainEntity toDomain() {
     return TestDomainEntity(id);

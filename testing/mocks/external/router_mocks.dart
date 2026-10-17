@@ -3,17 +3,17 @@ import 'package:clean_architecture/routing/routes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockAppRouter extends Mock implements AppRouter {}
+class MockAppRouter extends Mock implements AppRouter;
 
-class MockAutoRouterDelegate extends AutoRouterDelegate {
-  MockAutoRouterDelegate() : super(AppRouter());
+class MockAutoRouterDelegate() extends AutoRouterDelegate {
+  this : super(AppRouter());
 
   @override
   Widget build(BuildContext context) => Container();
 }
 
-class MockDefaultRouteParser extends Mock implements DefaultRouteParser {}
+class MockDefaultRouteParser extends Mock implements DefaultRouteParser;
 
-class MockPageRouteInfo extends PageRouteInfo<dynamic> {
-  const MockPageRouteInfo() : super('MockRoute');
+class const MockPageRouteInfo() extends PageRouteInfo<dynamic> {
+  this : super('MockRoute');
 }

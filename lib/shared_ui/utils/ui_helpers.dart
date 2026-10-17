@@ -1,7 +1,7 @@
 import 'package:clean_architecture/shared_ui/utils/screen_util/screen_util.dart';
 import 'package:material_ui/material_ui.dart';
 
-enum Space {
+enum Space(final double value) {
   tiny(1),
   xxxSmall(2),
   xxSmall(4),
@@ -15,10 +15,7 @@ enum Space {
   xlMedium(36),
   xxLarge(40),
   xxxLarge(48),
-  massive(64);
-
-  const Space(this.value);
-  final double value;
+  massive(64),
 }
 
 abstract interface class UIHelpers {

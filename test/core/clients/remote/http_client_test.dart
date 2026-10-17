@@ -26,9 +26,8 @@ void main() {
   });
 
   setUp(() {
-    when(
-      () => mockNavigationClient.navigatorKey,
-    ).thenReturn(GlobalKey<NavigatorState>());
+    when(() => mockNavigationClient.navigatorKey)
+        .thenReturn(GlobalKey<NavigatorState>());
 
     httpClient = HttpClientImpl(
       appConfig: appConfig,

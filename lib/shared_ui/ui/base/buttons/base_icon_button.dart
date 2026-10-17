@@ -1,26 +1,16 @@
 import 'package:material_ui/material_ui.dart';
 
-class BaseIconButton extends StatelessWidget {
-  const BaseIconButton({
-    super.key,
-    required this.onPressed,
-    required this.icon,
-    this.splashRadius,
-    this.padding,
-    this.boxConstraints,
-    this.visualDensity,
-    this.targetSize,
-    this.disableSplash = false,
-  });
-  final void Function() onPressed;
-  final Icon icon;
-  final double? splashRadius;
-  final EdgeInsets? padding;
-  final BoxConstraints? boxConstraints;
-  final VisualDensity? visualDensity;
-  final double? targetSize;
-  final bool disableSplash;
-
+class const BaseIconButton({
+  super.key,
+  required final void Function() onPressed,
+  required final Icon icon,
+  final double? splashRadius,
+  final EdgeInsets? padding,
+  final BoxConstraints? boxConstraints,
+  final VisualDensity? visualDensity,
+  final double? targetSize,
+  final bool disableSplash = false,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget child = IconButton(

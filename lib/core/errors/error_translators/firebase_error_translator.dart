@@ -2,7 +2,7 @@ import 'package:clean_architecture/core/data/states/data_state.dart';
 import 'package:clean_architecture/core/errors/error_translators/error_translator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-final class FirebaseErrorTranslator
+final class FirebaseErrorTranslator()
     implements ErrorTranslator<FirebaseException> {
   final _errorMessages = {
     // Auth Codes
@@ -18,8 +18,7 @@ final class FirebaseErrorTranslator
         'You cannot register using this method at this moment!',
     'email-already-in-use':
         'Email already in use.Please choose another email to register with!',
-    'requires-recent-login':
-        'You need to log out and log back in again in order to perform this operation',
+    'requires-recent-login': 'You need to log out and log back in again in order to perform this operation',
     'no-current-user': 'No current user with this information was found',
     'user-disabled': 'This user account has been disabled.',
     'too-many-requests': 'Too many requests. Try again later.',

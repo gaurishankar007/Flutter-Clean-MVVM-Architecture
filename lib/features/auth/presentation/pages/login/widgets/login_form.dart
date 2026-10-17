@@ -7,15 +7,11 @@ import 'package:clean_architecture/shared_ui/utils/validators.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
 
-class LoginForm extends StatelessWidget {
-  const LoginForm({
-    super.key,
-    required this.usernameController,
-    required this.passwordController,
-  });
-  final TextEditingController usernameController;
-  final TextEditingController passwordController;
-
+class const LoginForm({
+  super.key,
+  required final TextEditingController usernameController,
+  required final TextEditingController passwordController,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginCubit, LoginState>(

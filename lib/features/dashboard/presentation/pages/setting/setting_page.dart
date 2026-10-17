@@ -12,9 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
 
 @RoutePage()
-class SettingPage extends StatelessWidget {
-  const SettingPage({super.key});
-
+class const SettingPage({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dashboardCubit = context.read<DashboardCubit>();

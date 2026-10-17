@@ -7,25 +7,16 @@ import 'package:clean_architecture/shared_ui/utils/screen_util/screen_util.dart'
 import 'package:clean_architecture/shared_ui/utils/ui_helpers.dart';
 import 'package:material_ui/material_ui.dart';
 
-class BaseAppBar extends StatelessWidget {
-  const BaseAppBar({
-    super.key,
-    this.showLeading = true,
-    this.leading,
-    required this.title,
-    this.titleFontWeight,
-    this.titleStyle,
-    this.centerTitle = false,
-    this.actions,
-  });
-  final bool showLeading;
-  final Widget? leading;
-  final String title;
-  final FontWeight? titleFontWeight;
-  final TextStyle? titleStyle;
-  final bool centerTitle;
-  final List<Widget>? actions;
-
+class const BaseAppBar({
+  super.key,
+  final bool showLeading = true,
+  final Widget? leading,
+  required final String title,
+  final FontWeight? titleFontWeight,
+  final TextStyle? titleStyle,
+  final bool centerTitle = false,
+  final List<Widget>? actions,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // AppBar padding

@@ -4,12 +4,12 @@ import 'package:clean_architecture/core/clients/remote/http/http_client.dart';
 import 'package:clean_architecture/routing/navigation_client.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockHttpClient extends Mock implements HttpClient {}
+class MockHttpClient extends Mock implements HttpClient;
 
-class MockAuthInterceptor extends Mock implements HttpAuthInterceptor {}
+class MockAuthInterceptor extends Mock implements HttpAuthInterceptor;
 
-class MockInternetClient extends Mock implements ConnectivityClient {}
+class MockInternetClient extends Mock implements ConnectivityClient;
 
-class MockLocalStorageClient extends Mock implements LocalStorageClient {}
+class MockLocalStorageClient extends Mock implements LocalStorageClient;
 
-class MockNavigationClient extends Mock implements NavigationClient {}
+class MockNavigationClient extends Mock implements NavigationClient;

@@ -144,7 +144,7 @@ Follow these steps to get the project up and running on your local machine.
 Ensure you have the following software installed:
 
 - Flutter SDK (version `3.47.7`, the version CI is pinned to)
-- Dart SDK (version `3.13.5`, `>=3.12.0` is required for private named parameters)
+- Dart SDK (version `3.13.5`, `>=3.13.0` is required for primary constructors)
 - Android Studio (for Android development)
 - Xcode (for iOS development)
 - Java 17 (Recommended, but optional)

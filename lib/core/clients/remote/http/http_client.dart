@@ -89,14 +89,14 @@ abstract class HttpClientModule {
 }
 
 @LazySingleton(as: HttpClient)
-final class HttpClientImpl implements HttpClient {
-  HttpClientImpl({
-    required this._dio,
-    required AppConfig appConfig,
-    required HttpAuthInterceptor authInterceptor,
-    required NavigationClient navigationClient,
-    bool addInterceptors = false,
-  }) {
+final class HttpClientImpl({
+  required final Dio _dio,
+  required AppConfig appConfig,
+  required HttpAuthInterceptor authInterceptor,
+  required NavigationClient navigationClient,
+  bool addInterceptors = false,
+}) implements HttpClient {
+  this {
     _dio.options = BaseOptions(
       baseUrl: appConfig.apiBaseUrl,
       connectTimeout: const Duration(seconds: 15),
@@ -117,8 +117,6 @@ final class HttpClientImpl implements HttpClient {
       _dio.interceptors.addAll([authInterceptor, aliceDioAdapter]);
     }
   }
-  final Dio _dio;
-
   @override
   void updateBaseUrl({required String baseUrl}) =>
       _dio.options.baseUrl = baseUrl;

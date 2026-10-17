@@ -3,43 +3,25 @@ import 'package:clean_architecture/shared_ui/ui/base/text/base_text.dart';
 import 'package:clean_architecture/shared_ui/utils/ui_helpers.dart';
 import 'package:material_ui/material_ui.dart';
 
-class BaseTextField extends StatelessWidget {
-  const BaseTextField({
-    super.key,
-    this.title,
-    this.titleColor,
-    this.titleSize,
-    this.titleFontWeight,
-    this.controller,
-    this.keyboardType = TextInputType.text,
-    this.readOnly = false,
-    this.initialValue,
-    this.onChanged,
-    this.validator,
-    this.autovalidateMode,
-    this.obscureText = false,
-    this.focusNode,
-    this.hintText = '',
-    this.prefixIcon,
-    this.suffixIcon,
-  });
-  final String? title;
-  final Color? titleColor;
-  final TextType? titleSize;
-  final FontWeight? titleFontWeight;
-  final TextEditingController? controller;
-  final TextInputType keyboardType;
-  final bool readOnly;
-  final String? initialValue;
-  final void Function(String?)? onChanged;
-  final bool obscureText;
-  final String? Function(String?)? validator;
-  final AutovalidateMode? autovalidateMode;
-  final FocusNode? focusNode;
-  final String hintText;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
-
+class const BaseTextField({
+  super.key,
+  final String? title,
+  final Color? titleColor,
+  final TextType? titleSize,
+  final FontWeight? titleFontWeight,
+  final TextEditingController? controller,
+  final TextInputType keyboardType = TextInputType.text,
+  final bool readOnly = false,
+  final String? initialValue,
+  final void Function(String?)? onChanged,
+  final String? Function(String?)? validator,
+  final AutovalidateMode? autovalidateMode,
+  final bool obscureText = false,
+  final FocusNode? focusNode,
+  final String hintText = '',
+  final Widget? prefixIcon,
+  final Widget? suffixIcon,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget child = TextFormField(

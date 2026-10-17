@@ -1,30 +1,19 @@
 import 'package:uuid/uuid.dart';
 
-class AppErrorDetails {
-  AppErrorDetails({
-    String? id,
-    required this.title,
-    this.message,
-    required this.error,
-    this.stackTrace,
-    this.appFlavor,
-    this.appVersion,
-    this.deviceDetails,
-    this.extras,
-    DateTime? createdAt,
-  }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? DateTime.now();
-
-  final String id;
-  final String title;
-  final String? message;
-  final String error;
-  final String? stackTrace;
-  final String? appFlavor;
-  final String? appVersion;
-  final String? deviceDetails;
-  final Map<String, String>? extras;
-  final DateTime createdAt;
+class AppErrorDetails({
+  String? id,
+  required final String title,
+  final String? message,
+  required final String error,
+  final String? stackTrace,
+  final String? appFlavor,
+  final String? appVersion,
+  final String? deviceDetails,
+  final Map<String, String>? extras,
+  DateTime? createdAt,
+}) {
+  final String id = id ?? const Uuid().v4();
+  final DateTime createdAt = createdAt ?? DateTime.now();
 
   AppErrorDetails copyWith({
     String? title,

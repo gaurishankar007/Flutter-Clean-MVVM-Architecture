@@ -31,10 +31,7 @@ DioException getDioException({
   type: DioExceptionType.badResponse,
 );
 
-class FakeDto implements DomainConvertible<String> {
-  FakeDto(this.value);
-  final int value;
-
+class FakeDto(final int value) implements DomainConvertible<String> {
   @override
   String toDomain() => 'Mapped: $value';
 }

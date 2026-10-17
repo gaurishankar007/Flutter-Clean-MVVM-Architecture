@@ -42,9 +42,8 @@ void main() {
   });
 
   test('maybePop calls maybePop on AppRouter', () async {
-    when(
-      () => mockAppRouter.maybePop<Object?>(any()),
-    ).thenAnswer((_) async => true);
+    when(() => mockAppRouter.maybePop<Object?>(any()))
+        .thenAnswer((_) async => true);
 
     final result = await navigationClient.maybePop<Object?>();
 
@@ -53,9 +52,8 @@ void main() {
   });
 
   test('maybePopTop calls maybePopTop on AppRouter', () async {
-    when(
-      () => mockAppRouter.maybePopTop<Object?>(),
-    ).thenAnswer((_) async => true);
+    when(() => mockAppRouter.maybePopTop<Object?>())
+        .thenAnswer((_) async => true);
 
     final result = await navigationClient.maybePopTop<Object?>();
 
@@ -85,9 +83,8 @@ void main() {
 
   test('pushRoute calls push on AppRouter and returns result', () async {
     const route = LoginRoute();
-    when(
-      () => mockAppRouter.push<Object?>(route),
-    ).thenAnswer((_) async => 'result');
+    when(() => mockAppRouter.push<Object?>(route))
+        .thenAnswer((_) async => 'result');
 
     final result = await navigationClient.pushRoute<Object?>(route);
 
@@ -101,9 +98,8 @@ void main() {
       const route = MockPageRouteInfo();
       const webRoute = MockPageRouteInfo();
 
-      when(
-        () => mockAppRouter.push<Object?>(route),
-      ).thenAnswer((_) async => 'result');
+      when(() => mockAppRouter.push<Object?>(route))
+          .thenAnswer((_) async => 'result');
 
       final result = await navigationClient.pushPlatformRoute<Object?>(
         androidRoute: route,

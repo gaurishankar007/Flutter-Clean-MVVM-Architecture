@@ -1,6 +1,3 @@
-class RefreshTokenRequest {
-  const RefreshTokenRequest({required this.refreshToken});
-  final String refreshToken;
-
+class const RefreshTokenRequest({required final String refreshToken}) {
   Map<String, String> toJson() => {'refresh': refreshToken};
 }

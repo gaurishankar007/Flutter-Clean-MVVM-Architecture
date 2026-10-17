@@ -2,17 +2,12 @@ import 'package:clean_architecture/shared_ui/ui/base/buttons/base_text_button.da
 import 'package:clean_architecture/shared_ui/ui/base/text/base_text.dart';
 import 'package:material_ui/material_ui.dart';
 
-class AppBarTextButton extends StatelessWidget {
-  const AppBarTextButton({
-    super.key,
-    required this.onPressed,
-    required this.text,
-    this.padding,
-  });
-  final void Function() onPressed;
-  final String text;
-  final EdgeInsets? padding;
-
+class const AppBarTextButton({
+  super.key,
+  required final void Function() onPressed,
+  required final String text,
+  final EdgeInsets? padding,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Widget child = BaseTextButton(

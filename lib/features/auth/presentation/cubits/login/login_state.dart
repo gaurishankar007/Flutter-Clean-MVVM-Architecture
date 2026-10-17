@@ -1,15 +1,14 @@
 part of 'login_cubit.dart';
 
 class LoginState extends BaseState {
-  const LoginState({
+  const new({
     required this.passwordVisibility,
     required this.saveUserCredential,
     super.message,
   });
 
-  const LoginState.initial()
-    : passwordVisibility = false,
-      saveUserCredential = false;
+  const new initial() : passwordVisibility = false, saveUserCredential = false;
+
   final bool passwordVisibility;
   final bool saveUserCredential;
 

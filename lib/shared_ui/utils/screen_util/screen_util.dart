@@ -6,9 +6,9 @@ part 'screen_details.dart';
 part 'screen_type.dart';
 
 /// Provides screen size measurements
-class ScreenUtil {
-  factory ScreenUtil() => _singleton;
-  ScreenUtil._();
+class ScreenUtil._() {
+  factory() => _singleton;
+
   static final ScreenUtil _singleton = ScreenUtil._();
   // Returning the field directly (rather than the `ScreenUtil()` factory,
   // which is equivalent) so this isn't flagged as a static accessor that

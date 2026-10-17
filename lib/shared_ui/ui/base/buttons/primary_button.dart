@@ -6,33 +6,20 @@ import 'package:clean_architecture/shared_ui/utils/ui_helpers.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:material_ui/material_ui.dart';
 
-class PrimaryButton extends HookWidget {
-  const PrimaryButton({
-    super.key,
-    required this.onTap,
-    required this.text,
-    this.textType,
-    this.textFontWeight,
-    this.foregroundColor = AppColors.white,
-    this.height,
-    this.width,
-    this.color,
-    this.loadableButton = false,
-    this.elevation,
-    this.expandWidth = false,
-  });
-  final Future<void> Function() onTap;
-  final String text;
-  final TextType? textType;
-  final FontWeight? textFontWeight;
-  final Color? foregroundColor;
-  final double? height;
-  final double? width;
-  final bool loadableButton;
-  final Color? color;
-  final double? elevation;
-  final bool expandWidth;
-
+class const PrimaryButton({
+  super.key,
+  required final Future<void> Function() onTap,
+  required final String text,
+  final TextType? textType,
+  final FontWeight? textFontWeight,
+  final Color? foregroundColor = AppColors.white,
+  final double? height,
+  final double? width,
+  final Color? color,
+  final bool loadableButton = false,
+  final double? elevation,
+  final bool expandWidth = false,
+}) extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final loadingNotifier = useValueNotifier(false);

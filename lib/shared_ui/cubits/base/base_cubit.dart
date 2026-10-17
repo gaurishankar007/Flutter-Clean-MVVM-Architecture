@@ -4,6 +4,4 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'base_state.dart';
 
-abstract class BaseCubit<T> extends Cubit<T> {
-  BaseCubit(super.initialState);
-}
+abstract class BaseCubit<T>(super.initialState) extends Cubit<T>;

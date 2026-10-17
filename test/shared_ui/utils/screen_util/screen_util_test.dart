@@ -62,35 +62,26 @@ void main() {
       expect(ScreenUtil.I.isDesktopView, isTrue);
     });
 
-    test(
-      'desktop-sized screen in portrait is not a desktop view natively',
-      () {
-        configure(1300, 1500);
+    test('desktop-sized screen in portrait is not a desktop view natively', () {
+      configure(1300, 1500);
 
-        expect(ScreenUtil.I.type, ScreenType.desktop);
-        expect(ScreenUtil.I.orientation, Orientation.portrait);
-        expect(ScreenUtil.I.isDesktopView, isFalse);
-      },
-    );
+      expect(ScreenUtil.I.type, ScreenType.desktop);
+      expect(ScreenUtil.I.orientation, Orientation.portrait);
+      expect(ScreenUtil.I.isDesktopView, isFalse);
+    });
   });
 
   group('valueForCompactOrPhone', () {
     test('returns the mobile value for compact/phone screens', () {
       configure(320, 640);
 
-      expect(
-        ScreenUtil.I.valueForCompactOrPhone(base: 20, mobile: 16),
-        16,
-      );
+      expect(ScreenUtil.I.valueForCompactOrPhone(base: 20, mobile: 16), 16);
     });
 
     test('returns the base value for larger screens', () {
       configure(900, 1200);
 
-      expect(
-        ScreenUtil.I.valueForCompactOrPhone(base: 20, mobile: 16),
-        20,
-      );
+      expect(ScreenUtil.I.valueForCompactOrPhone(base: 20, mobile: 16), 20);
     });
   });
 

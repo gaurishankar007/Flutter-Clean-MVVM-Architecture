@@ -6,8 +6,8 @@ import 'package:injectable/injectable.dart';
 part 'app_error_state.dart';
 
 @injectable
-class AppErrorCubit extends BaseCubit<AppErrorState> {
-  AppErrorCubit() : super(AppErrorState.initial());
+class AppErrorCubit() extends BaseCubit<AppErrorState> {
+  this : super(AppErrorState.initial());
 
   void fetchErrors() {
     emit(state.copyWith(status: StateStatus.loading));

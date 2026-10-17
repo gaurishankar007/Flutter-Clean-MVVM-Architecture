@@ -1,32 +1,25 @@
 part of 'screen_observer_cubit.dart';
 
 /// Holds state related to screen layout changes.
-class ScreenObserverState extends Equatable {
-  const ScreenObserverState({
-    required this.width,
-    required this.height,
-    required this.screenTypeChanges,
-    required this.desktopLayoutChanges,
-  });
+class const ScreenObserverState({
+  /// The current screen width.
+  required final double width,
 
-  factory ScreenObserverState.initial() => const ScreenObserverState(
+  /// The current screen height.
+  required final double height,
+
+  /// Increments only when the [ScreenType] changes.
+  required final int screenTypeChanges,
+
+  /// Increments only when switching between desktop and non-desktop layouts.
+  required final int desktopLayoutChanges,
+}) extends Equatable {
+  factory initial() => const ScreenObserverState(
     width: 0,
     height: 0,
     screenTypeChanges: 0,
     desktopLayoutChanges: 0,
   );
-
-  /// The current screen width.
-  final double width;
-
-  /// The current screen height.
-  final double height;
-
-  /// Increments only when the [ScreenType] changes.
-  final int screenTypeChanges;
-
-  /// Increments only when switching between desktop and non-desktop layouts.
-  final int desktopLayoutChanges;
 
   ScreenObserverState copyWith({
     double? width,

@@ -4,10 +4,8 @@ import 'package:clean_architecture/shared_ui/ui/base/buttons/base_text_button.da
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
 
-class LoginOptional extends StatelessWidget {
-  const LoginOptional({super.key, required this.saveUserCredential});
-  final bool saveUserCredential;
-
+class const LoginOptional({super.key, required final bool saveUserCredential})
+    extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(

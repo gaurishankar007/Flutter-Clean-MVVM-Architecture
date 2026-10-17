@@ -53,9 +53,8 @@ void main() {
       'should return SuccessState.nil when data is saved successfully',
       () async {
         // Arrange
-        when(
-          () => mockLocalDatabase.setString(any(), any()),
-        ).thenAnswer((_) async => true);
+        when(() => mockLocalDatabase.setString(any(), any()))
+            .thenAnswer((_) async => true);
 
         // Act
         final result = await dataSource.saveUserData(tUserDataModel);
@@ -70,9 +69,8 @@ void main() {
       () async {
         // Arrange
         final exception = Exception('Failed to save');
-        when(
-          () => mockLocalDatabase.setString(any(), any()),
-        ).thenThrow(exception);
+        when(() => mockLocalDatabase.setString(any(), any()))
+            .thenThrow(exception);
 
         // Act
         final result = await dataSource.saveUserData(tUserDataModel);
@@ -88,9 +86,8 @@ void main() {
       'should return SuccessState with UserDataModel when data is found',
       () async {
         // Arrange
-        when(
-          () => mockLocalDatabase.getString(tStorageKey),
-        ).thenAnswer((_) => tUserDataJson);
+        when(() => mockLocalDatabase.getString(tStorageKey))
+            .thenAnswer((_) => tUserDataJson);
 
         // Act
         final result = await dataSource.getUserData();
@@ -106,9 +103,8 @@ void main() {
 
     test('should return FailureState when no data is found (null)', () async {
       // Arrange
-      when(
-        () => mockLocalDatabase.getString(tStorageKey),
-      ).thenAnswer((_) => null);
+      when(() => mockLocalDatabase.getString(tStorageKey))
+          .thenAnswer((_) => null);
 
       // Act
       final result = await dataSource.getUserData();
@@ -122,9 +118,8 @@ void main() {
       () async {
         // Arrange
         final exception = Exception('Failed to read');
-        when(
-          () => mockLocalDatabase.getString(tStorageKey),
-        ).thenThrow(exception);
+        when(() => mockLocalDatabase.getString(tStorageKey))
+            .thenThrow(exception);
 
         // Act
         final result = await dataSource.getUserData();
@@ -140,9 +135,8 @@ void main() {
       'should return SuccessState.nil when data is removed successfully',
       () async {
         // Arrange
-        when(
-          () => mockLocalDatabase.remove(tStorageKey),
-        ).thenAnswer((_) async => true);
+        when(() => mockLocalDatabase.remove(tStorageKey))
+            .thenAnswer((_) async => true);
 
         // Act
         final result = await dataSource.removeUserData();

@@ -48,9 +48,8 @@ void main() {
     group('SetSessionUseCase', () {
       test('should call setUserData on repository', () {
         // Arrange
-        when(
-          () => mockSessionRepository.setUserData = userData,
-        ).thenReturn(userData);
+        when(() => mockSessionRepository.setUserData = userData)
+            .thenReturn(userData);
 
         // Act
         setSessionUseCase(userData);

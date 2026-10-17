@@ -35,15 +35,10 @@ abstract interface class ErrorHandler {
   T executeSafeReturnSync<T>(T Function() callBack, {required T valueOnError});
 }
 
-final class ErrorHandlerImpl implements ErrorHandler {
-  ErrorHandlerImpl({
-    required this._errorTranslators,
-    required this._errorReporters,
-  });
-
-  final List<ErrorTranslator> _errorTranslators;
-  final List<ErrorRecorder> _errorReporters;
-
+final class ErrorHandlerImpl({
+  required final List<ErrorTranslator> _errorTranslators,
+  required final List<ErrorRecorder> _errorReporters,
+}) implements ErrorHandler {
   @override
   void configureErrorHandlers() {
     for (final errorRecorder in _errorReporters) {

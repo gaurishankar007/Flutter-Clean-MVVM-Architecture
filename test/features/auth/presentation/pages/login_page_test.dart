@@ -31,7 +31,7 @@ import '../../../../../testing/mocks/use_case_mocks.dart';
 final locator = GetIt.I;
 
 class MockScreenObserverCubit extends MockCubit<ScreenObserverState>
-    implements ScreenObserverCubit {}
+    implements ScreenObserverCubit;
 
 void main() {
   late MockLoginUseCase mockLoginUseCase;
@@ -101,23 +101,18 @@ void main() {
     // Arrange
     when(() => mockLogOutUseCase.call()).thenAnswer((_) {});
     when(() => mockSetSessionUseCase.call(userData)).thenAnswer((_) {});
-    when(
-      () => mockNavigationClient.replaceAllRoute(any()),
-    ).thenAnswer((_) async {});
-    when(
-      () => mockLoginUseCase.call(any()),
-    ).thenAnswer((_) async => SuccessState(data: userData));
-    when(
-      () => mockSaveUserDataUseCase.call(any()),
-    ).thenAnswer((_) async => SuccessState.nil);
+    when(() => mockNavigationClient.replaceAllRoute(any()))
+        .thenAnswer((_) async {});
+    when(() => mockLoginUseCase.call(any()))
+        .thenAnswer((_) async => SuccessState(data: userData));
+    when(() => mockSaveUserDataUseCase.call(any()))
+        .thenAnswer((_) async => SuccessState.nil);
 
     final mockScreenObserverCubit = MockScreenObserverCubit();
-    when(
-      () => mockScreenObserverCubit.state,
-    ).thenReturn(ScreenObserverState.initial());
-    when(
-      () => mockScreenObserverCubit.stream,
-    ).thenAnswer((_) => const Stream.empty());
+    when(() => mockScreenObserverCubit.state)
+        .thenReturn(ScreenObserverState.initial());
+    when(() => mockScreenObserverCubit.stream)
+        .thenAnswer((_) => const Stream.empty());
 
     // Set the test binding surface size to match our screen configuration
     // This ensures widgets are within the render tree bounds
@@ -137,9 +132,8 @@ void main() {
     // Expect the login button to be enabled initially
     expect($('Login'), findsOne);
     expect($('Password'), findsOne);
-    final enabledButton = $(
-      ElevatedButton,
-    ).which<ElevatedButton>((b) => b.enabled);
+    final enabledButton = $(ElevatedButton)
+        .which<ElevatedButton>((b) => b.enabled);
     expect(enabledButton, findsOneWidget);
     expect($(TextButton), findsOneWidget);
     expect($(InkWell).$(Icons.visibility_off_outlined), findsOneWidget);

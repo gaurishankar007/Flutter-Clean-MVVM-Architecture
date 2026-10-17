@@ -11,7 +11,7 @@ import 'package:mocktail/mocktail.dart';
 import '../../../../../testing/mocks/client_mocks.dart';
 
 // A mock for Options is needed for `captureAny` with mocktail
-class MockOptions extends Mock implements Options {}
+class MockOptions extends Mock implements Options;
 
 void main() {
   late MockHttpClient mockHttpClient;
@@ -50,48 +50,45 @@ void main() {
       'message': 'Login successful',
     };
 
-    test(
-      'should return SuccessState with UserDataModel when API call is successful (200)',
-      () async {
-        // Arrange
-        when(
-          () => mockHttpClient.post<dynamic>(
-            any(),
-            data: any(named: 'data'),
-            options: any(named: 'options'),
-          ),
-        ).thenAnswer(
-          (_) async => Response(
-            requestOptions: RequestOptions(path: ApiEndpoints.login),
-            data: tSuccessResponseJson,
-            statusCode: 200,
-          ),
-        );
+    test('should return SuccessState with UserDataModel when API call is successful (200)', () async {
+      // Arrange
+      when(
+        () => mockHttpClient.post<dynamic>(
+          any(),
+          data: any(named: 'data'),
+          options: any(named: 'options'),
+        ),
+      ).thenAnswer(
+        (_) async => Response(
+          requestOptions: RequestOptions(path: ApiEndpoints.login),
+          data: tSuccessResponseJson,
+          statusCode: 200,
+        ),
+      );
 
-        // Act
-        final result = await dataSource.login(tAuthenticationRequest);
+      // Act
+      final result = await dataSource.login(tAuthenticationRequest);
 
-        // Assert
-        expect(result, isA<SuccessState<UserDataResponse>>());
-        expect(result.data, isNotNull);
-        expect(result.data!.user.id, 1);
-        expect(result.data!.accessToken, 'access');
-        expect(result.data!.refreshToken, 'refresh');
+      // Assert
+      expect(result, isA<SuccessState<UserDataResponse>>());
+      expect(result.data, isNotNull);
+      expect(result.data!.user.id, 1);
+      expect(result.data!.accessToken, 'access');
+      expect(result.data!.refreshToken, 'refresh');
 
-        final captured = verify(
-          () => mockHttpClient.post<dynamic>(
-            ApiEndpoints.login,
-            data: captureAny(named: 'data'),
-            options: captureAny(named: 'options'),
-          ),
-        ).captured;
+      final captured = verify(
+        () => mockHttpClient.post<dynamic>(
+          ApiEndpoints.login,
+          data: captureAny(named: 'data'),
+          options: captureAny(named: 'options'),
+        ),
+      ).captured;
 
-        expect(captured[0], tAuthenticationRequestJson);
-        final options = captured[1] as Options;
-        expect(options.validateStatus!(200), isTrue);
-        expect(options.validateStatus!(400), isTrue);
-      },
-    );
+      expect(captured[0], tAuthenticationRequestJson);
+      final options = captured[1] as Options;
+      expect(options.validateStatus!(200), isTrue);
+      expect(options.validateStatus!(400), isTrue);
+    });
 
     test('should return FailureState when API returns 400', () async {
       // Arrange
@@ -165,9 +162,8 @@ void main() {
         // Assert
         expect(result, isA<SuccessState<bool>>());
         expect(result.data, isTrue);
-        verify(
-          () => mockHttpClient.get<dynamic>(ApiEndpoints.checkAuth),
-        ).called(1);
+        verify(() => mockHttpClient.get<dynamic>(ApiEndpoints.checkAuth))
+            .called(1);
       },
     );
 

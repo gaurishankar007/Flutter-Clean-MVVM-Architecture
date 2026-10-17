@@ -6,10 +6,8 @@ import 'package:clean_architecture/features/auth/domain/repositories/auth_reposi
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
-class LoginUseCase implements UseCase<UserData, Authentication> {
-  LoginUseCase({required this._authRepository});
-  final AuthRepository _authRepository;
-
+class LoginUseCase({required final AuthRepository _authRepository})
+    implements UseCase<UserData, Authentication> {
   @override
   FutureData<UserData> call(Authentication authentication) =>
       _authRepository.login(authentication);

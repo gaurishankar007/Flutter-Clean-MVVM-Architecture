@@ -1,14 +1,12 @@
 import 'package:dio/dio.dart';
 
-class ApiResponse<T extends Object?> {
-  ApiResponse({
-    required this.data,
-    required this.statusCode,
-    required this.success,
-    required this.message,
-  });
-
-  factory ApiResponse.fromResponse(Response<dynamic> response) {
+class ApiResponse<T extends Object?>({
+  required final T data,
+  required final int statusCode,
+  required final bool success,
+  required final String message,
+}) {
+  factory fromResponse(Response<dynamic> response) {
     final data = response.data as Map<String, dynamic>;
     final statusCode = response.statusCode ?? 0;
 
@@ -19,8 +17,4 @@ class ApiResponse<T extends Object?> {
       message: data['message'] as String,
     );
   }
-  final T data;
-  final int statusCode;
-  final bool success;
-  final String message;
 }

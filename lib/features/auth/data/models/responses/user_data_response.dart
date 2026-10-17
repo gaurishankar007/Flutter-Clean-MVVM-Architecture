@@ -3,15 +3,12 @@ import 'package:clean_architecture/core/data/models/responses/user_response.dart
 import 'package:clean_architecture/core/domain/entities/user_data.dart';
 import 'package:equatable/equatable.dart';
 
-class UserDataResponse extends Equatable
-    implements DomainConvertible<UserData> {
-  const UserDataResponse({
-    required this.user,
-    required this.accessToken,
-    required this.refreshToken,
-  });
-
-  factory UserDataResponse.fromJson(Map<String, dynamic> json) {
+class const UserDataResponse({
+  required final UserResponse user,
+  required final String accessToken,
+  required final String refreshToken,
+}) extends Equatable implements DomainConvertible<UserData> {
+  factory fromJson(Map<String, dynamic> json) {
     return UserDataResponse(
       user: UserResponse.fromJson(json['user'] as Map<String, dynamic>? ?? {}),
       accessToken: json['access'] as String? ?? '',
@@ -19,17 +16,13 @@ class UserDataResponse extends Equatable
     );
   }
 
-  factory UserDataResponse.fromDomain(UserData domain) {
+  factory fromDomain(UserData domain) {
     return UserDataResponse(
       user: UserResponse.fromDomain(domain.user),
       accessToken: domain.accessToken,
       refreshToken: domain.refreshToken,
     );
   }
-  final UserResponse user;
-  final String accessToken;
-  final String refreshToken;
-
   Map<String, dynamic> toJson() => {
     'user': user.toJson(),
     'access': accessToken,

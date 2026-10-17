@@ -98,9 +98,8 @@ void main() {
       build: () {
         // Arrange
         when(() => mockSetSessionUseCase.call(userData)).thenAnswer((_) {});
-        when(
-          () => mockLoginUseCase.call(any()),
-        ).thenAnswer((_) async => SuccessState(data: userData));
+        when(() => mockLoginUseCase.call(any()))
+            .thenAnswer((_) async => SuccessState(data: userData));
 
         return loginCubit;
       },
@@ -125,12 +124,10 @@ void main() {
       build: () {
         // Arrange
         when(() => mockSetSessionUseCase.call(userData)).thenAnswer((_) {});
-        when(
-          () => mockLoginUseCase.call(any()),
-        ).thenAnswer((_) async => SuccessState(data: userData));
-        when(
-          () => mockSaveUserDataUseCase.call(any()),
-        ).thenAnswer((_) async => SuccessState.nil);
+        when(() => mockLoginUseCase.call(any()))
+            .thenAnswer((_) async => SuccessState(data: userData));
+        when(() => mockSaveUserDataUseCase.call(any()))
+            .thenAnswer((_) async => SuccessState.nil);
 
         return loginCubit;
       },

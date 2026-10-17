@@ -1,8 +1,6 @@
 import 'dart:async';
 
-class DebounceTime {
-  DebounceTime({required this.delay});
-  final Duration delay;
+class DebounceTime({required final Duration delay}) {
   Timer? _timer;
 
   void run(void Function() action) {

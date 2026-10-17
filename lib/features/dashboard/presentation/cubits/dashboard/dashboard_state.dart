@@ -1,10 +1,7 @@
 part of 'dashboard_cubit.dart';
 
-class DashboardState extends BaseState {
-  const DashboardState({required this.activeIndex});
-
-  factory DashboardState.initial() => const DashboardState(activeIndex: 0);
-  final int activeIndex;
+class const DashboardState({required final int activeIndex}) extends BaseState {
+  factory initial() => const DashboardState(activeIndex: 0);
 
   DashboardState copyWith({int? activeIndex}) =>
       DashboardState(activeIndex: activeIndex ?? this.activeIndex);

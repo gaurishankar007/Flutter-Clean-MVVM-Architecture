@@ -1,22 +1,15 @@
 import 'package:material_ui/material_ui.dart';
 
-class LoadingCircle extends StatefulWidget {
-  const LoadingCircle({
-    super.key,
-    this.strokeWidth = 4,
-    this.height = 30,
-    this.width = 30,
-    this.color,
-    this.centered = true,
-  });
-
-  factory LoadingCircle.small([Color? color]) =>
+class const LoadingCircle({
+  super.key,
+  final double strokeWidth = 4,
+  final double height = 30,
+  final double width = 30,
+  final Color? color,
+  final bool centered = true,
+}) extends StatefulWidget {
+  factory small([Color? color]) =>
       LoadingCircle(strokeWidth: 2, height: 20, width: 20, color: color);
-  final double strokeWidth;
-  final double height;
-  final double width;
-  final Color? color;
-  final bool centered;
 
   @override
   State<LoadingCircle> createState() => _LoadingCircleState();

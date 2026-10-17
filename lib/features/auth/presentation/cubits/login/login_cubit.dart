@@ -9,10 +9,10 @@ import 'package:injectable/injectable.dart';
 part 'login_state.dart';
 
 @injectable
-class LoginCubit extends BaseCubit<LoginState> {
-  LoginCubit({required this._useCases}) : super(const LoginState.initial());
+class LoginCubit({required final LoginCubitUseCases _useCases})
+    extends BaseCubit<LoginState> {
+  this : super(const LoginState.initial());
 
-  final LoginCubitUseCases _useCases;
   bool _passwordVisibility = false;
   bool _saveUserCredential = false;
 

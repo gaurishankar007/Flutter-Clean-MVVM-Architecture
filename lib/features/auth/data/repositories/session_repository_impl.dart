@@ -5,11 +5,9 @@ import 'package:injectable/injectable.dart';
 
 /// A class that stores user data
 @LazySingleton(as: SessionRepository)
-final class SessionRepositoryImpl implements SessionRepository {
-  SessionRepositoryImpl({required this._localDataSource});
-
-  final SessionLocalDataSource _localDataSource;
-
+final class SessionRepositoryImpl({
+  required final SessionLocalDataSource _localDataSource,
+}) implements SessionRepository {
   UserData _userData = const UserData.empty();
 
   @override

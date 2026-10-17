@@ -6,8 +6,6 @@ part of 'http_client.dart';
 /// * Refresh tokens
 @LazySingleton()
 interface class HttpAuthInterceptor extends Interceptor {
-  HttpAuthInterceptor();
-  // Access services lazily via the locator
   LocalStorageClient get _localStorageClient => GetIt.I<LocalStorageClient>();
   NavigationClient get _navigationClient => GetIt.I<NavigationClient>();
 
@@ -167,8 +165,7 @@ interface class HttpAuthInterceptor extends Interceptor {
 }
 
 /// Stores failed dio request's data
-class DioRequestData {
-  const DioRequestData({required this.error, required this.handler});
-  final DioException error;
-  final ErrorInterceptorHandler handler;
-}
+class const DioRequestData({
+  required final DioException error,
+  required final ErrorInterceptorHandler handler,
+});

@@ -1,6 +1,6 @@
 part of 'base_text.dart';
 
-enum TextType {
+enum TextType(final double size) {
   caption(10),
   bodySmall(12),
   bodyMedium(14),
@@ -8,8 +8,5 @@ enum TextType {
   titleSmall(18),
   titleMedium(20),
   headline(24),
-  headlineLarge(32);
-
-  const TextType(this.size);
-  final double size;
+  headlineLarge(32),
 }

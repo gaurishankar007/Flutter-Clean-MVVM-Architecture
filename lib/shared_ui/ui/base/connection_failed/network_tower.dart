@@ -1,9 +1,7 @@
 import 'package:clean_architecture/shared_ui/utils/screen_util/screen_util.dart';
 import 'package:material_ui/material_ui.dart';
 
-class NetworkTower extends StatelessWidget {
-  const NetworkTower({super.key});
-
+class const NetworkTower({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const deepPurple = Colors.deepPurple;

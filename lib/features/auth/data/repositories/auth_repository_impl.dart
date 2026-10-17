@@ -11,17 +11,11 @@ import 'package:clean_architecture/features/auth/domain/repositories/auth_reposi
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: AuthRepository)
-final class AuthRepositoryImpl implements AuthRepository {
-  AuthRepositoryImpl({
-    required this._internet,
-    required this._remoteDataSource,
-    required this._localDataSource,
-  });
-
-  final ConnectivityClient _internet;
-  final AuthRemoteDataSource _remoteDataSource;
-  final AuthLocalDataSource _localDataSource;
-
+final class AuthRepositoryImpl({
+  required final ConnectivityClient _internet,
+  required final AuthRemoteDataSource _remoteDataSource,
+  required final AuthLocalDataSource _localDataSource,
+}) implements AuthRepository {
   @override
   FutureData<UserData> login(Authentication authentication) {
     return RepositoryFetcher.fetchWithFallbackAndMap(

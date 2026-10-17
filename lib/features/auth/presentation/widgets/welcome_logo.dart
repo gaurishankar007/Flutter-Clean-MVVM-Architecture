@@ -3,10 +3,8 @@ import 'package:clean_architecture/shared_ui/ui/base/text/base_text.dart';
 import 'package:clean_architecture/shared_ui/utils/ui_helpers.dart';
 import 'package:material_ui/material_ui.dart';
 
-class WelcomeLogo extends StatelessWidget {
-  const WelcomeLogo({super.key, required this.title});
-  final String title;
-
+class const WelcomeLogo({super.key, required final String title})
+    extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(

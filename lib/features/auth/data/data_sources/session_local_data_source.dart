@@ -14,10 +14,9 @@ abstract interface class SessionLocalDataSource {
 }
 
 @LazySingleton(as: SessionLocalDataSource)
-final class SessionLocalDataSourceImpl implements SessionLocalDataSource {
-  SessionLocalDataSourceImpl(this._localStorageClient);
-  final LocalStorageClient _localStorageClient;
-
+final class SessionLocalDataSourceImpl(
+  final LocalStorageClient _localStorageClient,
+) implements SessionLocalDataSource {
   @override
   Future<UserDataResponse?> getUserData() async {
     final stored = _localStorageClient.getString(LocalDbKeys.userData);

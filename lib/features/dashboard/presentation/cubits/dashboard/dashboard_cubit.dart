@@ -6,10 +6,10 @@ import 'package:injectable/injectable.dart';
 part 'dashboard_state.dart';
 
 @injectable
-class DashboardCubit extends BaseCubit<DashboardState> {
-  DashboardCubit({required this._useCases}) : super(DashboardState.initial());
+class DashboardCubit({required final DashboardCubitUseCases _useCases})
+    extends BaseCubit<DashboardState> {
+  this : super(DashboardState.initial());
 
-  final DashboardCubitUseCases _useCases;
   int _activeIndex = 0;
 
   Future<void> initialize() async {

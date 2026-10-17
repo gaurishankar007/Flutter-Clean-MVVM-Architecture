@@ -1,6 +1,4 @@
-class ApiEndpoints {
-  ApiEndpoints._();
-
+class ApiEndpoints._() {
   /// Base
   static const auth = 'api/auth/';
 

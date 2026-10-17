@@ -4,10 +4,10 @@ import 'package:clean_architecture/features/auth/domain/use_cases/save_user_data
 import 'package:clean_architecture/features/auth/domain/use_cases/set_session_use_case.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockLoginUseCase extends Mock implements LoginUseCase {}
+class MockLoginUseCase extends Mock implements LoginUseCase;
 
-class MockSaveUserDataUseCase extends Mock implements SaveUserDataUseCase {}
+class MockSaveUserDataUseCase extends Mock implements SaveUserDataUseCase;
 
-class MockSetSessionUseCase extends Mock implements SetSessionUseCase {}
+class MockSetSessionUseCase extends Mock implements SetSessionUseCase;
 
-class MockLogOutUseCase extends Mock implements LogOutUseCase {}
+class MockLogOutUseCase extends Mock implements LogOutUseCase;

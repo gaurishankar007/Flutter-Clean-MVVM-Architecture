@@ -19,10 +19,8 @@ abstract class ConnectivityClientModule {
 
 /// Check whether the device is online or offline
 @LazySingleton(as: ConnectivityClient)
-final class ConnectivityClientImpl implements ConnectivityClient {
-  ConnectivityClientImpl({required this._connectivity});
-
-  final Connectivity _connectivity;
+final class ConnectivityClientImpl({required final Connectivity _connectivity})
+    implements ConnectivityClient {
   Stream<List<ConnectivityResult>>? _connectivityStream;
   StreamSubscription<List<ConnectivityResult>>? _subscription;
   bool _connection = true;

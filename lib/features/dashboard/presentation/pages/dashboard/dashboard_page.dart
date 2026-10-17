@@ -10,9 +10,7 @@ import 'package:get_it/get_it.dart';
 import 'package:material_ui/material_ui.dart';
 
 @RoutePage()
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
-
+class const DashboardPage({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(

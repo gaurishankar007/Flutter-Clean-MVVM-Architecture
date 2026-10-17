@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockResponse<T> extends Mock implements Response<T> {}
+class MockResponse<T> extends Mock implements Response<T>;
 
 void main() {
   setUpAll(() {

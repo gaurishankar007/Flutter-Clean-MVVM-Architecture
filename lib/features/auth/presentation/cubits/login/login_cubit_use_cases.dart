@@ -5,16 +5,9 @@ import 'package:clean_architecture/features/auth/domain/use_cases/set_session_us
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
-class LoginCubitUseCases {
-  const LoginCubitUseCases({
-    required this.login,
-    required this.saveUserData,
-    required this.setSession,
-    required this.logOut,
-  });
-
-  final LoginUseCase login;
-  final SaveUserDataUseCase saveUserData;
-  final SetSessionUseCase setSession;
-  final LogOutUseCase logOut;
-}
+class const LoginCubitUseCases({
+  required final LoginUseCase login,
+  required final SaveUserDataUseCase saveUserData,
+  required final SetSessionUseCase setSession,
+  required final LogOutUseCase logOut,
+});

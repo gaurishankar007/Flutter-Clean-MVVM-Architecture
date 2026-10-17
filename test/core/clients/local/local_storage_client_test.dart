@@ -40,9 +40,8 @@ void main() {
     });
 
     test('setString calls setString on SharedPreferences', () async {
-      when(
-        () => mockSharedPreferences.setString('key', 'value'),
-      ).thenAnswer((_) async => true);
+      when(() => mockSharedPreferences.setString('key', 'value'))
+          .thenAnswer((_) async => true);
 
       await localStorageClient.setString('key', 'value');
 
@@ -50,9 +49,8 @@ void main() {
     });
 
     test('remove calls remove on SharedPreferences', () async {
-      when(
-        () => mockSharedPreferences.remove('key'),
-      ).thenAnswer((_) async => true);
+      when(() => mockSharedPreferences.remove('key'))
+          .thenAnswer((_) async => true);
 
       await localStorageClient.remove('key');
 

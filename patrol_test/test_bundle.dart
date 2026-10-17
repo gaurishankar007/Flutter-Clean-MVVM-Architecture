@@ -6,6 +6,7 @@ import 'package:patrol/patrol.dart';
 
 // START: GENERATED TEST IMPORTS
 import 'login_test.dart' as login_test;
+
 // END: GENERATED TEST IMPORTS
 
 Future<void> main() async {

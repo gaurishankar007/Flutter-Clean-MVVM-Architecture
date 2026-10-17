@@ -2,21 +2,19 @@ import 'package:material_ui/material_ui.dart';
 
 part 'text_type.dart';
 
-class BaseText extends StatelessWidget {
-  const BaseText(
-    this.text, {
-    super.key,
-    this.textAlign,
-    this.overflow,
-    this.maxLines,
-    this.color,
-    this.textType = TextType.bodyMedium,
-    this.fontWeight = FontWeight.normal,
-    this.decoration,
-    this.decorationColor,
-  });
-
-  factory BaseText.caption(
+class const BaseText(
+  final String text, {
+  super.key,
+  final TextAlign? textAlign,
+  final TextOverflow? overflow,
+  final int? maxLines,
+  final Color? color,
+  final TextType textType = TextType.bodyMedium,
+  final FontWeight fontWeight = FontWeight.normal,
+  final TextDecoration? decoration,
+  final Color? decorationColor,
+}) extends StatelessWidget {
+  factory caption(
     String text, {
     TextAlign? textAlign,
     TextOverflow? overflow,
@@ -35,7 +33,7 @@ class BaseText extends StatelessWidget {
     decorationColor: decorationColor,
   );
 
-  factory BaseText.bodySmall(
+  factory bodySmall(
     String text, {
     TextAlign? textAlign,
     TextOverflow? overflow,
@@ -56,7 +54,7 @@ class BaseText extends StatelessWidget {
     decorationColor: decorationColor,
   );
 
-  factory BaseText.bodyLarge(
+  factory bodyLarge(
     String text, {
     TextAlign? textAlign,
     Color? color,
@@ -69,16 +67,15 @@ class BaseText extends StatelessWidget {
     fontWeight: fontWeight ?? FontWeight.w400,
   );
 
-  factory BaseText.title(String text, {TextAlign? textAlign, Color? color}) =>
-      BaseText(
-        text,
-        textAlign: textAlign,
-        color: color,
-        textType: TextType.titleSmall,
-        fontWeight: FontWeight.w600,
-      );
+  factory title(String text, {TextAlign? textAlign, Color? color}) => BaseText(
+    text,
+    textAlign: textAlign,
+    color: color,
+    textType: TextType.titleSmall,
+    fontWeight: FontWeight.w600,
+  );
 
-  factory BaseText.titleMedium(
+  factory titleMedium(
     String text, {
     TextAlign? textAlign,
     Color? color,
@@ -91,32 +88,20 @@ class BaseText extends StatelessWidget {
     fontWeight: fontWeight ?? FontWeight.w600,
   );
 
-  factory BaseText.headline(
-    String text, {
-    Color? color,
-    FontWeight? fontWeight,
-  }) => BaseText(
-    text,
-    color: color,
-    textType: TextType.headline,
-    fontWeight: fontWeight ?? FontWeight.w600,
-  );
+  factory headline(String text, {Color? color, FontWeight? fontWeight}) =>
+      BaseText(
+        text,
+        color: color,
+        textType: TextType.headline,
+        fontWeight: fontWeight ?? FontWeight.w600,
+      );
 
-  factory BaseText.headlineLarge(String text, {Color? color}) => BaseText(
+  factory headlineLarge(String text, {Color? color}) => BaseText(
     text,
     color: color,
     textType: TextType.headlineLarge,
     fontWeight: FontWeight.w600,
   );
-  final String text;
-  final TextAlign? textAlign;
-  final TextOverflow? overflow;
-  final int? maxLines;
-  final Color? color;
-  final TextType textType;
-  final FontWeight fontWeight;
-  final TextDecoration? decoration;
-  final Color? decorationColor;
 
   @override
   Widget build(BuildContext context) {

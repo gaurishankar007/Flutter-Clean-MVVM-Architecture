@@ -39,9 +39,8 @@ void main() {
         'should call getUserData and update userData when cached data exists',
         () async {
           // Arrange
-          when(
-            () => mockSessionLocalDataSource.getUserData(),
-          ).thenAnswer((_) async => userDataResponse);
+          when(() => mockSessionLocalDataSource.getUserData())
+              .thenAnswer((_) async => userDataResponse);
 
           // Act
           await sessionRepository.checkForUserCredential();
@@ -57,9 +56,8 @@ void main() {
         'should call getUserData and do nothing when cached data is null',
         () async {
           // Arrange
-          when(
-            () => mockSessionLocalDataSource.getUserData(),
-          ).thenAnswer((_) async => null);
+          when(() => mockSessionLocalDataSource.getUserData())
+              .thenAnswer((_) async => null);
 
           // Act
           await sessionRepository.checkForUserCredential();
@@ -75,9 +73,8 @@ void main() {
     group('clearSessionData', () {
       test('should call clearUserData and reset local state', () {
         // Arrange
-        when(
-          () => mockSessionLocalDataSource.clearUserData(),
-        ).thenAnswer((_) async {});
+        when(() => mockSessionLocalDataSource.clearUserData())
+            .thenAnswer((_) async {});
 
         // Set some initial state
         sessionRepository

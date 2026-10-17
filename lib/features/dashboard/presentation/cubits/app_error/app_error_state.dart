@@ -1,11 +1,10 @@
 part of 'app_error_cubit.dart';
 
-class AppErrorState extends BaseState {
-  const AppErrorState({super.status, this.errors = const []});
-
-  factory AppErrorState.initial() => const AppErrorState();
-
-  final List<AppErrorDetails> errors;
+class const AppErrorState({
+  super.status,
+  final List<AppErrorDetails> errors = const [],
+}) extends BaseState {
+  factory initial() => const AppErrorState();
 
   AppErrorState copyWith({StateStatus? status, List<AppErrorDetails>? errors}) {
     return AppErrorState(

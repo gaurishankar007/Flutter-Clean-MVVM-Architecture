@@ -37,26 +37,23 @@ void main() {
         'should return UserDataResponse when cached data is present',
         () async {
           // Arrange
-          when(
-            () => mockLocalStorageClient.getString(LocalDbKeys.userData),
-          ).thenReturn(jsonEncode(userDataResponse.toJson()));
+          when(() => mockLocalStorageClient.getString(LocalDbKeys.userData))
+              .thenReturn(jsonEncode(userDataResponse.toJson()));
 
           // Act
           final result = await sessionLocalDataSource.getUserData();
 
           // Assert
           expect(result, equals(userDataResponse));
-          verify(
-            () => mockLocalStorageClient.getString(LocalDbKeys.userData),
-          ).called(1);
+          verify(() => mockLocalStorageClient.getString(LocalDbKeys.userData))
+              .called(1);
         },
       );
 
       test('should return null when cached data is empty', () async {
         // Arrange
-        when(
-          () => mockLocalStorageClient.getString(LocalDbKeys.userData),
-        ).thenReturn('');
+        when(() => mockLocalStorageClient.getString(LocalDbKeys.userData))
+            .thenReturn('');
 
         // Act
         final result = await sessionLocalDataSource.getUserData();
@@ -67,9 +64,8 @@ void main() {
 
       test('should return null when cached data is null', () async {
         // Arrange
-        when(
-          () => mockLocalStorageClient.getString(LocalDbKeys.userData),
-        ).thenReturn(null);
+        when(() => mockLocalStorageClient.getString(LocalDbKeys.userData))
+            .thenReturn(null);
 
         // Act
         final result = await sessionLocalDataSource.getUserData();
@@ -82,9 +78,8 @@ void main() {
         'should return null (catch error) when cached data is invalid json',
         () async {
           // Arrange
-          when(
-            () => mockLocalStorageClient.getString(LocalDbKeys.userData),
-          ).thenReturn('invalid json');
+          when(() => mockLocalStorageClient.getString(LocalDbKeys.userData))
+              .thenReturn('invalid json');
 
           // Act
           final result = await sessionLocalDataSource.getUserData();
@@ -98,9 +93,8 @@ void main() {
     group('saveUserData', () {
       test('should call setString with correct key and value', () async {
         // Arrange
-        when(
-          () => mockLocalStorageClient.setString(any(), any()),
-        ).thenAnswer((_) async => true);
+        when(() => mockLocalStorageClient.setString(any(), any()))
+            .thenAnswer((_) async => true);
 
         // Act
         await sessionLocalDataSource.saveUserData(userDataResponse);
@@ -118,17 +112,15 @@ void main() {
     group('clearUserData', () {
       test('should call remove with correct key', () async {
         // Arrange
-        when(
-          () => mockLocalStorageClient.remove(any()),
-        ).thenAnswer((_) async => true);
+        when(() => mockLocalStorageClient.remove(any()))
+            .thenAnswer((_) async => true);
 
         // Act
         await sessionLocalDataSource.clearUserData();
 
         // Assert
-        verify(
-          () => mockLocalStorageClient.remove(LocalDbKeys.userData),
-        ).called(1);
+        verify(() => mockLocalStorageClient.remove(LocalDbKeys.userData))
+            .called(1);
       });
     });
   });

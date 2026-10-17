@@ -23,9 +23,8 @@ void main() {
       () async {
         final controller =
             StreamController<List<ConnectivityResult>>.broadcast();
-        when(
-          () => mockConnectivity.onConnectivityChanged,
-        ).thenAnswer((_) => controller.stream);
+        when(() => mockConnectivity.onConnectivityChanged)
+            .thenAnswer((_) => controller.stream);
 
         await connectivityClient.subscribeConnectivity();
 
@@ -49,9 +48,8 @@ void main() {
       () async {
         final controller =
             StreamController<List<ConnectivityResult>>.broadcast();
-        when(
-          () => mockConnectivity.onConnectivityChanged,
-        ).thenAnswer((_) => controller.stream);
+        when(() => mockConnectivity.onConnectivityChanged)
+            .thenAnswer((_) => controller.stream);
 
         await connectivityClient.subscribeConnectivity();
 
@@ -68,9 +66,8 @@ void main() {
   group('unSubscriptionConnectivity', () {
     test('cancels the subscription', () async {
       final controller = StreamController<List<ConnectivityResult>>.broadcast();
-      when(
-        () => mockConnectivity.onConnectivityChanged,
-      ).thenAnswer((_) => controller.stream);
+      when(() => mockConnectivity.onConnectivityChanged)
+          .thenAnswer((_) => controller.stream);
 
       await connectivityClient.subscribeConnectivity();
       connectivityClient.unSubscriptionConnectivity();
@@ -86,9 +83,8 @@ void main() {
   group('connectivityStream', () {
     test('returns the broadcast stream', () async {
       final controller = StreamController<List<ConnectivityResult>>.broadcast();
-      when(
-        () => mockConnectivity.onConnectivityChanged,
-      ).thenAnswer((_) => controller.stream);
+      when(() => mockConnectivity.onConnectivityChanged)
+          .thenAnswer((_) => controller.stream);
 
       await connectivityClient.subscribeConnectivity();
 

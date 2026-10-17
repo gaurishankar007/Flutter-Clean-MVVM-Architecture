@@ -15,9 +15,7 @@ import 'package:get_it/get_it.dart';
 import 'package:material_ui/material_ui.dart';
 
 @RoutePage()
-class LoginPage extends HookWidget {
-  const LoginPage({super.key});
-
+class const LoginPage({super.key}) extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final usernameController = useTextEditingController();

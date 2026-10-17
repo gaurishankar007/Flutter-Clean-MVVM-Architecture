@@ -18,36 +18,24 @@ enum StateStatus { initial, loading, loaded, error, noInternet }
 /// it is followed, sooner or later, by one that doesn't pass `message` and
 /// so clears it back to `null` - without that, an old error/success message
 /// would resurface on a later, unrelated state update.
-sealed class StateMessage extends Equatable {
-  const StateMessage(this.text);
-  final String text;
-
+sealed class const StateMessage(final String text) extends Equatable {
   @override
   List<Object?> get props => [text];
 }
 
-class SuccessMessage extends StateMessage {
-  const SuccessMessage(super.text);
-}
+class const SuccessMessage(super.text) extends StateMessage;
 
-class ErrorMessage extends StateMessage {
-  const ErrorMessage(super.text);
-}
+class const ErrorMessage(super.text) extends StateMessage;
 
-class WarningMessage extends StateMessage {
-  const WarningMessage(super.text);
-}
+class const WarningMessage(super.text) extends StateMessage;
 
 /// A neutral, informational message (neither success, error nor warning).
-class NormalMessage extends StateMessage {
-  const NormalMessage(super.text);
-}
+class const NormalMessage(super.text) extends StateMessage;
 
-abstract class BaseState extends Equatable {
-  const BaseState({this.status = StateStatus.initial, this.message});
-  final StateStatus status;
-  final StateMessage? message;
-
+abstract class const BaseState({
+  final StateStatus status = StateStatus.initial,
+  final StateMessage? message,
+}) extends Equatable {
   @override
   List<Object?> get props => [status, message];
 }

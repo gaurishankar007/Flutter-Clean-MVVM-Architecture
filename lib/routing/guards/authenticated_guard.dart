@@ -3,9 +3,7 @@ import 'package:clean_architecture/features/auth/domain/repositories/session_rep
 import 'package:clean_architecture/routing/routes.gr.dart';
 import 'package:get_it/get_it.dart';
 
-final class AuthenticatedGuard extends AutoRouteGuard {
-  const AuthenticatedGuard();
-
+final class const AuthenticatedGuard() extends AutoRouteGuard {
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
     if (GetIt.I<SessionRepository>().isLoggedIn) {

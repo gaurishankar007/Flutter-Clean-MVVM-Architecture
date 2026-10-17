@@ -15,15 +15,10 @@ abstract interface class AuthLocalDataSource {
 }
 
 @LazySingleton(as: AuthLocalDataSource)
-final class AuthLocalDataSourceImpl implements AuthLocalDataSource {
-  const AuthLocalDataSourceImpl({
-    required this._errorHandler,
-    required this._localDatabase,
-  });
-
-  final ErrorHandler _errorHandler;
-  final LocalStorageClient _localDatabase;
-
+final class const AuthLocalDataSourceImpl({
+  required final ErrorHandler _errorHandler,
+  required final LocalStorageClient _localDatabase,
+}) implements AuthLocalDataSource {
   @override
   FutureVoid saveUserData(UserDataResponse userDataModel) {
     return _errorHandler.execute(() async {

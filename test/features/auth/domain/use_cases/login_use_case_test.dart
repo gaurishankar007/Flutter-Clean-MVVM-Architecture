@@ -40,9 +40,8 @@ void main() {
     'should call authRepository.login and return user data on success',
     () async {
       // Arrange
-      when(
-        () => mockAuthRepository.login(any()),
-      ).thenAnswer((_) async => const SuccessState(data: tUserData));
+      when(() => mockAuthRepository.login(any()))
+          .thenAnswer((_) async => const SuccessState(data: tUserData));
 
       // Act
       final result = await useCase(tAuthentication);
@@ -58,9 +57,8 @@ void main() {
   test('should return a FailureState when the repository call fails', () async {
     // Arrange
     const tFailureState = FailureState<UserData>(message: 'Login Failed');
-    when(
-      () => mockAuthRepository.login(any()),
-    ).thenAnswer((_) async => tFailureState);
+    when(() => mockAuthRepository.login(any()))
+        .thenAnswer((_) async => tFailureState);
 
     // Act
     final result = await useCase(tAuthentication);

@@ -3,23 +3,15 @@ import 'package:clean_architecture/shared_ui/ui/base/text/base_text.dart';
 import 'package:clean_architecture/shared_ui/utils/ui_helpers.dart';
 import 'package:material_ui/material_ui.dart';
 
-class IconTextButton extends StatelessWidget {
-  const IconTextButton({
-    super.key,
-    required this.onPressed,
-    required this.iconData,
-    required this.text,
-    this.iconColor,
-    this.iconSize,
-    this.textColor,
-  });
-  final void Function() onPressed;
-  final IconData iconData;
-  final String text;
-  final Color? iconColor;
-  final double? iconSize;
-  final Color? textColor;
-
+class const IconTextButton({
+  super.key,
+  required final void Function() onPressed,
+  required final IconData iconData,
+  required final String text,
+  final Color? iconColor,
+  final double? iconSize,
+  final Color? textColor,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color newIconColor = iconColor ?? AppColors.base;

@@ -3,9 +3,6 @@ import 'package:clean_architecture/features/auth/domain/repositories/session_rep
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
-class SetSessionUseCase {
-  SetSessionUseCase(this._sessionRepository);
-  final SessionRepository _sessionRepository;
-
+class SetSessionUseCase(final SessionRepository _sessionRepository) {
   void call(UserData userData) => _sessionRepository.setUserData = userData;
 }

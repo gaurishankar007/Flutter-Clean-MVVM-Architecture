@@ -2,17 +2,15 @@ import 'package:clean_architecture/core/data/models/domain_convertible.dart';
 import 'package:clean_architecture/core/domain/entities/user.dart';
 import 'package:equatable/equatable.dart';
 
-class UserResponse extends Equatable implements DomainConvertible<User> {
-  const UserResponse({
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.username,
-    required this.email,
-    required this.isActive,
-  });
-
-  factory UserResponse.fromJson(Map<String, dynamic> json) {
+class const UserResponse({
+  required final int id,
+  required final String firstName,
+  required final String lastName,
+  required final String username,
+  required final String email,
+  required final bool isActive,
+}) extends Equatable implements DomainConvertible<User> {
+  factory fromJson(Map<String, dynamic> json) {
     return UserResponse(
       id: json['id'] as int? ?? 0,
       firstName: json['first_name'] as String? ?? '',
@@ -23,7 +21,7 @@ class UserResponse extends Equatable implements DomainConvertible<User> {
     );
   }
 
-  factory UserResponse.fromDomain(User user) {
+  factory fromDomain(User user) {
     return UserResponse(
       id: user.id,
       firstName: user.firstName,
@@ -33,13 +31,6 @@ class UserResponse extends Equatable implements DomainConvertible<User> {
       isActive: user.isActive,
     );
   }
-  final int id;
-  final String firstName;
-  final String lastName;
-  final String username;
-  final String email;
-  final bool isActive;
-
   Map<String, dynamic> toJson() => {
     'id': id,
     'first_name': firstName,

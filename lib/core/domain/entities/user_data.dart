@@ -2,16 +2,17 @@ import 'package:clean_architecture/core/domain/entities/user.dart';
 import 'package:equatable/equatable.dart';
 
 class UserData extends Equatable {
-  const UserData({
+  const new({
     required this.user,
     required this.accessToken,
     required this.refreshToken,
   });
 
-  const UserData.empty()
+  const new empty()
     : user = const User.empty(),
       accessToken = '',
       refreshToken = '';
+
   final User user;
   final String accessToken;
   final String refreshToken;

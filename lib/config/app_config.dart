@@ -9,20 +9,15 @@ abstract final class Flavor {
 }
 
 /// App configuration for different app flavors.
-sealed class AppConfig {
-  const AppConfig({
-    required this.appTitle,
-    required this.apiBaseUrl,
-    required this.flavor,
-  });
-  final String appTitle;
-  final String apiBaseUrl;
-  final String flavor;
-}
+sealed class const AppConfig({
+  required final String appTitle,
+  required final String apiBaseUrl,
+  required final String flavor,
+});
 
 @LazySingleton(as: AppConfig, env: [Flavor.production])
-final class AppConfigProd extends AppConfig {
-  AppConfigProd()
+final class AppConfigProd() extends AppConfig {
+  this
     : super(
         appTitle: 'Clean Architecture App',
         apiBaseUrl:
@@ -32,8 +27,8 @@ final class AppConfigProd extends AppConfig {
 }
 
 @LazySingleton(as: AppConfig, env: [Flavor.staging])
-final class AppConfigStg extends AppConfig {
-  AppConfigStg()
+final class AppConfigStg() extends AppConfig {
+  this
     : super(
         appTitle: 'Clean Architecture App Staging',
         apiBaseUrl:
@@ -43,8 +38,8 @@ final class AppConfigStg extends AppConfig {
 }
 
 @LazySingleton(as: AppConfig, env: [Flavor.development])
-final class AppConfigDev extends AppConfig {
-  AppConfigDev()
+final class AppConfigDev() extends AppConfig {
+  this
     : super(
         appTitle: 'Clean Architecture App Development',
         apiBaseUrl:

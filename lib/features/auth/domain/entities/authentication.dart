@@ -1,8 +1,7 @@
-class Authentication {
-  const Authentication({required this.username, required this.password});
-  final String username;
-  final String password;
-
+class const Authentication({
+  required final String username,
+  required final String password,
+}) {
   Authentication copyWith({
     required String fmcToken,
     required String deviceType,

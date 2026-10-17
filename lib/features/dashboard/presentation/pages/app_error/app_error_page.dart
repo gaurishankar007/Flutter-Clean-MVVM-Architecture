@@ -11,9 +11,7 @@ import 'package:get_it/get_it.dart';
 import 'package:material_ui/material_ui.dart';
 
 @RoutePage()
-class AppErrorPage extends StatelessWidget {
-  const AppErrorPage({super.key});
-
+class const AppErrorPage({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -23,9 +21,7 @@ class AppErrorPage extends StatelessWidget {
   }
 }
 
-class AppErrorView extends StatelessWidget {
-  const AppErrorView({super.key});
-
+class const AppErrorView({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(

@@ -5,42 +5,32 @@ part 'failure_state.dart';
 part 'loading_state.dart';
 part 'success_state.dart';
 
+/// Base immutable sealed class representing the state of asynchronous
+/// data operations. Subtypes are `SuccessState`, `FailureState` and
+/// `LoadingState`. This class holds optional metadata useful for
+/// UI and error handling.
 @immutable
-sealed class DataState<T> extends Equatable {
-  /// Base immutable sealed class representing the state of asynchronous
-  /// data operations. Subtypes are `SuccessState`, `FailureState` and
-  /// `LoadingState`. This class holds optional metadata useful for
-  /// UI and error handling.
-  const DataState({
-    this.data,
-    this.message,
-    this.error,
-    this.hasData = false,
-    this.hasError = false,
-    this.extra,
-  });
-
+sealed class const DataState<T>({
   /// The payload for successful operations. May be `null` for
   /// non-success states or when no data is available.
-  final T? data;
+  final T? data,
 
   /// A user-facing, localized message suitable for display in UI.
   /// Present when an operation failed but a friendly message is known.
-  final String? message;
+  final String? message,
 
   /// A raw error string (e.g. exception message or debug info). This
   /// is intended for logging or developer diagnostics rather than
   /// direct user display.
-  final String? error;
+  final String? error,
 
   /// Whether this state currently carries non-null data.
-  final bool hasData;
+  final bool hasData = false,
 
   /// Whether this state represents an error condition.
-  final bool hasError;
-
-  final dynamic extra;
-
+  final bool hasError = false,
+  final dynamic extra,
+}) extends Equatable {
   /// Executes the matching callback depending on runtime subtype.
   /// - `success` receives the unwrapped `data` for `SuccessState`.
   /// - `failure` receives the friendly `message` and `errorType`.

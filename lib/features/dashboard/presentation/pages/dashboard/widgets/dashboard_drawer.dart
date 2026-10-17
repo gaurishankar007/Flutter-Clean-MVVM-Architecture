@@ -9,9 +9,7 @@ import 'package:clean_architecture/shared_ui/utils/ui_helpers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DashboardDrawer extends StatelessWidget {
-  const DashboardDrawer({super.key});
-
+class const DashboardDrawer({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(

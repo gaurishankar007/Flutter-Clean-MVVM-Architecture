@@ -4,35 +4,21 @@ import 'package:clean_architecture/shared_ui/utils/screen_util/screen_util.dart'
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
-class BaseScaffold extends StatelessWidget {
-  const BaseScaffold({
-    super.key,
-    this.showAnnotatedRegion = false,
-    this.onPopInvokedWithResult,
-    this.resizeToAvoidBottomInset,
-    this.appBar,
-    this.onRefresh,
-    this.isScrollable = true,
-    this.scrollPhysics,
-    this.padding,
-    this.usePadding = true,
-    required this.body,
-    this.bottomNavigationBar,
-    this.useBottomNavigationPadding = true,
-  });
-  final bool showAnnotatedRegion;
-  final void Function()? onPopInvokedWithResult;
-  final bool? resizeToAvoidBottomInset;
-  final Widget? appBar;
-  final Future<void> Function()? onRefresh;
-  final bool isScrollable;
-  final ScrollPhysics? scrollPhysics;
-  final EdgeInsets? padding;
-  final bool usePadding;
-  final Widget body;
-  final Widget? bottomNavigationBar;
-  final bool useBottomNavigationPadding;
-
+class const BaseScaffold({
+  super.key,
+  final bool showAnnotatedRegion = false,
+  final void Function()? onPopInvokedWithResult,
+  final bool? resizeToAvoidBottomInset,
+  final Widget? appBar,
+  final Future<void> Function()? onRefresh,
+  final bool isScrollable = true,
+  final ScrollPhysics? scrollPhysics,
+  final EdgeInsets? padding,
+  final bool usePadding = true,
+  required final Widget body,
+  final Widget? bottomNavigationBar,
+  final bool useBottomNavigationPadding = true,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget newChild = body;

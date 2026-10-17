@@ -10,9 +10,7 @@ import 'package:clean_architecture/shared_ui/utils/ui_helpers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_ui/material_ui.dart';
 
-class BaseBottomNavigation extends StatelessWidget {
-  const BaseBottomNavigation({super.key});
-
+class const BaseBottomNavigation({super.key}) extends StatelessWidget {
   static const List<PageRouteInfo> _routes = [HomeRoute(), SettingRoute()];
 
   @override

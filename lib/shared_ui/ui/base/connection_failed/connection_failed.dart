@@ -5,10 +5,10 @@ import 'package:clean_architecture/shared_ui/ui/base/text/base_text.dart';
 import 'package:clean_architecture/shared_ui/utils/ui_helpers.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ConnectionFailed extends StatelessWidget {
-  const ConnectionFailed({super.key, required this.callBack});
-  final Future<void> Function() callBack;
-
+class const ConnectionFailed({
+  super.key,
+  required final Future<void> Function() callBack,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(

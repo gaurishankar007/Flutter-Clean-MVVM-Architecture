@@ -3,10 +3,7 @@ import 'package:clean_architecture/core/data/operations/repository_fetcher.dart'
 import 'package:clean_architecture/core/data/states/data_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class FakeDto implements DomainConvertible<String> {
-  const FakeDto(this.value);
-  final int value;
-
+class const FakeDto(final int value) implements DomainConvertible<String> {
   @override
   String toDomain() => 'Mapped: $value';
 }

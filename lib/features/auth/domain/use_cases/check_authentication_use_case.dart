@@ -4,10 +4,9 @@ import 'package:clean_architecture/features/auth/domain/repositories/auth_reposi
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
-class CheckAuthenticationUseCase implements UseCaseNoParameter<bool> {
-  CheckAuthenticationUseCase({required this._authRepository});
-  final AuthRepository _authRepository;
-
+class CheckAuthenticationUseCase({
+  required final AuthRepository _authRepository,
+}) implements UseCaseNoParameter<bool> {
   @override
   FutureBool call() => _authRepository.checkAuth();
 }
