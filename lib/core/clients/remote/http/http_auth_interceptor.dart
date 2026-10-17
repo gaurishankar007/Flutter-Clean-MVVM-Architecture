@@ -25,7 +25,7 @@ interface class HttpAuthInterceptor extends Interceptor {
     if (stored != null && stored.isNotEmpty) {
       try {
         final map = jsonDecode(stored) as Map<String, dynamic>;
-        return UserDataResponse.fromJson(map);
+        return .fromJson(map);
       } catch (_) {
         return null;
       }
@@ -109,9 +109,7 @@ interface class HttpAuthInterceptor extends Interceptor {
       );
 
       /// If api response is successful, update the accessToken
-      final ApiResponse<JsonMap> apiResponse = ApiResponse.fromResponse(
-        response,
-      );
+      final ApiResponse<JsonMap> apiResponse = .fromResponse(response);
       if (apiResponse.success) {
         final tokenResponse = RefreshTokenResponse.fromJson(apiResponse.data);
         final newUserData = userData

@@ -28,13 +28,13 @@ final class DioErrorTranslator implements ErrorTranslator<DioException> {
       final error = _getErrorDescription(exception);
 
       if (statusCode >= 400 && statusCode < 500) {
-        return FailureState.badRequest(
+        return .badRequest(
           message: errorMessage,
           error: error,
           extra: response,
         );
       } else if (statusCode >= 500) {
-        return FailureState.serverError(
+        return .serverError(
           message: errorMessage,
           error: error,
           extra: response,

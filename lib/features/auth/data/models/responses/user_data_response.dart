@@ -10,7 +10,7 @@ class const UserDataResponse({
 }) extends Equatable implements DomainConvertible<UserData> {
   factory fromJson(Map<String, dynamic> json) {
     return UserDataResponse(
-      user: UserResponse.fromJson(json['user'] as Map<String, dynamic>? ?? {}),
+      user: .fromJson(json['user'] as Map<String, dynamic>? ?? {}),
       accessToken: json['access'] as String? ?? '',
       refreshToken: json['refresh'] as String? ?? '',
     );
@@ -18,7 +18,7 @@ class const UserDataResponse({
 
   factory fromDomain(UserData domain) {
     return UserDataResponse(
-      user: UserResponse.fromDomain(domain.user),
+      user: .fromDomain(domain.user),
       accessToken: domain.accessToken,
       refreshToken: domain.refreshToken,
     );

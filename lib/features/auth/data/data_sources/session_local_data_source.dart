@@ -23,7 +23,7 @@ final class SessionLocalDataSourceImpl(
     if (stored != null && stored.isNotEmpty) {
       try {
         final map = jsonDecode(stored) as Map<String, dynamic>;
-        return UserDataResponse.fromJson(map);
+        return .fromJson(map);
       } catch (_) {
         return null;
       }

@@ -9,7 +9,7 @@ part 'screen_observer_state.dart';
 /// widgets to rebuild selectively based on the different type of changes.
 @injectable
 class ScreenObserverCubit() extends BaseCubit<ScreenObserverState> {
-  this : super(ScreenObserverState.initial());
+  this : super(.initial());
 
   void update() {
     final oldScreenType = ScreenUtil.I.type;

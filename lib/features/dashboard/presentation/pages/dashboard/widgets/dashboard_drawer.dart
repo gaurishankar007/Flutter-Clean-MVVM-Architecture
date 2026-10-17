@@ -19,14 +19,14 @@ class const DashboardDrawer({super.key}) extends StatelessWidget {
         child: Padding(
           padding: UIHelpers.paddingA24,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               BlocBuilder<DashboardCubit, DashboardState>(
                 buildWhen: (previous, current) =>
                     previous.activeIndex != current.activeIndex,
                 builder: (context, state) {
                   return Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: .spaceAround,
                     children: [
                       BaseText.headline('Dashboard'),
                       UIHelpers.spaceV16,
@@ -35,7 +35,7 @@ class const DashboardDrawer({super.key}) extends StatelessWidget {
                           context.read<DashboardCubit>().setIndex(0);
                           NavigationUtil.I.replaceAllRoute([const HomeRoute()]);
                         },
-                        visualDensity: VisualDensity.standard,
+                        visualDensity: .standard,
                         horizontalTitleGap: 8,
                         leading: Icon(
                           AppIcons.home,
@@ -58,7 +58,7 @@ class const DashboardDrawer({super.key}) extends StatelessWidget {
                             const SettingRoute(),
                           ]);
                         },
-                        visualDensity: VisualDensity.standard,
+                        visualDensity: .standard,
                         horizontalTitleGap: 8,
                         leading: Icon(
                           AppIcons.setting,

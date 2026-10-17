@@ -28,7 +28,7 @@ DioException getDioException({
     message: message,
     statusCode: statusCode,
   ),
-  type: DioExceptionType.badResponse,
+  type: .badResponse,
 );
 
 class FakeDto(final int value) implements DomainConvertible<String> {

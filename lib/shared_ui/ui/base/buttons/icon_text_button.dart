@@ -22,7 +22,7 @@ class const IconTextButton({
       child: Padding(
         padding: UIHelpers.paddingA4,
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             Icon(iconData, color: newIconColor, size: iconSize),
             UIHelpers.spaceH4,

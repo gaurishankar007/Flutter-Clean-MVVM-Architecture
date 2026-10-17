@@ -17,7 +17,7 @@ class const BlueContainer({super.key}) extends StatelessWidget {
       child: BaseText.headline(
         'Settings',
         color: AppColors.white,
-        fontWeight: FontWeight.w500,
+        fontWeight: .w500,
       ),
     );
   }

@@ -16,7 +16,7 @@ class const BaseIconButton({
     Widget child = IconButton(
       splashRadius: splashRadius,
       onPressed: onPressed,
-      padding: padding ?? EdgeInsets.zero,
+      padding: padding ?? .zero,
       constraints: boxConstraints ?? const BoxConstraints(),
       visualDensity:
           visualDensity ?? const VisualDensity(horizontal: -4, vertical: -4),

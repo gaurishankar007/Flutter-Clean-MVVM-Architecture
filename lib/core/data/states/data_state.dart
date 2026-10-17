@@ -34,45 +34,28 @@ sealed class const DataState<T>({
   /// Executes the matching callback depending on runtime subtype.
   /// - `success` receives the unwrapped `data` for `SuccessState`.
   /// - `failure` receives the friendly `message` and `errorType`.
-  /// - `loading` is used for `LoadingState` and as a safe fallback.
+  /// - `loading` is used for `LoadingState`.
   R when<R>({
     required R Function(T data) success,
     required R Function(String? message, String? error) failure,
     required R Function() loading,
-  }) {
-    if (this is SuccessState<T>) {
-      return success((this as SuccessState<T>).data as T);
-    } else if (this is FailureState<T>) {
-      return failure(
-        (this as FailureState<T>).message,
-        (this as FailureState<T>).error,
-      );
-    } else if (this is LoadingState<T>) {
-      return loading();
-    } else {
-      // Defensive fallback: treat unknown cases as loading.
-      return loading();
-    }
-  }
+  }) => switch (this) {
+    SuccessState<T>(:final data) => success(data as T),
+    FailureState<T>(:final message, :final error) => failure(message, error),
+    LoadingState<T>() => loading(),
+  };
 
   /// Similar to `when`, but passes the concrete state instance to the
   /// callbacks allowing access to all fields (`data`, `message`, etc.).
-  /// If the runtime subtype is unknown, return a fresh `LoadingState`.
   R map<R>({
     required R Function(SuccessState<T> value) success,
     required R Function(FailureState<T> value) failure,
     required R Function(LoadingState<T> value) loading,
-  }) {
-    if (this is SuccessState<T>) {
-      return success(this as SuccessState<T>);
-    } else if (this is FailureState<T>) {
-      return failure(this as FailureState<T>);
-    } else if (this is LoadingState<T>) {
-      return loading(this as LoadingState<T>);
-    } else {
-      return loading(LoadingState<T>());
-    }
-  }
+  }) => switch (this) {
+    final SuccessState<T> state => success(state),
+    final FailureState<T> state => failure(state),
+    final LoadingState<T> state => loading(state),
+  };
 
   /// Transforms the contained `data` from `T` to `R` when the state is
   /// `SuccessState`. For `FailureState` and `LoadingState` the same

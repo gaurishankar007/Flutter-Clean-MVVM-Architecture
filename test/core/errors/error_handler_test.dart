@@ -38,7 +38,7 @@ void main() {
       when(() => response400.headers).thenReturn(Headers());
       final dio400 = MockDioException();
       when(() => dio400.requestOptions).thenReturn(RequestOptions());
-      when(() => dio400.type).thenReturn(DioExceptionType.badResponse);
+      when(() => dio400.type).thenReturn(.badResponse);
       when(() => dio400.response).thenReturn(response400);
 
       final result400 = await ErrorHandlerProvider.I.execute<int>(
@@ -53,7 +53,7 @@ void main() {
       when(() => response500.headers).thenReturn(Headers());
       final dio500 = MockDioException();
       when(() => dio500.requestOptions).thenReturn(RequestOptions());
-      when(() => dio500.type).thenReturn(DioExceptionType.badResponse);
+      when(() => dio500.type).thenReturn(.badResponse);
       when(() => dio500.response).thenReturn(response500);
 
       final result500 = await ErrorHandlerProvider.I.execute<int>(
@@ -64,7 +64,7 @@ void main() {
       // 3. DioException - Connection Error
       final dioConn = MockDioException();
       when(() => dioConn.requestOptions).thenReturn(RequestOptions());
-      when(() => dioConn.type).thenReturn(DioExceptionType.connectionError);
+      when(() => dioConn.type).thenReturn(.connectionError);
       final resultConn = await ErrorHandlerProvider.I.execute<int>(
         () => throw dioConn,
       );

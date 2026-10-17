@@ -6,7 +6,7 @@ import 'package:material_ui/material_ui.dart';
 part 'theme_data.dart';
 
 ThemeData lightTheme = ThemeData(
-  brightness: Brightness.light,
+  brightness: .light,
   primaryColor: AppColors.primary,
   colorScheme: colorScheme,
   fontFamily: 'Poppins',

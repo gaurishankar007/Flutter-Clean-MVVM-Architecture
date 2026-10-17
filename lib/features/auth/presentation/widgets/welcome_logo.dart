@@ -14,13 +14,13 @@ class const WelcomeLogo({super.key, required final String title})
           child: const BaseText(
             'Welcome',
             color: AppColors.primary,
-            textType: TextType.headlineLarge,
-            fontWeight: FontWeight.w900,
+            textType: .headlineLarge,
+            fontWeight: .w900,
           ),
         ),
         UIHelpers.spaceV20,
         Align(
-          alignment: Alignment.centerLeft,
+          alignment: .centerLeft,
           child: BaseText.titleMedium(title, color: AppColors.blackE1),
         ),
       ],

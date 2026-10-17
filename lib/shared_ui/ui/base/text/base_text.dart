@@ -9,8 +9,8 @@ class const BaseText(
   final TextOverflow? overflow,
   final int? maxLines,
   final Color? color,
-  final TextType textType = TextType.bodyMedium,
-  final FontWeight fontWeight = FontWeight.normal,
+  final TextType textType = .bodyMedium,
+  final FontWeight fontWeight = .normal,
   final TextDecoration? decoration,
   final Color? decorationColor,
 }) extends StatelessWidget {
@@ -27,8 +27,8 @@ class const BaseText(
     textAlign: textAlign,
     overflow: overflow,
     color: color,
-    textType: TextType.caption,
-    fontWeight: fontWeight ?? FontWeight.w400,
+    textType: .caption,
+    fontWeight: fontWeight ?? .w400,
     decoration: decoration,
     decorationColor: decorationColor,
   );
@@ -48,8 +48,8 @@ class const BaseText(
     overflow: overflow,
     maxLines: maxLines,
     color: color,
-    textType: TextType.bodySmall,
-    fontWeight: fontWeight ?? FontWeight.w400,
+    textType: .bodySmall,
+    fontWeight: fontWeight ?? .w400,
     decoration: decoration,
     decorationColor: decorationColor,
   );
@@ -63,16 +63,16 @@ class const BaseText(
     text,
     textAlign: textAlign,
     color: color,
-    textType: TextType.bodyLarge,
-    fontWeight: fontWeight ?? FontWeight.w400,
+    textType: .bodyLarge,
+    fontWeight: fontWeight ?? .w400,
   );
 
   factory title(String text, {TextAlign? textAlign, Color? color}) => BaseText(
     text,
     textAlign: textAlign,
     color: color,
-    textType: TextType.titleSmall,
-    fontWeight: FontWeight.w600,
+    textType: .titleSmall,
+    fontWeight: .w600,
   );
 
   factory titleMedium(
@@ -84,24 +84,20 @@ class const BaseText(
     text,
     textAlign: textAlign,
     color: color,
-    textType: TextType.titleMedium,
-    fontWeight: fontWeight ?? FontWeight.w600,
+    textType: .titleMedium,
+    fontWeight: fontWeight ?? .w600,
   );
 
   factory headline(String text, {Color? color, FontWeight? fontWeight}) =>
       BaseText(
         text,
         color: color,
-        textType: TextType.headline,
-        fontWeight: fontWeight ?? FontWeight.w600,
+        textType: .headline,
+        fontWeight: fontWeight ?? .w600,
       );
 
-  factory headlineLarge(String text, {Color? color}) => BaseText(
-    text,
-    color: color,
-    textType: TextType.headlineLarge,
-    fontWeight: FontWeight.w600,
-  );
+  factory headlineLarge(String text, {Color? color}) =>
+      BaseText(text, color: color, textType: .headlineLarge, fontWeight: .w600);
 
   @override
   Widget build(BuildContext context) {

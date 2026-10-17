@@ -65,7 +65,7 @@ class const LoginPage({super.key}) extends HookWidget {
     );
   }
 
-  EdgeInsets _getHorizontalPadding() => EdgeInsets.symmetric(
+  EdgeInsets _getHorizontalPadding() => .symmetric(
     horizontal: ScreenUtil.I.getResponsiveValue(
       base: 24,
       screens: {

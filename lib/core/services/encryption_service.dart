@@ -48,7 +48,7 @@ final class EncryptionServiceImpl implements EncryptionService {
 
     return encrypter.decrypt(
       Encrypted.fromBase64(data.encryptedBase64),
-      iv: IV.fromBase64(data.ivBase64),
+      iv: .fromBase64(data.ivBase64),
     );
   }
 

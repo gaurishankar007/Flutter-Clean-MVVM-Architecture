@@ -9,7 +9,7 @@ part 'screen_type.dart';
 class ScreenUtil._() {
   factory() => _singleton;
 
-  static final ScreenUtil _singleton = ScreenUtil._();
+  static final ScreenUtil _singleton = ._();
   // Returning the field directly (rather than the `ScreenUtil()` factory,
   // which is equivalent) so this isn't flagged as a static accessor that
   // simply wraps a constructor call.
@@ -19,8 +19,8 @@ class ScreenUtil._() {
   double _height = 0;
   double _devicePixelRatio = 0;
   double _statusBarHeight = 0;
-  ScreenType _type = ScreenType.unknown;
-  Orientation _orientation = Orientation.portrait;
+  ScreenType _type = .unknown;
+  Orientation _orientation = .portrait;
 
   double get height => _height;
   double get width => _width;
@@ -52,9 +52,7 @@ class ScreenUtil._() {
     _devicePixelRatio = screenDetails.devicePixelRatio;
     _statusBarHeight = 0;
     _type = _getScreenType();
-    _orientation = _height > _width
-        ? Orientation.portrait
-        : Orientation.landscape;
+    _orientation = _height > _width ? .portrait : .landscape;
   }
 
   ScreenDetails _getScreenDetails() {
@@ -75,15 +73,15 @@ class ScreenUtil._() {
 
   ScreenType _getScreenType() {
     if (width <= 360) {
-      return ScreenType.compact;
+      return .compact;
     } else if (width <= 600) {
-      return ScreenType.phone;
+      return .phone;
     } else if (width <= 840) {
-      return ScreenType.tablet;
+      return .tablet;
     } else if (width <= 1024) {
-      return ScreenType.largeTablet;
+      return .largeTablet;
     }
-    return ScreenType.desktop;
+    return .desktop;
   }
 
   /// Get the required number within the limitation
@@ -171,9 +169,9 @@ class ScreenUtil._() {
   /// viewport; natively, a desktop-sized screen in landscape orientation.
   bool get isDesktopView {
     if (kIsWeb) {
-      return _type == ScreenType.desktop;
+      return _type == .desktop;
     }
-    return _type == ScreenType.desktop && _orientation == Orientation.landscape;
+    return _type == ScreenType.desktop && _orientation == .landscape;
   }
 
   /// Button, TextField, DropdownButton adaptive height according to the screen type
@@ -208,10 +206,8 @@ class ScreenUtil._() {
       EdgeInsets.symmetric(vertical: verticalSpace);
 
   /// View padding
-  EdgeInsets pagePadding() => EdgeInsets.symmetric(
-    horizontal: horizontalSpace,
-    vertical: verticalSpace,
-  );
+  EdgeInsets pagePadding() =>
+      .symmetric(horizontal: horizontalSpace, vertical: verticalSpace);
 
   /// Width of the screen excluding left and right screen padding
   double availableWidth({double extraSpace = 0}) =>

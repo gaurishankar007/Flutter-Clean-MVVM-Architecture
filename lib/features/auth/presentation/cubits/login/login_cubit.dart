@@ -11,7 +11,7 @@ part 'login_state.dart';
 @injectable
 class LoginCubit({required final LoginCubitUseCases _useCases})
     extends BaseCubit<LoginState> {
-  this : super(const LoginState.initial());
+  this : super(const .initial());
 
   bool _passwordVisibility = false;
   bool _saveUserCredential = false;

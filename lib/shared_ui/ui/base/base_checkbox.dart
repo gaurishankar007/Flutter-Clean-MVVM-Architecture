@@ -16,24 +16,24 @@ class const BaseCheckbox({
       scale: scale,
       child: Checkbox(
         value: value,
-        fillColor: WidgetStateColor.resolveWith(
+        fillColor: .resolveWith(
           (states) => value ? AppColors.hightLight : Colors.transparent,
         ),
         side: value ? null : const BorderSide(width: 1.2),
         onChanged: onChanged,
         visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        materialTapTargetSize: .shrinkWrap,
       ),
     );
 
     if (title != null) {
       final textColor = value ? AppColors.hightLight : AppColors.base;
       child = Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           child,
           UIHelpers.spaceH8,
-          BaseText(title!, color: textColor, fontWeight: FontWeight.w500),
+          BaseText(title!, color: textColor, fontWeight: .w500),
         ],
       );
     }

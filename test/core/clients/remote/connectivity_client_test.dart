@@ -29,14 +29,14 @@ void main() {
         await connectivityClient.subscribeConnectivity();
 
         // Emit wifi
-        controller.add([ConnectivityResult.wifi]);
+        controller.add([.wifi]);
         // Wait for the stream listener to process
-        await Future<void>.delayed(Duration.zero);
+        await Future<void>.delayed(.zero);
         expect(connectivityClient.isConnected, true);
 
         // Emit mobile
-        controller.add([ConnectivityResult.mobile]);
-        await Future<void>.delayed(Duration.zero);
+        controller.add([.mobile]);
+        await Future<void>.delayed(.zero);
         expect(connectivityClient.isConnected, true);
 
         await controller.close();
@@ -54,8 +54,8 @@ void main() {
         await connectivityClient.subscribeConnectivity();
 
         // Emit none
-        controller.add([ConnectivityResult.none]);
-        await Future<void>.delayed(Duration.zero);
+        controller.add([.none]);
+        await Future<void>.delayed(.zero);
         expect(connectivityClient.isConnected, false);
 
         await controller.close();
@@ -75,7 +75,7 @@ void main() {
       // After cancelling, adding to the stream should not update state
       // (though we can't easily verify the subscription is cancelled without mocking the subscription itself,
       // but we can check if it doesn't crash and the state remains what it was)
-      controller.add([ConnectivityResult.none]);
+      controller.add([.none]);
       await controller.close();
     });
   });

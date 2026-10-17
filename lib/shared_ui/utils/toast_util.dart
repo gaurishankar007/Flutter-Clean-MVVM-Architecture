@@ -13,8 +13,8 @@ abstract final class ToastUtil {
   static final _navigationClient = NavigationUtil.I;
   static const _toastSetting = SlidingToastSetting(
     displayDuration: Duration(milliseconds: 2500),
-    toastStartPosition: ToastPosition.top,
-    toastAlignment: Alignment.topCenter,
+    toastStartPosition: .top,
+    toastAlignment: .topCenter,
     showDialogOnTap: true,
   );
   static final EdgeInsets _padding = UIHelpers.paddingA12;
@@ -80,7 +80,7 @@ abstract final class ToastUtil {
         progressBarColor: color,
         boxShadow: const [_boxShadow],
       ),
-      displayMode: ToastDisplayMode.oneByOne,
+      displayMode: .oneByOne,
       // Once it closes, the same message may show again.
       onDisposed: () {
         if (toastId == _lastToastId) {

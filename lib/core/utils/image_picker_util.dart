@@ -9,7 +9,7 @@ abstract final class ImagePickerUtil {
     double? maxWidth,
     double? maxHeight,
     int? imageQuality,
-    CameraDevice preferredCameraDevice = CameraDevice.rear,
+    CameraDevice preferredCameraDevice = .rear,
     bool requestFullMetadata = true,
   }) async {
     final xImage = await ImagePicker().pickImage(

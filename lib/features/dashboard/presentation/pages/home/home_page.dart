@@ -17,7 +17,7 @@ class const HomePage({super.key}) extends StatelessWidget {
       appBar: const BaseAppBar(
         leading: Icon(AppIcons.user, size: 20, color: AppColors.base),
         title: 'Hello Developers',
-        titleFontWeight: FontWeight.w600,
+        titleFontWeight: .w600,
       ),
       isScrollable: false,
       body: const Center(child: BaseTitle(title: 'Home Page')),

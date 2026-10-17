@@ -32,15 +32,15 @@ class const BaseBottomNavigation({super.key}) extends StatelessWidget {
             previous.activeIndex != current.activeIndex,
         builder: (context, state) {
           return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(icons.length, (index) {
+            mainAxisAlignment: .spaceAround,
+            children: .generate(icons.length, (index) {
               return BaseIconButton(
                 onPressed: () {
                   context.read<DashboardCubit>().setIndex(index);
                   NavigationUtil.I.replaceAllRoute([_routes[index]]);
                 },
-                visualDensity: VisualDensity.standard,
-                padding: const EdgeInsets.all(10),
+                visualDensity: .standard,
+                padding: const .all(10),
                 icon: Icon(
                   icons[index],
                   size: 20,

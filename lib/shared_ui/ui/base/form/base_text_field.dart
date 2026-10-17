@@ -10,7 +10,7 @@ class const BaseTextField({
   final TextType? titleSize,
   final FontWeight? titleFontWeight,
   final TextEditingController? controller,
-  final TextInputType keyboardType = TextInputType.text,
+  final TextInputType keyboardType = .text,
   final bool readOnly = false,
   final String? initialValue,
   final void Function(String?)? onChanged,
@@ -46,13 +46,13 @@ class const BaseTextField({
 
     if (title != null) {
       child = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: .start,
+        mainAxisSize: .min,
         children: [
           BaseText(
             title!,
             color: titleColor,
-            textType: titleSize ?? TextType.titleSmall,
+            textType: titleSize ?? .titleSmall,
           ),
           UIHelpers.spaceV8,
           child,

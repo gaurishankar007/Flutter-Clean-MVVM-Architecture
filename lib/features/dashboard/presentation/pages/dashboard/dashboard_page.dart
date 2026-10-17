@@ -33,12 +33,12 @@ class const DashboardPage({super.key}) extends StatelessWidget {
                   child: Stack(
                     children: [
                       const Padding(
-                        padding: EdgeInsets.only(bottom: 50),
+                        padding: .only(bottom: 50),
                         child: AutoRouter(),
                       ),
                       if (!isDesktopLargeScreen)
                         const Align(
-                          alignment: Alignment.bottomCenter,
+                          alignment: .bottomCenter,
                           child: BaseBottomNavigation(),
                         ),
                     ],

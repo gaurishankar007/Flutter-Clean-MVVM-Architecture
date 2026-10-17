@@ -13,7 +13,7 @@ class const ConnectionFailed({
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           Container(
             margin: UIHelpers.paddingT12B24,
@@ -21,12 +21,12 @@ class const ConnectionFailed({
           ),
           const Text(
             'Whoops!',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
+            textAlign: .center,
+            style: TextStyle(fontSize: 36, fontWeight: .w600),
           ),
           BaseText.title(
             'Connection Failure 🛰️',
-            textAlign: TextAlign.center,
+            textAlign: .center,
             color: AppColors.black,
           ),
           const Spacer(),

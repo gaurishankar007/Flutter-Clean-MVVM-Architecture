@@ -5,22 +5,17 @@ final class SlidingAutoRoute({
   required super.page,
   required super.path,
   super.duration = const Duration(milliseconds: 350),
-  AxisDirection slideToward = AxisDirection.left,
+  AxisDirection slideToward = .left,
 }) extends CustomRoute<dynamic> {
   this
     : super(
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          late Offset beginOffset;
-
-          if (slideToward == AxisDirection.up) {
-            beginOffset = const Offset(0, 1);
-          } else if (slideToward == AxisDirection.down) {
-            beginOffset = const Offset(0, -1);
-          } else if (slideToward == AxisDirection.right) {
-            beginOffset = const Offset(-1, 0);
-          } else if (slideToward == AxisDirection.left) {
-            beginOffset = const Offset(1, 0);
-          }
+          final beginOffset = switch (slideToward) {
+            .up => const Offset(0, 1),
+            .down => const Offset(0, -1),
+            .right => const Offset(-1, 0),
+            .left => const Offset(1, 0),
+          };
 
           final tween = Tween(
             begin: beginOffset,

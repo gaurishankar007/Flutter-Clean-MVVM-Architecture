@@ -1,5 +1,4 @@
 import 'package:clean_architecture/shared_ui/ui/base/buttons/base_text_button.dart';
-import 'package:clean_architecture/shared_ui/ui/base/text/base_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 class const AppBarTextButton({
@@ -13,8 +12,8 @@ class const AppBarTextButton({
     final Widget child = BaseTextButton(
       onPressed: onPressed,
       text: text,
-      textType: TextType.bodyLarge,
-      textFontWeight: FontWeight.w500,
+      textType: .bodyLarge,
+      textFontWeight: .w500,
       visualDensity: const VisualDensity(horizontal: -3, vertical: -2),
     );
 

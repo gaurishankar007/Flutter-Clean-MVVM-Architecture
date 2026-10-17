@@ -27,8 +27,8 @@ class const BaseTextButton({
       child: BaseText(
         text,
         color: textColor ?? AppColors.hightLight,
-        textType: textType ?? TextType.bodyLarge,
-        fontWeight: textFontWeight ?? FontWeight.w400,
+        textType: textType ?? .bodyLarge,
+        fontWeight: textFontWeight ?? .w400,
       ),
     );
   }

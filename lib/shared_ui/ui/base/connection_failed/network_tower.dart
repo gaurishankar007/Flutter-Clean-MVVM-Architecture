@@ -8,43 +8,43 @@ class const NetworkTower({super.key}) extends StatelessWidget {
     const purpleAccent = Colors.purpleAccent;
 
     return Container(
-      padding: EdgeInsets.all(ScreenUtil.I.widthPart(8)),
+      padding: .all(ScreenUtil.I.widthPart(8)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          begin: .topCenter,
+          end: .bottomCenter,
           colors: [deepPurple.withAlpha(19), purpleAccent.withAlpha(19)],
         ),
-        shape: BoxShape.circle,
+        shape: .circle,
       ),
       child: Container(
-        padding: EdgeInsets.all(ScreenUtil.I.widthPart(6.5)),
+        padding: .all(ScreenUtil.I.widthPart(6.5)),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: .topCenter,
+            end: .bottomCenter,
             colors: [deepPurple.withAlpha(25), purpleAccent.withAlpha(25)],
           ),
-          shape: BoxShape.circle,
+          shape: .circle,
         ),
         child: Container(
-          padding: EdgeInsets.all(ScreenUtil.I.widthPart(5)),
+          padding: .all(ScreenUtil.I.widthPart(5)),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              begin: .topCenter,
+              end: .bottomCenter,
               colors: [deepPurple.withAlpha(32), purpleAccent.withAlpha(32)],
             ),
-            shape: BoxShape.circle,
+            shape: .circle,
           ),
           child: Container(
             height: ScreenUtil.I.widthPart(35),
             width: ScreenUtil.I.widthPart(35),
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
+              shape: .circle,
               gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+                begin: .topCenter,
+                end: .bottomCenter,
                 colors: [deepPurple, purpleAccent],
               ),
               boxShadow: [

@@ -56,7 +56,7 @@ abstract interface class UIHelpers {
   static final paddingA24 = EdgeInsets.all(Space.large.value);
   static final paddingA32 = EdgeInsets.all(Space.xLarge.value);
   static final paddingA36 = EdgeInsets.all(Space.xlMedium.value);
-  static EdgeInsets get paddingAS => EdgeInsets.symmetric(
+  static EdgeInsets get paddingAS => .symmetric(
     horizontal: ScreenUtil.I.horizontalSpace,
     vertical: ScreenUtil.I.verticalSpace,
   );
@@ -106,7 +106,7 @@ abstract interface class UIHelpers {
     horizontal: Space.large.value,
     vertical: Space.xlMedium.value,
   );
-  static EdgeInsets get paddingHSV16 => EdgeInsets.symmetric(
+  static EdgeInsets get paddingHSV16 => .symmetric(
     horizontal: ScreenUtil.I.horizontalSpace,
     vertical: Space.sMedium.value,
   );
@@ -157,7 +157,7 @@ abstract interface class UIHelpers {
   //<========== Only Padding ==========>
   /// Creates an [EdgeInsets] with screen horizontal padding on the left and right,
   /// and customizable [top] and [bottom] paddings, default to `16.0` if not provided.
-  static EdgeInsets paddingTB({double? top, double? bottom}) => EdgeInsets.only(
+  static EdgeInsets paddingTB({double? top, double? bottom}) => .only(
     top: top ?? Space.sMedium.value,
     right: ScreenUtil.I.horizontalSpace,
     bottom: bottom ?? Space.sMedium.value,

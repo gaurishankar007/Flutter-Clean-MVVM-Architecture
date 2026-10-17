@@ -5,7 +5,6 @@ import 'package:clean_architecture/core/types/types.dart';
 import 'package:clean_architecture/features/auth/data/data_sources/auth_local_data_source.dart';
 import 'package:clean_architecture/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:clean_architecture/features/auth/data/models/requests/authentication_request.dart';
-import 'package:clean_architecture/features/auth/data/models/responses/user_data_response.dart';
 import 'package:clean_architecture/features/auth/domain/entities/authentication.dart';
 import 'package:clean_architecture/features/auth/domain/repositories/auth_repository.dart';
 import 'package:injectable/injectable.dart';
@@ -28,7 +27,7 @@ final class AuthRepositoryImpl({
 
   @override
   FutureVoid saveUserData(UserData userData) =>
-      _localDataSource.saveUserData(UserDataResponse.fromDomain(userData));
+      _localDataSource.saveUserData(.fromDomain(userData));
 
   @override
   FutureData<UserData> getUserData() {

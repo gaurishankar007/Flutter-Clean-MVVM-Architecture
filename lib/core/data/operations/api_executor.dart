@@ -27,10 +27,8 @@ abstract final class ApiExecutor {
           SuccessState(data: data, message: responseMessage, extra: response);
 
       // 1. Get message from the response if provided
-      if (rawData is JsonMap) {
-        if (rawData['message'] case final String? message) {
-          responseMessage = message;
-        }
+      if (rawData case {'message': final String? message}) {
+        responseMessage = message;
       }
 
       // 2. Handle standard API response structure if required
@@ -73,10 +71,8 @@ abstract final class ApiExecutor {
       String? responseMessage;
 
       // 1. Get message from the response if provided
-      if (rawData is JsonMap) {
-        if (rawData['message'] case final String? message) {
-          responseMessage = message;
-        }
+      if (rawData case {'message': final String? message}) {
+        responseMessage = message;
       }
 
       return SuccessState<void>(
@@ -101,10 +97,8 @@ abstract final class ApiExecutor {
       String? responseMessage;
 
       // 1. Get message from the response if provided
-      if (rawData is JsonMap) {
-        if (rawData['message'] case final String? message) {
-          responseMessage = message;
-        }
+      if (rawData case {'message': final String? message}) {
+        responseMessage = message;
       }
 
       return SuccessState<T>(

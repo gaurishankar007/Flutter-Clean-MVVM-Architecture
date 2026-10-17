@@ -7,12 +7,12 @@ part 'app_error_state.dart';
 
 @injectable
 class AppErrorCubit() extends BaseCubit<AppErrorState> {
-  this : super(AppErrorState.initial());
+  this : super(.initial());
 
   void fetchErrors() {
-    emit(state.copyWith(status: StateStatus.loading));
+    emit(state.copyWith(status: .loading));
     final errors = AppErrorProvider.I.getErrors;
-    emit(state.copyWith(status: StateStatus.loaded, errors: errors));
+    emit(state.copyWith(status: .loaded, errors: errors));
   }
 
   void removeError(String errorId) {

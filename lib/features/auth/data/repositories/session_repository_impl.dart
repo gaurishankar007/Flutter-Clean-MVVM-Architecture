@@ -8,7 +8,7 @@ import 'package:injectable/injectable.dart';
 final class SessionRepositoryImpl({
   required final SessionLocalDataSource _localDataSource,
 }) implements SessionRepository {
-  UserData _userData = const UserData.empty();
+  UserData _userData = const .empty();
 
   @override
   bool get isLoggedIn => _userData.accessToken.isNotEmpty;
@@ -30,7 +30,7 @@ final class SessionRepositoryImpl({
 
   @override
   void clearSessionData() {
-    _userData = const UserData.empty();
+    _userData = const .empty();
     _localDataSource.clearUserData();
   }
 }

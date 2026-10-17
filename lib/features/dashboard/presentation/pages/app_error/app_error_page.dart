@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:clean_architecture/core/constants/app_colors.dart';
 import 'package:clean_architecture/core/data/models/app_error_details.dart';
 import 'package:clean_architecture/features/dashboard/presentation/cubits/app_error/app_error_cubit.dart';
-import 'package:clean_architecture/shared_ui/cubits/base/base_cubit.dart';
 import 'package:clean_architecture/shared_ui/ui/base/app_bar/base_app_bar.dart';
 import 'package:clean_architecture/shared_ui/ui/base/base_scaffold.dart';
 import 'package:clean_architecture/shared_ui/ui/base/text/base_text.dart';
@@ -36,7 +35,7 @@ class const AppErrorView({super.key}) extends StatelessWidget {
       ),
       body: BlocBuilder<AppErrorCubit, AppErrorState>(
         builder: (context, state) {
-          if (state.status == StateStatus.loading) {
+          if (state.status == .loading) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -53,11 +52,11 @@ class const AppErrorView({super.key}) extends StatelessWidget {
               return ListTile(
                 title: BaseText(
                   error.title,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: .bold,
                   color: AppColors.error,
                 ),
                 subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: [
                     BaseText(error.message ?? 'No message'),
                     const SizedBox(height: 4),
@@ -88,18 +87,12 @@ class const AppErrorView({super.key}) extends StatelessWidget {
         title: Text(error.title),
         content: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
-              const Text(
-                'Error:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+              const Text('Error:', style: TextStyle(fontWeight: .bold)),
               Text(error.error),
               const SizedBox(height: 16),
-              const Text(
-                'Stack Trace:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+              const Text('Stack Trace:', style: TextStyle(fontWeight: .bold)),
               Text(error.stackTrace ?? 'No stack trace'),
             ],
           ),

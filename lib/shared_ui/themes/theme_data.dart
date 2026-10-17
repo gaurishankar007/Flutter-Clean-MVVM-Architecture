@@ -1,7 +1,7 @@
 part of 'theme.dart';
 
 /// Color Scheme
-ColorScheme get colorScheme => ColorScheme.fromSeed(
+ColorScheme get colorScheme => .fromSeed(
   seedColor: AppColors.primary,
   surface: AppColors.surface,
   onSurface: AppColors.onSurface,
@@ -16,8 +16,8 @@ AppBarTheme get appBarTheme => const AppBarTheme(
   elevation: 0,
   systemOverlayStyle: SystemUiOverlayStyle(
     statusBarColor: AppColors.white,
-    statusBarIconBrightness: Brightness.dark,
-    statusBarBrightness: Brightness.light,
+    statusBarIconBrightness: .dark,
+    statusBarBrightness: .light,
   ),
 );
 
@@ -43,7 +43,7 @@ CheckboxThemeData get checkBoxThemeData => CheckboxThemeData(
 /// ListTile Theme
 ListTileThemeData get listTileThemeData => const ListTileThemeData(
   dense: true,
-  contentPadding: EdgeInsets.zero,
+  contentPadding: .zero,
   // If zero is given than it will take default top padding
   minVerticalPadding: 1,
   horizontalTitleGap: 0,

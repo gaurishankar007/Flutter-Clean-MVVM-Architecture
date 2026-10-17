@@ -64,26 +64,25 @@ class _LoadingCircleState extends State<LoadingCircle>
 
   @override
   Widget build(BuildContext context) {
-    late Widget child;
-
-    if (widget.color != null) {
-      child = CircularProgressIndicator(
-        color: widget.color,
-        strokeWidth: widget.strokeWidth,
-      );
-    } else {
-      child = AnimatedBuilder(
-        animation: controller,
-        builder: (context, child) {
-          return CircularProgressIndicator(
-            color: colorAnimation.value,
-            strokeWidth: widget.strokeWidth,
-          );
-        },
-      );
-    }
-
-    child = SizedBox(height: widget.height, width: widget.width, child: child);
+    final Widget child = SizedBox(
+      height: widget.height,
+      width: widget.width,
+      child: switch (widget.color) {
+        final Color color => CircularProgressIndicator(
+          color: color,
+          strokeWidth: widget.strokeWidth,
+        ),
+        null => AnimatedBuilder(
+          animation: controller,
+          builder: (context, child) {
+            return CircularProgressIndicator(
+              color: colorAnimation.value,
+              strokeWidth: widget.strokeWidth,
+            );
+          },
+        ),
+      },
+    );
 
     if (widget.centered) {
       return Center(child: child);

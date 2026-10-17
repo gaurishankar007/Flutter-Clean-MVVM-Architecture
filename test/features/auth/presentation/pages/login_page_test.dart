@@ -109,10 +109,9 @@ void main() {
         .thenAnswer((_) async => SuccessState.nil);
 
     final mockScreenObserverCubit = MockScreenObserverCubit();
-    when(() => mockScreenObserverCubit.state)
-        .thenReturn(ScreenObserverState.initial());
+    when(() => mockScreenObserverCubit.state).thenReturn(.initial());
     when(() => mockScreenObserverCubit.stream)
-        .thenAnswer((_) => const Stream.empty());
+        .thenAnswer((_) => const .empty());
 
     // Set the test binding surface size to match our screen configuration
     // This ensures widgets are within the render tree bounds

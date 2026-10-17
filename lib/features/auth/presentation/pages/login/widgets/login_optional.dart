@@ -9,7 +9,7 @@ class const LoginOptional({super.key, required final bool saveUserCredential})
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: .spaceBetween,
       children: [
         BaseCheckbox(
           value: saveUserCredential,

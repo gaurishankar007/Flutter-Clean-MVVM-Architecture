@@ -17,14 +17,14 @@ class const LoginForm({
     return BlocBuilder<LoginCubit, LoginState>(
       builder: (context, state) {
         return Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             BaseTextField(
               title: 'Username',
               controller: usernameController,
               hintText: 'Enter your username',
               validator: Validators.username,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+              autovalidateMode: .onUserInteraction,
             ),
             Container(
               margin: UIHelpers.paddingT20B4,
@@ -33,7 +33,7 @@ class const LoginForm({
                 hintText: 'Enter your password',
                 controller: passwordController,
                 validator: Validators.password,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
+                autovalidateMode: .onUserInteraction,
                 obscureText: !state.passwordVisibility,
                 suffixIcon: InkWell(
                   customBorder: const CircleBorder(),

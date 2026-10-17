@@ -33,7 +33,7 @@ class const WarningMessage(super.text) extends StateMessage;
 class const NormalMessage(super.text) extends StateMessage;
 
 abstract class const BaseState({
-  final StateStatus status = StateStatus.initial,
+  final StateStatus status = .initial,
   final StateMessage? message,
 }) extends Equatable {
   @override

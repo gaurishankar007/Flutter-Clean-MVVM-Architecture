@@ -13,7 +13,7 @@ class AppErrorDetails({
   DateTime? createdAt,
 }) {
   final String id = id ?? const Uuid().v4();
-  final DateTime createdAt = createdAt ?? DateTime.now();
+  final DateTime createdAt = createdAt ?? .now();
 
   AppErrorDetails copyWith({
     String? title,

@@ -61,8 +61,8 @@ class const PrimaryButton({
                 : BaseText(
                     text,
                     color: foregroundColor,
-                    textType: textType ?? TextType.bodyLarge,
-                    fontWeight: textFontWeight ?? FontWeight.w500,
+                    textType: textType ?? .bodyLarge,
+                    fontWeight: textFontWeight ?? .w500,
                   ),
           );
         },
