@@ -280,11 +280,11 @@ This principle decouples modules. High-level business logic should not be tied t
 
 **Real-World Scenario: Fetching News Articles**
 
-A high-level module (like a Cubit) needs to fetch news. It shouldn't know *how* the news is fetched (from an API, a database, etc.).
+A high-level module (like a ViewModel/Notifier) needs to fetch news. It shouldn't know *how* the news is fetched (from an API, a database, etc.).
 
 **❌ Bad Practice:**
 
-The `NewsCubit` directly depends on `NewsApiService`, a low-level concrete class. This makes it hard to test and impossible to switch the data source without changing the Cubit.
+The `NewsNotifier` directly depends on `NewsApiService`, a low-level concrete class. This makes it hard to test and impossible to switch the data source without changing the Notifier.
 
 ```dart
 // Low-level module
@@ -295,12 +295,15 @@ class NewsApiService {
 }
 
 // High-level module
-class NewsCubit extends Cubit<NewsState> {
+class NewsNotifier extends Notifier<NewsState> {
   final NewsApiService _apiService = NewsApiService(); // Direct dependency!
 
-  void getNews() async {
+  @override
+  NewsState build() => const NewsState();
+
+  Future<void> getNews() async {
     final articles = await _apiService.fetchArticles();
-    // emit state
+    // update state
   }
 }
 ```
@@ -326,15 +329,21 @@ class NewsRepositoryImpl(final NewsApiService _apiService)
   }
 }
 
-// High-level module (e.g., in the Presentation layer)
-// It also depends on the abstraction, injected via the constructor: dependency is inverted!
-class NewsCubit(final NewsRepository _repository) extends Cubit<NewsState> {
-  this : super(const NewsState.initial());
+// High-level module (e.g., in the UI layer)
+// It also depends on the abstraction, resolved from DI: dependency is inverted!
+class NewsNotifier extends BaseNotifier<NewsState> {
+  late final NewsRepository _repository;
+
+  @override
+  NewsState build() {
+    _repository = GetIt.I<NewsRepository>();
+    return const NewsState();
+  }
 
   Future<void> getNews() async {
     final articles = await _repository.fetchArticles();
-    // emit state
+    // update state
   }
 }
 ```
-With this setup, we can easily provide a `MockNewsRepository` for testing or a `CachedNewsRepository` that fetches from a local database, all without modifying `NewsCubit`.
+With this setup, we can easily provide a `MockNewsRepository` for testing or a `CachedNewsRepository` that fetches from a local database, all without modifying `NewsNotifier`.

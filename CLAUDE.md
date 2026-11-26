@@ -1,35 +1,34 @@
-# Clean Architecture Flutter — Claude Code Rules (CLAUDE.md)
+# Clean Architecture Flutter Template — Claude Code Rules (CLAUDE.md)
 
 > These rules apply to Claude Code working in this workspace. Follow them strictly.
+> `.agents/AGENTS.md` holds the same rules for other agents; keep the two in sync.
 
 ---
 
 ## 1. Project Identity
 
-- **App Name:** Clean Architecture — a reference/template app demonstrating Feature-first Clean Architecture with SOLID principles.
-- **Architecture:** Feature-first Clean Architecture (data/domain/presentation) using Flutter + `flutter_bloc` (Cubits).
+- **What it is:** a starter template for new Flutter apps. It ships a working example app (a detailed to-do app) that shows every layer and pattern end to end. Start a new app with the `fresh-start` skill, which removes the example and keeps the foundation.
+- **Architecture:** Clean Architecture + MVVM, following Flutter's official [app architecture guide](https://docs.flutter.dev/app-architecture): a UI layer (Views + ViewModels as Riverpod Notifiers), an optional domain layer (use cases), and a data layer (repositories + services). See `docs/architecture/architecture.md`.
+- **Stack:** Riverpod 3 (`hooks_riverpod`), get_it + injectable, auto_route, dio, drift, flutter_hooks.
 - **Platforms:** Android, iOS, Web.
-- **Flavors:** `development`, `staging`, `production`.
-- **Entry Points:** `lib/main_dev.dart`, `lib/main_stg.dart`, `lib/main.dart`.
+- **Flavors:** `development`, `staging`, `production`. Entry points: `lib/main_dev.dart`, `lib/main_stg.dart`, `lib/main.dart`.
+- **Package name:** `clean_architecture`.
+- **Previous version:** the Cubit (flutter_bloc), feature-first version of this template is kept at the git tag `cubit-template`.
 
 ---
 
 ## 2. Mandatory Rules (Never Violate)
 
-- **BEFORE** performing any task, **ALWAYS** consult `README.md` (Project Structure, State Management, Data Handling sections) and `docs/` (`testing.md` for test conventions, `solid_principles.md` for the SOLID rationale) for established patterns. Only read what's needed to minimize context usage.
-- **AFTER** a code change is finalized and validated by the user, update the relevant docs (`README.md`, `docs/`) to reflect it. Do **NOT** update docs while the change is still being iterated on (the user is reviewing it, asking for tweaks, or follow-up revisions are expected) — update them in one pass once the implementation is confirmed. A self-contained task with no expected follow-up (e.g. a one-off doc fix) updates docs immediately, as normal.
-- **ALWAYS** write code for the installed SDK (Dart `>=3.13`, see `pubspec.yaml`) using the idioms in "Modern Dart & Flutter" below. Never fall back to pre-3.13 constructor/field boilerplate.
-- **NEVER** use relative imports. Always use package imports (enforced by the `always_use_package_imports` lint rule):
-  ```dart
-  // ✅ Correct
-  import 'package:clean_architecture/core/clients/remote/http/http_client.dart';
-  // ❌ Wrong
-  import '../../core/clients/remote/http/http_client.dart';
-  ```
-- **NEVER** write business logic inside pages or widgets. Business logic belongs exclusively in Cubits (`presentation/cubits/`). This includes resolving a use case/repository directly from a widget — every flow needs a Cubit, even a trivial one, so it goes through the same state/message pattern as the rest of the app.
-- **NEVER** access `LocalStorageClient`, `HttpClient`, or another feature's data source directly from a Cubit or widget. Go through the feature's own repository/use-case layer.
-- **NEVER** use `void` as the return type of an `async` method. Use `Future<void>` (enforced by the `avoid_void_async` lint).
-- **NEVER** show a toast/message or perform navigation from inside a Cubit. A Cubit only computes state; showing that state (via `ToastUtil`) and reacting to it (navigating) is the UI layer's job. See "Messages & Navigation" below.
+- **BEFORE** any task, read the **relevant** docs in `docs/` (only what the task needs). Start from the Docs Map in `docs/architecture/architecture.md`.
+- **NEVER** update `docs/` or tests (new or existing) as part of a code change without **asking the user first**. Make the change, stop, and let the user try it; changes often need more rounds, and docs/tests written early are wasted. Only after the user says the change is final, ask whether to update the docs and tests, and do both in one pass. Approval to *implement* ("go ahead", "work on it") is **not** approval to write docs or tests. The only exception is a task that is itself a docs or test task (e.g. "fix this doc", "add a test for X").
+- **ALWAYS** write code for the SDK installed on this machine (currently Dart 3.14 / Flutter 3.50), using its newest idioms (see "Modern Dart & Flutter" below). If the installed Dart/Flutter is newer than `pubspec.yaml`'s `environment` lower bounds, tell the user and offer to upgrade before writing feature code; never bump the SDK silently.
+- **NEVER** use relative imports. Always `package:clean_architecture/...` (enforced by `always_use_package_imports`).
+- **NEVER** import a platform-split `*_mobile.dart` / `*_web.dart` file directly. Import its facade (the file without the suffix that conditionally exports the right variant). When adding a split, create the facade too: `export '<name>_mobile.dart' if (dart.library.js_interop) '<name>_web.dart';`
+- **NEVER** write business logic in Views or widgets. It belongs in Notifiers (ViewModels), use cases and repositories. That includes validation, filtering, sorting and grouping.
+- **NEVER** call a service, `HttpClient`, dio, drift or a platform plugin from a Notifier or View. Notifiers talk to repositories and use cases only.
+- **NEVER** add platform-specific code under `lib/ui/`. Route it through `lib/data/services/platform/`.
+- **NEVER** use `void` as the return type of an `async` method. Use `Future<void>` (enforced by `avoid_void_async`).
+- **NEVER** add a `Co-Authored-By: Claude ...` (or similar AI-attribution) trailer to commit messages.
 
 ---
 
@@ -37,258 +36,176 @@
 
 This project uses `leancode_lint` (see `analysis_options.yaml`) plus a few extra rules.
 
-- **String literals:** Use single quotes (`'`).
-- **Constants:** Prefer `const` constructors and declarations wherever possible.
-- **Control flow:** Always put `if`, `for`, and `while` bodies on a new line.
-- **Constructors:** Always sort constructors first in class declarations.
-- **Private fields:** Declare them as private named parameters of a primary constructor (`class Foo({required final Bar _bar})`), never an initializer list (`Foo({required Bar bar}) : _bar = bar`). Callers still pass `bar:`.
-- **Post-frame callbacks:** Use `runAfterBuild(...)` (`shared_ui/utils/frame_callback.dart`) instead of calling `WidgetsBinding.instance.addPostFrameCallback` directly.
-- **Lambdas:** Avoid unnecessary lambdas; prefer method tearoffs.
-- **Comments:** Keep them short, straight to the point, and single-line wherever possible. Don't write multi-line prose explaining what the code already shows — only note the non-obvious "why" (an edge case, a workaround, a load-bearing ordering), and say it in as few words as it takes.
+- Single quotes; `const` wherever possible; `if`/`for`/`while` bodies on a new line; constructors first in a class; method tear-offs over lambdas.
+- **Comments:** short, single-line where possible, and only for the non-obvious *why* (an edge case, a workaround, a load-bearing ordering).
+- **Post-frame callbacks:** use `runAfterBuild(...)` (`lib/ui/core/utils/frame_callback.dart`), not `WidgetsBinding.instance.addPostFrameCallback` directly.
+- Run `dart format lib test testing` before finishing.
 
-### Modern Dart & Flutter (Dart 3.13)
+### Modern Dart & Flutter (Dart 3.14 / Flutter 3.50)
 
-- **Primary constructors:** declare fields in the class header — `class const Foo({required final int id, super.key}) extends Bar;`. Need a `super(...)` call, an `assert` or a body? Add `this : super(...);` inside the class (see `LoginCubit`). A class with several constructors keeps its fields and uses `new(...)`/`new named(...)`/`factory named(...)` in the body (see `LoginState`, `FailureState`). Classes with no constructor stay plain (`use_primary_constructors` is off on purpose).
-- **Exceptions:** a field whose initializer isn't const (`final id = id ?? const Uuid().v4()`) means the class can't be `const`. Generated files (`*.g.dart`, `*.gr.dart`, `*.config.dart`) are never hand-edited.
-- **Dot shorthands:** write `.center`, `.all(8)`, `.initial()` where the context type is that exact type (enum values, `EdgeInsets`, a state's named constructor passed to `super`). Keep the type name when the context is a supertype or there is none (`Tween(begin: x, end: Offset.zero)`, `String` constants like `LocalDbKeys.userData`).
-- **Patterns:** prefer switch expressions for value-producing branches (`switch (this) { SuccessState(:final data) => ... }` on the sealed `DataState`, no "unknown subtype" fallback), `if (x case {'message': final String? m})` over `is` + `as`/index chains. Keep side-effecting switches as statements.
-- **Declaring parameters:** `final`/`var` on a parameter now declares a field (primary constructors only); never use them on ordinary parameters.
+- **Primary constructors:** fields and constructor go in the class header: `class const TodoCard({super.key, required final Todo todo}) extends StatelessWidget { ... }`. Private fields are private named parameters (`required final TodoRepository _repository`); callers still pass `repository:`. Put `super(...)`/asserts in the body as `this : ...;`; extra constructors are `new name(...)` / `factory name(...)`. A class with no constructor stays plain (`use_primary_constructors` is off on purpose).
+- **Empty bodies** end with `;`: `class MockTodoRepository extends Mock implements TodoRepository;`.
+- **Dot shorthands** where the context type is exact: `mainAxisAlignment: .center`, `padding: const .all(8)`, `borderRadius: .circular(8)`, `status: .loading`. Keep the type name when the context is a supertype or there is none.
+- **Null-aware elements** `[?maybeItem]` / `{'key': ?value}` instead of `if (x != null) x`; wildcard `_` for unused parameters.
+- **Patterns:** switch expressions over `if`/`else` ladders, `if (x case final T y)` to test and bind, `sealed` hierarchies with exhaustive `switch` (no "unknown subtype" fallback), records for small multi-value returns.
+- **`Future.syncValue(x)`** instead of `Future.value(x)` for an already-available value.
+- **Material** comes from `package:material_ui/material_ui.dart`, never `package:flutter/material.dart`. Icons come from `material_symbols_icons` (`Symbols.*_rounded`).
+- **No deprecated APIs** (e.g. `withValues(alpha:)`, not `withOpacity`); never silence `deprecated_member_use`.
+- Never hand-edit generated files (`*.g.dart`, `*.gr.dart`, `*.config.dart`).
 
 ---
 
 ## 4. Architecture Rules
 
-### State Management
+### State Management (ViewModels)
 
-- All Cubits must extend `BaseCubit<T>` (`shared_ui/cubits/base/base_cubit.dart`).
-- All Cubit states must extend `BaseState`, using `StateStatus` (`initial`/`loading`/`loaded`/`noInternet`/`error`).
-- UI layers must use `ToastUtil` to present messages; do not use `SnackBar` directly.
+- Every ViewModel extends `BaseNotifier` / `BaseAsyncNotifier` / `BaseStreamNotifier` (`lib/ui/core/providers/base/base_notifier.dart`); every state extends `BaseState` (`StateStatus` + `StateMessage`).
+- **`copyWith` never keeps the previous `message`**: use the argument directly (`message: message`, never `message ?? this.message`), so each message is shown exactly once. `StateMessage` subclasses stay `Equatable` (tests compare them).
+- Notifiers get repositories and use cases from get_it (`GetIt.I<TodoRepository>()`) in `build()`.
+- **Error messages go through the error log.** A notifier runs each user flow in `runFlow('<feature>.<flow>', () async { ... })` and surfaces an error with `trackFailure(dataState)` or `trackError(text)`, never a bare `ErrorMessage(...)` for a failure. Outside a `runFlow` closure pass `action: '...'` explicitly. Every `ErrorHandler.execute`/`ApiExecutor.*` call passes an `action:` label naming the exact operation (`'todo.local.upsert'`), different from the flow label, so the log's action path shows which step failed. See `docs/core/error_handling.md`.
+- **User-facing text comes from the message catalog** (`lib/core/messages/app_messages.dart`): toasts, labels, empty/error states, validator errors, semantic labels. Never write a user-facing string literal at the call site. When a message is added, removed or reworded, bump `kMessagesVersion` and add a changelog line. See `docs/core/app_messages.md`.
+- **Toasts, dialogs and navigation are View-only.** A Notifier never calls `ToastUtil`, opens a dialog or navigates. It sets state (`message`, a status, an error text) and returns a result (`Future<bool>`, an id, an enum); the View reacts with `ref.listenMessages(provider, context)` / `ref.listen` and navigates with `context.router`.
+- `ref.listen`/`ref.listenMessages` use the `ref` of the widget or builder they're called in, at the top of its `build`, never a `ref` captured from an outer scope.
+- A Notifier that calls another notifier captures it once in `build()` (a nullable field), never through a lazy getter or an inline `ref.read` at the call site.
+- In `.autoDispose` notifiers, check `ref.mounted` before touching `state` after an `await`.
+- App-wide state (session, settings, connectivity, screen type) lives in keep-alive providers under `lib/ui/core/providers/`. Screen state is `.autoDispose` (`.family` when keyed by an id).
 
-### Messages & Navigation (UI-only)
+### UI Widgets
 
-Cubits never call `ToastUtil` or navigate directly — both are UI-layer concerns:
-
-- A Cubit reports outcomes by setting `BaseState.message` (a `StateMessage?`:
-  `SuccessMessage`/`ErrorMessage`/`WarningMessage`/`NormalMessage`). Derive it from a
-  `DataState` with `stateMessageFromDataState(dataState, {message: '...'})`,
-  or construct `SuccessMessage`/`ErrorMessage`/`WarningMessage`/`NormalMessage`
-  directly for a manual message. A state's `copyWith`/constructor must **never** preserve
-  the previous `message` (`message: message`, never `message ?? this.message`)
-  so a message is shown exactly once.
-- The page that provides the Cubit wires `useCubitMessageListener(cubit)`
-  (`shared_ui/utils/cubit_message_listener.dart`, a `flutter_hooks` hook) to
-  actually show that message via `ToastUtil`. Get the cubit instance directly
-  (e.g. via `useMemoized`) and pass it to both `BlocProvider.value` and the
-  listener hook — see `login_page.dart`.
-- A Cubit method that used to navigate itself instead returns a result —
-  typically `Future<bool>` (did it succeed), or an `enum` for more than one
-  outcome — and the calling widget awaits it and navigates via
-  `NavigationUtil.I`. See `LoginCubit`/`login_button.dart` and
-  `DashboardCubit`/its drawer/bottom-nav/setting-page call sites for worked
-  examples.
-- `ToastUtil` shows toasts one at a time (queued) and skips one identical to
-  the toast right before it, so don't de-duplicate or delay messages
-  yourself. Tapping a toast shows its full text in a dialog.
-- **`StateMessage` subclasses must stay `Equatable`** — this matters for
-  testing (see `docs/testing.md`); don't remove that if you touch
-  `base_state.dart`.
-
-### UI / Widget Composition
-
-Two layers, each with one job — don't blur them:
-
-1. **Base widgets** (`shared_ui/ui/base/`) — app-wide, zero domain knowledge,
-   pure styling (`BaseText`, `PrimaryButton`/`SecondaryButton`,
-   `BaseTextField`, `BaseScaffold`, etc.). Before adding a new base widget,
-   check whether an existing one can take a variant/parameter instead of
-   creating a near-duplicate sibling.
-2. **Feature-local widgets** (`features/*/presentation/widgets/`, or a
-   page's own `widgets/` folder) — domain-aware, wire a Cubit's state into
-   base widgets. Presentation only; see the business-logic rule above.
-
-If a widget is reusable across features but still domain-aware, or a
-feature-agnostic composed pattern (e.g. an empty-state placeholder) emerges,
-give it its own home under `shared_ui/ui/` (outside `base/`) rather than
-duplicating it per feature.
-
-Other rules:
-
-- **Text styling must go through `BaseText`'s factory constructors** — never
-  construct a raw `TextStyle` inline in a feature or base widget.
-- **Extract widgets as classes, not private methods.** A `StatefulWidget`
-  with `Widget _buildFoo() => ...` helper methods should instead be
-  `class _Foo extends StatelessWidget`. Private methods returning widgets
-  don't get their own `Element`/subtree, so Flutter can't skip rebuilding
-  them independently and they lose `const` opportunities.
-- Pages (`@RoutePage()` files) should stay thin: lifecycle glue
-  (`initState`/`dispose`) if `StatefulWidget`, otherwise just composing
-  already-extracted widgets. Push conditionals/styling down into extracted
-  widgets rather than growing the page's own `build()`.
+- **One widget per file**, named after it. Extract widgets as classes, never `_buildX()` methods.
+- Prefer `ConsumerWidget` / `HookConsumerWidget` / `ConsumerStatefulWidget`; use plain `StatelessWidget` when the widget reads no providers. Use `flutter_hooks` for controllers (`useTextEditingController`, `usePageController`).
+- **Design-system widgets** live in `lib/ui/core/ui/base/<category>/` and take plain props only, never a Notifier or `Ref`. Before adding one, check whether an existing widget can take a parameter instead.
+- **Colours, text styles, spacing, radius and motion come from the tokens** in `lib/ui/core/themes/` (`context.colors`, `context.text`, `AppSpacing`, `AppRadius`, `AppMotion`, `AppGradients`). Never write a hex colour, a raw `TextStyle` or a raw font size in a widget. See `docs/design/design_system.md`.
+- Messages use `ToastUtil`, never a `SnackBar`.
+- Widget tiers: one screen → `views/<screen>/widgets/`; several screens of one feature → `<feature>/widgets/`; several features → `lib/ui/core/ui/base/<category>/`. Promote a widget only once a second real consumer needs it.
+- Screens (`@RoutePage()`) stay thin: they listen for messages and compose extracted widgets.
 
 ### Dependency Injection
 
-- Use `@LazySingleton`, `@injectable`, or `@singleton` annotations.
-- **Always** run the build runner after adding or modifying any injectable class, repository implementation, or client:
-  ```bash
-  dart run build_runner build
-  ```
+- `@injectable`, `@lazySingleton`, `@singleton` (`@LazySingleton(as: Contract)` for repository implementations). `AppDatabase`, `AppErrorRecorder` and `ErrorHandler` are registered by hand first in `configureDependencies` because everything depends on them.
+- Run `dart run build_runner build` after changing any injectable class, route or drift table.
 
 ### Data Layer
 
-- Data models implement `DomainConvertible<R>` (`R toDomain()`, see
-  `core/data/models/domain_convertible.dart`); repositories call
-  `.toDomain()` on the fetched model to map it to the domain entity.
-- Use `HttpKeys` (`core/constants/http_keys.dart`) for header names and per-request `Options(extra: ...)` flags (e.g. `HttpKeys.excludeAuth`), never raw strings.
-- Always check connectivity via `ConnectivityClient.isConnected` before making
-  API calls, and pass it to `RepositoryFetcher`.
-- Use `ApiExecutor` for HTTP responses and `RepositoryFetcher.fetchWithFallback(And Map)` for offline-first data flows.
-- **Always** use `SuccessState.nil` as the return value for `FutureVoid`-typed methods that succeed. **NEVER** use `SuccessState(data: null)` or `SuccessState(data: true)`.
-- **Always** use `FutureVoid` (not `FutureBool`) for a method whose result no caller actually reads (only `hasData`/`errorType` matters to the caller). Reserve `FutureBool` for methods where the caller genuinely branches on the returned `bool` (e.g. `checkAuth()`).
-- Import shared typedefs (`FutureData`, `FutureVoid`, `JsonMap`, etc.) from `core/types/types.dart` — there is no `core/utils/type_defs.dart` (removed).
+- **Services** do one kind of I/O each (`local/` drift and key-value, `remote/` HTTP, `platform/` plugins) and wrap every call in `ErrorHandler.execute(..., action:)` or `ApiExecutor.call(..., action:)`. They return DTOs or drift rows.
+- **Repositories** are the only thing ViewModels and use cases talk to. They map DTOs to domain models (`DomainConvertible.toDomain()`, or mapper extensions for drift rows) and return `DataState<T>` (`FutureData`, `FutureList`, `FutureVoid`, `StreamData`).
+- **Use cases** (optional, `lib/domain/use_cases/`) combine several repositories for one flow (e.g. `LoginUseCase`: log in → sync tasks → welcome notification). A flow that only calls one repository doesn't need one.
+- `FutureVoid` methods return `const SuccessState.nil()` on success, never `SuccessState(data: null)`. Use `FutureVoid` (not `FutureBool`) when no caller reads the bool.
+- Check `ConnectivityClient.isConnected` before remote calls; use `RepositoryFetcher` for offline-first reads.
+- Use `HttpKeys` for header names and `Options(extra: ...)` flags, `ApiEndpoints` for paths, `AppConfig` (flavor + `.env`) for base URLs. Never hardcode a URL.
+- Import shared typedefs (`FutureData`, `FutureVoid`, `JsonMap`, ...) from `lib/core/types/types.dart`.
+- **Local database:** schema 1 hasn't shipped, so tables can still change in place. From the first release on, every `schemaVersion` bump gets an explicit `onUpgrade` step and an exported schema snapshot (`dart run drift_dev make-migrations`); never delete exported snapshots. See `docs/core/local_database.md`.
 
 ---
 
-## 5. Project Structure Rules
-
-When creating new features or files, strictly follow this layout:
+## 5. Project Structure
 
 ```
-lib/features/<feature_name>/
-    ├── data/
-    │   ├── data_sources/
-    │   ├── models/
-    │   └── repositories/
-    ├── domain/
-    │   ├── entities/
-    │   ├── repositories/
-    │   └── use_cases/       # optional
-    └── presentation/
-        ├── cubits/
-        ├── pages/
-        └── widgets/
+lib/
+├── config/            # AppConfig (flavors), injector
+├── core/              # app-agnostic: clients (database, http, connectivity), data states,
+│                      # operations, errors, messages, types, utils, app_initializer
+├── data/
+│   ├── models/        # requests/, responses/ (DTOs), local/ (stored JSON), mappers/ (drift rows)
+│   ├── repositories/  # repository implementations
+│   └── services/      # local/, remote/, platform/
+├── domain/
+│   ├── models/        # pure entities
+│   ├── repositories/  # abstract contracts
+│   └── use_cases/     # optional flows over several repositories
+├── routing/           # AppRouter (auto_route) + guards
+└── ui/
+    ├── core/          # providers/ (base, session, settings, ...), themes/, ui/base/, utils/
+    ├── features/<feature>/
+    │   ├── models/    # UI-only models and presentation extensions
+    │   ├── providers/ # Notifiers (ViewModels) + states
+    │   ├── widgets/   # shared by this feature's screens
+    │   └── views/<screen>/
+    │       ├── <screen>_screen.dart
+    │       └── widgets/   # this screen only
+    ├── startup/       # runCleanArchitectureApp, StartupErrorApp
+    └── application.dart
 ```
 
-**When to use Mason instead of writing manually:**
+**When to use Mason instead of writing manually** (see the `scaffolding` skill):
 
-- New feature → `mason make cubit_feature -c config.json`
-- New page + Cubit within an existing feature → `mason make cubit_page -c config.json`
+- New feature (data + domain + UI) → `mason make riverpod_feature -c config.json`
+- New screen + Notifier in an existing feature → `mason make riverpod_view -c config.json`
+- New domain model + DTOs → `mason make domain_data_model -c config.json`
 
 ---
 
 ## 6. Testing Rules
 
-This project **has** a real test suite (`test/`, `testing/`, `patrol_test/`) —
-see [`docs/testing.md`](docs/testing.md) before writing any tests. In short:
+See [`docs/testing/testing.md`](docs/testing/testing.md) before writing tests.
 
-- Unit/widget tests live in `test/`, mirroring `lib/`'s directory structure.
-- **Issue regression tests** are the one exception: they go in
-  `test/regression/`, one `issue_<number>_<short_name>_test.dart` per GitHub
-  issue, tagged `@Tags(['regression'])`. See "Regression tests" in
-  `docs/testing.md`.
-- Mock with `mocktail` (never mockito/generated mocks); shared mocks live in
-  `testing/mocks/`, shared helpers in `testing/helpers/`.
-- Cubit tests use `bloc_test`; widget tests use `patrol_finders`
-  (`patrolWidgetTest`), not the plain `flutter_test` finders.
-- Integration tests live in `patrol_test/` using the Patrol framework.
-- When testing a Cubit that follows the Messages & Navigation pattern above,
-  assert on `state.message` and the returned value/use-case calls — not on a
-  mocked `NavigationClient` call from inside the Cubit (that verification
-  belongs in the **page**'s widget test instead, since navigation now
-  happens there).
-- If test coverage requirements are ambiguous, ask the user rather than
-  inventing a convention.
-- **While a code change is still being iterated on** (the user is reviewing
-  it, asking for tweaks, or follow-up revisions are expected), do **NOT**
-  update or rewrite the affected tests on every pass. Get the implementation
-  validated first, then update the tests in one pass. A self-contained task
-  ("fix this bug and add a test for it") updates tests immediately, as normal.
+- Unit/widget tests live in `test/`, mirroring `lib/`.
+- **Issue regression tests** go in `test/regression/`, one `issue_<number>_<short_name>_test.dart` per GitHub issue, tagged `@Tags(['regression'])`.
+- Mock with `mocktail` (never mockito); shared mocks in `testing/mocks/`, shared helpers in `testing/helpers/`. When adding a testable class, add its mock there.
+- Notifier tests use a `ProviderContainer` (`testing/helpers/provider_container.dart`) with mocks registered in get_it; assert on states and on returned values, not on navigation (that belongs in the screen's widget test).
+- Widget tests use `patrol_finders` (`patrolWidgetTest`), not plain `flutter_test` finders.
+- Integration tests live in `patrol_test/` using Patrol.
+- If coverage requirements are ambiguous, ask the user.
+- Follow the ask-first rule in "Mandatory Rules": run the existing tests to check nothing broke, but don't add or rewrite tests for a change until the user confirms it's final.
 
 ---
 
 ## 7. Code Generation
 
-Whenever routes or injectable registrations change, regenerate code:
-
 ```bash
-dart run build_runner build
-# or, while iterating:
-flutter pub run build_runner watch
+dart run build_runner build   # routes, DI, drift
 ```
 
 ---
 
 ## 8. Available Custom Skills
 
-The following agent skills are available in `.claude/skills/`:
+Skills live in `.claude/skills/` (and `.agents/skills/` for other agents):
 
-- **`codegen`** — Runs `build_runner` code generation.
-- **`scaffolding`** — Uses `mason` to scaffold features and pages.
-- **`api-integration`** — Automates integrating a new API endpoint through the data source → repository → domain layers.
-- **`testing`** — Runs the unit, widget, regression, and Patrol integration test suites.
+- **`codegen`** — runs `build_runner`.
+- **`scaffolding`** — Mason bricks for features, screens and models.
+- **`api-integration`** — adds an API endpoint through service → repository → domain → Notifier.
+- **`testing`** — runs the unit, widget, regression and Patrol suites.
+- **`fresh-start`** — interactively removes the example app (features, tables, repositories, base widgets...) so a new app can start from the foundation, optionally renaming the app and package.
 
-`.claude/workflows/release.md` documents how a release actually reaches
-testers (manual GitHub workflows or fastlane) — consult it before proposing
-or invoking any release step (see the CI/CD section below).
+`.claude/workflows/release.md` documents how a release reaches testers; consult it before proposing or running any release step.
 
 ---
 
 ## 9. CI/CD
 
-- Composite actions in `.github/actions/`: `setup-flutter` (Java 17, pinned
-  Flutter, `pub get`), `create-files` (`.env`, plus Android signing files and
-  `ios/ExportOptions.plist` when their secrets are set) and `flutter-test`
-  (`flutter analyze` + `flutter test`).
-- `.github/workflows/staging_app_distribution.yml` /
-  `production_app_distribution.yml`: **manual-only** (`workflow_dispatch`),
-  with `release_notes`, `skip_tests` and `platform` inputs. Android goes to
-  Firebase App Distribution, iOS to TestFlight; production only runs from
-  `master`. Nothing is distributed on push.
-- `fastlane/Fastfile`: the local alternative (`bundle exec fastlane
-  <android|ios> <staging|production>`), reading the same `RELEASE_NOTES`
-  block from the matching workflow and credentials from `fastlane/.env` +
-  `fastlane/keys/` (both gitignored, never commit them).
-- Keep the pinned Flutter version in `.github/actions/setup-flutter/action.yml`
-  in sync with the version this repo is actually developed against (check
-  `flutter --version` locally before bumping it).
-- See `.claude/workflows/release.md` before proposing or running any release
-  step.
+- Composite actions in `.github/actions/`: `setup-flutter` (Java 21, which the Android Gradle Plugin 9 release lint needs; pinned Flutter, `pub get`), `create-files` (`.env`, plus Android signing files and `ios/ExportOptions.plist` when their secrets are set) and `flutter-test` (`flutter analyze` + `flutter test`).
+- `.github/workflows/staging_app_distribution.yml` / `production_app_distribution.yml`: **manual-only** (`workflow_dispatch`). Android goes to Firebase App Distribution, iOS to TestFlight; production only runs from `master`.
+- `fastlane/Fastfile`: the local alternative (`bundle exec fastlane <android|ios> <staging|production>`), with credentials in `fastlane/.env` + `fastlane/keys/` (both gitignored, never commit them).
+- Keep the pinned Flutter version in `.github/actions/setup-flutter/action.yml` in sync with `flutter --version` locally.
 
 ---
 
-## 10. Code Quality, Analysis & Linting
+## 10. Code Quality
 
-This project strictly follows the linting rules provided by the `leancode_lint` package (configured in `analysis_options.yaml`).
-
-- **Always** ensure your code passes `flutter analyze` with zero issues, and `flutter test` passes, after any code modification/creation in `.dart` files.
-- If you are unsure about a specific rule, refer to the [leancode_lint documentation](https://pub.dev/packages/leancode_lint).
-
-### Verification
-
-```bash
-flutter analyze
-flutter test
-```
+- `flutter analyze` must report zero issues and `flutter test` must pass before a task is done.
+- If unsure about a lint, see the [leancode_lint docs](https://pub.dev/packages/leancode_lint).
 
 ---
 
 ## 11. What NOT to Do
 
-| ❌ Don't                                          | ✅ Do Instead                                                                |
-| -------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Write business logic in pages/widgets              | Put it in a Cubit                                                              |
-| Use relative imports                                | Use `package:clean_architecture/...` imports                                   |
-| Hardcode API URLs                                   | Use `AppConfig` via the flavor system                                          |
-| Use `SnackBar` directly                             | Use `ToastUtil`                                                                |
-| Show a toast or navigate from a Cubit               | Set `BaseState.message` / return a result and let the UI show it or navigate   |
-| Create feature files manually                       | Use `mason make cubit_feature`/`cubit_page`                                    |
-| Use bare `try`/`catch` in data code                 | Use `ErrorHandlerProvider.I.execute`/`executeSafe*`                            |
-| Use `FutureBool` when no caller reads the bool      | Use `FutureVoid` + `SuccessState.nil`                                          |
-| Import `core/utils/type_defs.dart`                  | Import `core/types/types.dart`                                                |
-| Violate `leancode_lint` rules                       | Fix all analysis issues                                                       |
-| Skip analysis/tests after changes                   | Run `flutter analyze` and `flutter test`                                       |
-| Call a use case/repository from a widget            | Route it through a Cubit                                                      |
-| Hardcode a `TextStyle` in a widget                  | Use `BaseText`'s factories                                                    |
-| Extract a widget as a private `_buildX()` method    | Extract it as its own widget class                                            |
-| Assign private fields in an initializer list        | Use primary-constructor private params (`required final Bar _bar`)            |
-| Hardcode header names / request flags              | Use `HttpKeys`                                                                |
-| Commit `fastlane/.env` or `fastlane/keys/`          | Keep them local (gitignored); CI uses GitHub secrets                          |
+| ❌ Don't | ✅ Do instead |
+| --- | --- |
+| Business logic in Views/widgets | Notifier / use case / repository |
+| Call a service, dio or drift from a Notifier | Go through a repository |
+| Relative imports | `package:clean_architecture/...` |
+| Import `*_mobile.dart` / `*_web.dart` | Import the facade |
+| Hex colours, raw `TextStyle`s or font sizes in widgets | Theme tokens (`context.colors`, `context.text`, `AppSpacing`) |
+| Hard-coded user-facing text | `lib/core/messages/app_messages.dart` |
+| `SnackBar` | `ToastUtil` with a `StateMessage` |
+| Notifier shows a toast, opens a dialog or navigates | Set state / return a result; the View reacts |
+| Bare `try/catch` in data code | `ErrorHandler.execute(..., action:)` / `ApiExecutor` |
+| `ErrorMessage(...)` for a failure in a Notifier | `trackFailure(result)` / `trackError(text)` inside `runFlow` |
+| `copyWith` keeping the old `message` | `message: message` |
+| `_buildX()` widget methods | A widget class in its own file |
+| Hardcode API URLs or header names | `AppConfig`, `ApiEndpoints`, `HttpKeys` |
+| `FutureBool` when no caller reads the bool | `FutureVoid` + `const SuccessState.nil()` |
+| Hand-edit generated files | Change the source and regenerate |
+| Write docs/tests before the user confirms a change | Ask first, then do both in one pass |
+| Commit `.env`, `fastlane/.env` or `fastlane/keys/` | Keep them local; CI uses GitHub secrets |

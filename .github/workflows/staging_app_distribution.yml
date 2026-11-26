@@ -53,7 +53,6 @@ jobs:
           base_production: ${{ secrets.BASE_PRODUCTION_URL }}
           base_development: ${{ secrets.BASE_DEVELOPMENT_URL }}
           base_staging: ${{ secrets.BASE_STAGING_URL }}
-          encryption_key: ${{ secrets.ENCRYPTION_KEY }}
           android_keystore_file: ${{ secrets.ANDROID_KEYSTORE_FILE }}
           android_key_properties_file: ${{ secrets.ANDROID_KEY_PROPERTIES_FILE }}
 
@@ -100,7 +99,6 @@ jobs:
           base_production: ${{ secrets.BASE_PRODUCTION_URL }}
           base_development: ${{ secrets.BASE_DEVELOPMENT_URL }}
           base_staging: ${{ secrets.BASE_STAGING_URL }}
-          encryption_key: ${{ secrets.ENCRYPTION_KEY }}
           apple_team_id: ${{ secrets.APPLE_TEAM_ID }}
           ios_bundle_id: ${{ secrets.APPLE_IOS_STAGING_BUNDLE_ID }}
           ios_provisioning_profile_name: ${{ secrets.APPLE_STAGING_PROVISIONING_PROFILE_NAME }}
