@@ -30,8 +30,23 @@ A collection of essential and frequently used Flutter commands to boost your pro
 
 - ✅ `dart pub get`: Fetch project dependencies.
 - ✅ `flutter pub get`: Get project dependencies.
-- ✅ `flutter pub upgrade`: Upgrade dependencies to their latest compatible versions.
-- ✅ `flutter pub upgrade --major-versions`: Upgrade dependencies to their latest major versions.
+- ✅ `flutter pub upgrade`: Upgrade all dependencies to the newest versions `pubspec.yaml` allows (changes only `pubspec.lock`).
+- ✅ `flutter pub upgrade --dry-run`: Preview what would change without changing anything.
+- ✅ `flutter pub upgrade --tighten`: Upgrade and raise `pubspec.yaml` lower bounds to the resolved versions.
+- ✅ `flutter pub upgrade --major-versions`: Upgrade to the latest resolvable versions, including breaking majors, and update `pubspec.yaml`.
+- ✅ `flutter pub upgrade --offline`: Upgrade using only cached packages.
+
+### Upgrade Specific Packages
+
+- ✅ `flutter pub upgrade foo bar`: Upgrade only the named packages.
+- ✅ `flutter pub upgrade foo --unlock-transitive`: Also upgrade the named package's transitive dependencies.
+- ✅ `flutter pub upgrade foo@^1.2.3`: Upgrade within a constraint (same syntax as `pubspec.yaml`).
+- ✅ `flutter pub upgrade foo@1.2.3`: Upgrade to an exact version.
+- ✅ `flutter pub upgrade 'foo@>=1.2.0 <2.0.0'`: Upgrade within a range (quote it when using `<`, `>` or spaces).
+- ✅ `flutter pub upgrade foo@latest`: Upgrade to the latest published version, even if breaking.
+- ✅ `flutter pub upgrade foo@resolvable`: Upgrade to the newest version that resolves with the other dependencies.
+
+> Packages that `flutter pub outdated` lists as behind but not "Resolvable" are held back by other packages that depend on them (or by the Flutter SDK), not by your `pubspec.yaml`, so `--major-versions` won't move them. See https://dart.dev/tools/pub/cmd/pub-upgrade.
 
 ### Add or Remove Dependencies
 
