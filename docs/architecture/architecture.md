@@ -180,7 +180,7 @@ The local table is the source of truth: screens watch drift streams, so a change
 | Area | Doc |
 | --- | --- |
 | Startup | [App Startup](app_startup.md) |
-| SDK, lints, flavors, codegen, releases | [Development](development.md) |
+| SDK, lints, flavors, codegen, app icon and splash, releases | [Development](development.md) |
 | Look and feel | [Design System](../design/design_system.md) |
 | Routing and guards | [Routing](../core/routing.md) |
 | HTTP, auth tokens, connectivity | [Networking](../core/networking.md) |
@@ -189,4 +189,4 @@ The local table is the source of truth: screens watch drift streams, so a change
 | Database | [Local Database](../core/local_database.md) |
 | Example features | [Auth & Onboarding](../features/auth.md), [Tasks](../features/todos.md), [Inbox](../features/notifications.md), [Profile](../features/profile.md), [Settings](../features/settings.md) |
 | Tests | [Testing](../testing/testing.md) |
-| General guides | [SOLID](../guides/solid_principles.md), [Flutter Tips](../guides/flutter_tips.md), [Flutter Commands](../guides/flutter_commands_cheat_sheet.md), [Configuration](../guides/flutter_configuration_guidelines.md), [Git](../guides/git_commands_cheat_sheet.md), [Docker](../guides/docker_commands.md) |
+| General guides | [SOLID](../guides/solid_principles.md), [Flutter Tips](../guides/flutter_tips.md), [Flutter Commands](../guides/flutter_commands_cheat_sheet.md), [Configuration](../guides/flutter_configuration_guidelines.md), [Git](../guides/git_commands_cheat_sheet.md) |

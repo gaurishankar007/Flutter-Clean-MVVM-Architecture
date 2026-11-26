@@ -11,7 +11,7 @@ At the heart of Flutter's performance is its rendering pipeline, which revolves 
 Flutter doesn't just have one tree, but three that work together.
 
 - **Widget Tree**: This is the blueprint you create in your code. It's a lightweight, immutable description of the UI's configuration. Because widgets are just configuration and cheap to create, they can be rebuilt frequently without a major performance hit.
-- **Element Tree**: This is the manager. For every widget in the widget tree, Flutter creates a mutable Element.The Element tree manages the lifecycle of widgets and holds the reference to both the widget and the render object. It is the crucial bridge that decides whether to reuse, update, or create new components. The `BuildContext` you use in `build` methods is actually a reference to an element.
+- **Element Tree**: This is the manager. For every widget in the widget tree, Flutter creates a mutable Element. The Element tree manages the lifecycle of widgets and holds the reference to both the widget and the render object. It is the crucial bridge that decides whether to reuse, update, or create new components. The `BuildContext` you use in `build` methods is actually a reference to an element.
 - **RenderObject Tree**: This is the workhorse responsible for the actual layout, painting (drawing), and hit-testing (handling touch events). RenderObjects are expensive to create, so Flutter's architecture is designed to reuse them as much as possible.
 
 ### Rebuild vs. Repaint
@@ -67,7 +67,7 @@ Follow these guidelines to keep your app fast and your codebase clean.
 
 - **Use `ValueKey` for list items:** When building lists (for example with `ListView.builder`), give each item a stable key such as `ValueKey(item.id)` to preserve widget identity across updates, reorders, or insertions/removals. This reduces unnecessary rebuilds/repaints and preserves the state of stateful child widgets. Avoid non-unique or mutable keys (for example index-based keys) — prefer stable identifiers that reflect the item's identity.
 
-- **Avoid Methods that Return Widgets**: Prefer creating a separate `StatelessWidget` over a method that returns a widget. While methods can be acceptable for simple, stateless widget compositions, they should never be used to return a `StatefulWidget`. Doing so causes state loss and inefficient rebuilds because.
+- **Avoid Methods that Return Widgets**: Prefer creating a separate `StatelessWidget` over a method that returns a widget. While methods can be acceptable for simple, stateless widget compositions, they should never be used to return a `StatefulWidget`. A helper method is re-run on every parent rebuild and gives Flutter no separate element to diff, which causes state loss and inefficient rebuilds.
 
 ## Web Configurations
 
@@ -87,6 +87,18 @@ Follow these guidelines to keep your app fast and your codebase clean.
 
 - **Consistent Drag Scrolling**: By default, mouse dragging to scroll is disabled on Flutter Web. To enable it and ensure widgets like `RefreshIndicator` work as they do on mobile, update the `scrollBehavior` in your `MaterialApp`:
 
+```dart
+class AppScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {...PointerDeviceKind.values};
+}
+
+MaterialApp.router(
+  scrollBehavior: AppScrollBehavior(),
+  // ...
+);
+```
+
 ## Offline Storage Strategies
 
 Effective offline storage ensures a smooth user experience, even with intermittent connectivity.
@@ -101,7 +113,7 @@ This is a common technique to decide whether to update local data.
 
 - Store a `lastUpdated` timestamp with local data to determine if a server fetch is needed.
 
-- **How it works**: When you save data from the server to your local database (e.g., SQLite, Hive), store a `lastUpdated` timestamp alongside it.
+- **How it works**: When you save data from the server to your local database (e.g., drift/SQLite), store a `lastUpdated` timestamp alongside it.
 - **On next fetch**: Before making a network call, check the timestamp of your local data. You can then decide whether the data is fresh enough or if you need to fetch updates from the server. The server response can also include a timestamp, allowing for a direct comparison.
 
 #### Cache Expiration and Cleanup

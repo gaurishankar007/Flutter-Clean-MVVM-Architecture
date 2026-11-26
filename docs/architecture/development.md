@@ -44,6 +44,22 @@ Regenerate after changing a route, an injectable class or a drift table. injecta
 
 Mason bricks in `bricks/` (`riverpod_feature`, `riverpod_view`, `domain_data_model`) generate files in this layout. See the `scaffolding` skill (`.claude/skills/scaffolding/SKILL.md`).
 
+## App Icon and Splash
+
+Sources live in `assets/icon/`; the `flutter_launcher_icons` and `flutter_native_splash` configs are at the bottom of `pubspec.yaml` (both are dev dependencies). What each image is for: [Design System](../design/design_system.md#app-icon-and-splash).
+
+```bash
+dart run flutter_launcher_icons          # Android (adaptive + themed), iOS, Web icons
+dart run flutter_native_splash:create    # native splash: Android (incl. 12+), iOS, Web
+```
+
+Run the first after changing any icon image, the second after changing the splash images or colours. Both overwrite generated platform files (mipmaps, drawables, `AppIcon.appiconset`, `LaunchImage`, `web/icons/`, `web/splash/`, `web/index.html`), so commit their output.
+
+Before committing, check `git diff ios/` for two known side effects and revert them:
+
+- `flutter_launcher_icons` rewrites `ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES` to `AppIcon` in `ios/Runner.xcodeproj/project.pbxproj` (`git checkout ios/Runner.xcodeproj/project.pbxproj`).
+- `flutter_native_splash` re-indents all of `ios/Runner/Info.plist` to add `UIStatusBarHidden = false`, which is already the default (`git checkout ios/Runner/Info.plist`).
+
 ## Web
 
 drift runs on web through `web/sqlite3.wasm` and `web/drift_worker.js` (shipped with the app). Keep them in sync with the `sqlite3`/`drift` package versions when you upgrade drift (download them from the matching drift and sqlite3 releases).

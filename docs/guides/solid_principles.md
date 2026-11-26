@@ -39,17 +39,17 @@ Separate each responsibility into its own class.
 
 ```dart
 // Handles authentication logic
-abstract class IAuthService {
+abstract class AuthService {
   Future<User> authenticateUser(String email, String password);
 }
 
 // Handles user profile data
-abstract class IProfileRepository {
+abstract class ProfileRepository {
   Future<Profile> fetchUserProfile(String userId);
 }
 
 // Handles local caching
-abstract class IUserCache {
+abstract class UserCache {
   Future<void> saveUser(User user);
 }
 ```
@@ -151,7 +151,7 @@ class ReadOnlyLocalStorage extends Storage {
   @override
   void save(Document doc) {
     // This violates the contract. A read-only storage cannot save.
-    throw UnsupportedError("This storage is read-only!");
+    throw UnsupportedError('This storage is read-only!');
   }
 
   @override
@@ -207,13 +207,13 @@ Imagine a generic `Worker` interface for different types of workers in a system.
 A single, large interface forces all implementers to define methods they may not need.
 
 ```dart
-abstract class IWorker {
+abstract class Worker {
   void work();
   void eat();
   void sleep();
 }
 
-class HumanWorker implements IWorker {
+class HumanWorker implements Worker {
   @override
   void work() { /* ... */ }
   @override
@@ -222,7 +222,7 @@ class HumanWorker implements IWorker {
   void sleep() { /* ... */ }
 }
 
-class RobotWorker implements IWorker {
+class RobotWorker implements Worker {
   @override
   void work() { /* ... */ }
 

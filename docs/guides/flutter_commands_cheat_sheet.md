@@ -54,17 +54,18 @@ A collection of essential and frequently used Flutter commands to boost your pro
 
 ### Run Tests
 
-- ✅ `flutter test`: Run tests.
-- ✅ `flutter test integration_test`: Perform integration tests.
+- ✅ `flutter test`: Run unit and widget tests.
+- ✅ `flutter test --tags regression`: Run only the issue regression tests.
+- ✅ `flutter test --exclude-tags regression`: Run everything except the regression tests.
 - ✅ `flutter test --coverage`: Generate test coverage reports.
+- ✅ `patrol test --target patrol_test/todo_flow_test.dart`: Run a Patrol integration test on a device or simulator.
 
 ---
 
 ## 5. Code Generation (Build Runner)
 
-- ✅ `dart run build_runner build --delete-conflicting-outputs`: Build generated files.
-- ✅ `dart run build_runner watch --delete-conflicting-outputs`: Watch for changes and rebuild files.
-- ✅ `dart run pigeon --input <path to the pigeon configuration file>`: Generate pigeon files.
+- ✅ `dart run build_runner build`: Build generated files (routes, DI, drift).
+- ✅ `dart run build_runner watch`: Watch for changes and rebuild files.
 
 ---
 
@@ -85,7 +86,10 @@ A collection of essential and frequently used Flutter commands to boost your pro
 
 ### Flavors
 
-- ✅ `flutter run --flavor production --target lib/main_prod.dart`: Run with "production" flavor.
+- ✅ `flutter run --flavor development -t lib/main_dev.dart`: Run the "development" flavor.
+- ✅ `flutter run --flavor staging -t lib/main_stg.dart`: Run the "staging" flavor.
+- ✅ `flutter run --flavor production -t lib/main.dart`: Run the "production" flavor.
+- ✅ `flutter run -d chrome -t lib/main_dev.dart`: Run on Web. Web has no flavors, so pass `-t` only.
 
 ### Web Options
 
@@ -97,41 +101,39 @@ A collection of essential and frequently used Flutter commands to boost your pro
 
 ### Build for Platforms
 
-- ✅ `flutter build apk --release`: Build a release APK.
-- ✅ `flutter build appbundle --release`: Build an app bundle for Play Store uploads.
-- ✅ `flutter build ios --release`: Build a release version of the iOS app.
-- ✅ `flutter build web`: Build a web app.
-- ✅ `flutter build windows`: Build a Windows executable.
+- ✅ `flutter build apk --release --flavor staging -t lib/main_stg.dart`: Build a release APK of the "staging" flavor.
+- ✅ `flutter build appbundle --release --flavor production -t lib/main.dart`: Build a "production" app bundle for Play Store uploads.
+- ✅ `flutter build ipa --release --flavor production -t lib/main.dart`: Build a "production" iOS archive.
+- ✅ `flutter build web -t lib/main.dart`: Build the web app.
 
 ### Analyze Build Size
 
-- ✅ `flutter build apk --analyze-size`: Analyze APK size.
-- ✅ `flutter build appbundle --analyze-size`: Analyze app bundle size.
-- ✅ `flutter build ios --analyze-size`: Analyze iOS app size.
+- ✅ `flutter build apk --flavor production -t lib/main.dart --analyze-size`: Analyze APK size.
+- ✅ `flutter build appbundle --flavor production -t lib/main.dart --analyze-size`: Analyze app bundle size.
+- ✅ `flutter build ios --flavor production -t lib/main.dart --analyze-size`: Analyze iOS app size.
 
 ---
 
-## 8. Localization
+## 8. Distribution (fastlane)
 
-- ✅ `flutter gen-l10n`: Generate localization files.
+Credentials live in `fastlane/.env` and `fastlane/keys/` (both gitignored). See `.claude/workflows/release.md` before releasing.
 
----
-
-## 9. Shorebird Commands
-
-- ✅ `shorebird doctor`: Check Shorebird setup.
-- ✅ `shorebird login`: Log in to Shorebird.
-- ✅ `shorebird release android/ios`: Release the app to Shorebird.
+- ✅ `bundle install`: Install fastlane and its plugins.
+- ✅ `bundle exec fastlane android staging`: Build "staging" and upload it to Firebase App Distribution.
+- ✅ `bundle exec fastlane ios staging`: Build "staging" and upload it to TestFlight.
+- ✅ `bundle exec fastlane <android|ios> production`: The same for "production".
 
 ---
 
-## 10. Mason CLI
+## 9. Mason CLI
 
-- ✅ `mason init`: Initialize a Mason project.
-- ✅ `mason make <brick_name>`: Generate a template from a brick.
+- ✅ `mason get`: Fetch the bricks listed in `mason.yaml`.
+- ✅ `mason make riverpod_feature -c config.json`: Scaffold a feature (data + domain + UI).
+- ✅ `mason make riverpod_view -c config.json`: Scaffold a screen + Notifier in an existing feature.
+- ✅ `mason make domain_data_model -c config.json`: Scaffold a domain model + DTOs.
 
 ---
 
-## 11. Android Release Essentials
+## 10. Android Release Essentials
 
 - ✅ `keytool -genkey -v -keystore upload-keystore.jks`: Generate a keystore file.

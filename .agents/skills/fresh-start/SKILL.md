@@ -42,7 +42,8 @@ domain code listed in "Module map" below):
 
 - Auth (`auth` + session) — login, session storage, token refresh, route
   guards. Removing it makes every screen public.
-- Splash (`startup`) — removing it makes the home shell (or the first kept
+- Splash (`startup`) — the in-app splash screen (not the native launch
+  splash, see Round 3). Removing it makes the home shell (or the first kept
   screen) the initial route.
 - Home shell (`home`) — the bottom bar / sidebar. Removing it means a single
   home screen.
@@ -62,6 +63,11 @@ domain code listed in "Module map" below):
   the new primary/gradient colours and font families, then update
   `app_colors.dart`, `app_gradients.dart`, `app_typography.dart`,
   `pubspec.yaml` fonts and `docs/design/design_system.md`).
+- App icon and native splash: keep the to-do checkbox icon, or **replace**
+  (ask for the user's art: a 1024×1024 icon, plus the adaptive background /
+  foreground and monochrome layers if they have them; see "App icon and
+  splash" below). If the design tokens are replaced, the splash and web
+  manifest colours change with them either way.
 - Demo backend: keep DummyJSON, or **replace** with the user's base URLs
   (update `AppConfig.demoBaseUrl`, `.env` and `.env.example`, remove the demo
   account card and `AuthMessages.demoHint/useDemo`).
@@ -105,7 +111,7 @@ public").
    "home", "view": "home"}` and run `mason make riverpod_view -c config.json`
    (see the `scaffolding` skill), route it as `initial: true`.
 7. **Base widgets:** delete the unused categories the user chose.
-8. **Replace** choices (tokens, backend, identity) as answered.
+8. **Replace** choices (tokens, backend, identity, icon) as answered.
 9. `dart run build_runner build --delete-conflicting-outputs`,
    `dart fix --apply`, `dart format lib test testing patrol_test`.
 10. `flutter analyze` (zero issues) and `flutter test`. Fix what breaks;
@@ -115,6 +121,28 @@ public").
     project identity in `CLAUDE.md` + `.agents/AGENTS.md` (name, package,
     what the app is). Update `patrol_test/` to a test that matches what's left
     (or delete it and say so).
+
+## App icon and splash
+
+Sources are in `assets/icon/`, configs at the bottom of `pubspec.yaml`
+(`flutter_launcher_icons`, `flutter_native_splash`). Sizes and roles:
+`docs/design/design_system.md#app-icon-and-splash`.
+
+- **Replace:** put the user's images in `assets/icon/` under the same file
+  names (`app_icon.png`, `app_icon_background.png`, `app_icon_foreground.png`,
+  `app_icon_monochrome.png`, `splash.png`, `splash_android12.png`). If they
+  only have one icon image, use it for `app_icon.png` and `splash.png`, drop
+  the `adaptive_icon_*` lines and the `android_12: image:` line from the
+  configs, and tell them which layers are still missing.
+- **New tokens:** set `color` / `color_dark` (both places) in
+  `flutter_native_splash` to the new light/dark `background` tokens, and the
+  `web:` `background_color` / `theme_color` in `flutter_launcher_icons`.
+- Then run `dart run flutter_launcher_icons` and
+  `dart run flutter_native_splash:create`, and revert the two iOS side
+  effects listed in `docs/architecture/development.md#app-icon-and-splash`
+  (`project.pbxproj`, `Info.plist`).
+- A bundle id change doesn't need a regeneration; a new platform added with
+  `flutter create` does.
 
 ## Module map
 
@@ -154,6 +182,6 @@ bricks, skills, CI and docs structure.
 ## 5. Report
 
 List what was removed, replaced and kept, the branch name, analyze/test
-results, and anything the user still has to do by hand (e.g. regenerate app
-icons, set new GitHub secrets, run `flutter create .` for platforms after a
+results, and anything the user still has to do by hand (e.g. supply the
+missing icon layers, set new GitHub secrets, run `flutter create .` for platforms after a
 bundle id change). Don't commit unless the user asks.
