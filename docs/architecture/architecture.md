@@ -180,7 +180,7 @@ The local table is the source of truth: screens watch drift streams, so a change
 | Area | Doc |
 | --- | --- |
 | Startup | [App Startup](app_startup.md) |
-| SDK, lints, flavors, codegen, releases | [Development](development.md) |
+| SDK, lints, flavors, codegen, app icon and splash, releases | [Development](development.md) |
 | Look and feel | [Design System](../design/design_system.md) |
 | Routing and guards | [Routing](../core/routing.md) |
 | HTTP, auth tokens, connectivity | [Networking](../core/networking.md) |

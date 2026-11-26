@@ -80,6 +80,13 @@ Use `copyWith(color: ...)` on a token style; never construct a raw `TextStyle`. 
 
 Material Symbols **Rounded** (`material_symbols_icons`, `Symbols.*_rounded`), filled for the selected state. Sizes 20 inline, 24 default. Icon-only buttons always have a label (tooltip + semantics) from the message catalog.
 
+## App Icon and Splash
+
+- **App icon:** a clay-style checkbox with a white check on the Aurora gradient. Sources in `assets/icon/` (1024×1024): `app_icon.png` (iOS, Android legacy, Web), `app_icon_background.png` + `app_icon_foreground.png` (Android adaptive, `adaptive_icon_foreground_inset: 0`, so the foreground art itself stays inside the central 66% safe zone), `app_icon_monochrome.png` (Android 13+ themed icon: one flat colour, with a gap cut around the check so it still reads).
+- **Native splash:** shows `assets/icon/splash.png` (768×768, the rounded icon) on the `background` colour, `#F7F7FB` light / `#0B0B12` dark. Android 12+ uses `splash_android12.png` (1152×1152; the system masks a centred circle 2/3 that size, so the art sits inside it). Web gets the same splash in `web/index.html`. The web manifest uses `#F7F7FB` / `#6A4CF5` (Aurora violet).
+- The native splash is separate from the in-app `Splash` screen (`ui/features/startup/`), which takes over once Flutter draws its first frame.
+- If the `background` tokens or the Aurora colours change, update the hex values in the `flutter_launcher_icons` (web) and `flutter_native_splash` configs in `pubspec.yaml` to match, then regenerate: see [Development](../architecture/development.md#app-icon-and-splash).
+
 ## Layout and Navigation
 
 | Width | Layout |

@@ -240,7 +240,7 @@ Builds reach testers through [Firebase App Distribution](https://firebase.google
 | --- | --- |
 | Architecture, layers, data flow, docs map | [architecture.md](docs/architecture/architecture.md) |
 | Startup sequence | [app_startup.md](docs/architecture/app_startup.md) |
-| SDK, flavors, lints, codegen, web | [development.md](docs/architecture/development.md) |
+| SDK, flavors, lints, codegen, app icon and splash, web | [development.md](docs/architecture/development.md) |
 | Design system | [design_system.md](docs/design/design_system.md) |
 | Errors, messages, routing, networking, database | [docs/core/](docs/core/) |
 | Example features | [docs/features/](docs/features/) |
