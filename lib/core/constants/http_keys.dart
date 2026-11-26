@@ -1,13 +1,9 @@
-/// Keys used when building or intercepting HTTP requests, instead of raw
-/// string literals.
+/// Header names and per-request `Options.extra` flags.
 abstract final class HttpKeys {
-  // Per-request `Options(extra: {...})` flags read by `HttpAuthInterceptor`.
-
-  /// Skips attaching the Authorization header to the request.
-  static const excludeAuth = 'excludeAuth';
-
-  // HTTP header names.
-
   static const authorization = 'Authorization';
   static const contentType = 'Content-Type';
+  static const applicationJson = 'application/json';
+
+  /// `Options(extra: {HttpKeys.excludeAuth: true})` skips the bearer token.
+  static const excludeAuth = 'excludeAuth';
 }

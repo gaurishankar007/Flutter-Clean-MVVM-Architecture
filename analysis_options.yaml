@@ -10,14 +10,21 @@ linter:
     avoid_void_async: true
     always_put_control_body_on_new_line: true
     prefer_single_quotes: true
+    unnecessary_lambdas: true
     use_declaring_parameters: true
+    unnecessary_primary_constructor_body: true
+    use_null_aware_elements: true
+    future_sync_value: true
     # Off: it flags every constructor-less class (`class Foo()` adds nothing).
     use_primary_constructors: false
 
 analyzer:
   exclude:
-    - bricks**
+    - bricks/**
     - build/**
     - android/**
     - ios/**
     - web/**
+    - lib/**/*.g.dart
+    - lib/**/*.gr.dart
+    - lib/**/*.config.dart

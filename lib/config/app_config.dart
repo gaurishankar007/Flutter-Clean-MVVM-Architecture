@@ -8,20 +8,22 @@ abstract final class Flavor {
   static const development = 'development';
 }
 
-/// App configuration for different app flavors.
+/// Per-flavor configuration. Base URLs come from `.env` (see `.env.example`);
+/// the fallback is the public demo backend the example features use.
 sealed class const AppConfig({
   required final String appTitle,
   required final String apiBaseUrl,
   required final String flavor,
-});
+}) {
+  static const demoBaseUrl = 'https://dummyjson.com/';
+}
 
 @LazySingleton(as: AppConfig, env: [Flavor.production])
 final class AppConfigProd() extends AppConfig {
   this
     : super(
-        appTitle: 'Clean Architecture App',
-        apiBaseUrl:
-            dotenv.maybeGet('BASE_PRODUCTION') ?? 'https://development.com.np/',
+        appTitle: 'Clean Architecture',
+        apiBaseUrl: dotenv.maybeGet('BASE_PRODUCTION') ?? AppConfig.demoBaseUrl,
         flavor: Flavor.production,
       );
 }
@@ -30,9 +32,8 @@ final class AppConfigProd() extends AppConfig {
 final class AppConfigStg() extends AppConfig {
   this
     : super(
-        appTitle: 'Clean Architecture App Staging',
-        apiBaseUrl:
-            dotenv.maybeGet('BASE_STAGING') ?? 'https://development.com.np/',
+        appTitle: 'Clean Architecture STG',
+        apiBaseUrl: dotenv.maybeGet('BASE_STAGING') ?? AppConfig.demoBaseUrl,
         flavor: Flavor.staging,
       );
 }
@@ -41,16 +42,14 @@ final class AppConfigStg() extends AppConfig {
 final class AppConfigDev() extends AppConfig {
   this
     : super(
-        appTitle: 'Clean Architecture App Development',
+        appTitle: 'Clean Architecture DEV',
         apiBaseUrl:
-            dotenv.maybeGet('BASE_DEVELOPMENT') ??
-            'https://development.com.np/',
+            dotenv.maybeGet('BASE_DEVELOPMENT') ?? AppConfig.demoBaseUrl,
         flavor: Flavor.development,
       );
 }
 
-/// A util class for accessing [AppConfig]
+/// Access to the registered [AppConfig].
 abstract final class AppConfigUtil {
-  /// Returns the registered instance of [AppConfig] which is always the same.
   static AppConfig get I => GetIt.I<AppConfig>();
 }

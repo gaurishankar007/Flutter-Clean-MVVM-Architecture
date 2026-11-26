@@ -1,44 +1,114 @@
 part of 'data_state.dart';
 
-const String kCustomerSupport = 'Please contact our customer support.';
-const String kErrorMessage = 'Unexpected error occurred. $kCustomerSupport';
-const String kCheckInternet = 'Please check your internet and try again.';
-const String kNoInternet = 'No internet access. Please try again later.';
+/// A failed operation. [message] defaults to [CommonMessages.genericError].
+final class const FailureState<T>({
+  String? message,
+  super.error,
+  super.origin,
+  super.extra,
 
-/// A failure data state when error occurs
-final class const FailureState<T>({String? message, super.error, super.extra})
-    extends DataState<T> {
-  this : super(message: message ?? kErrorMessage, hasError: true);
+  /// The labelled levels the failure passed through, outermost first
+  /// (`['todos.save', 'todo.local.upsert']`). Kept out of equality.
+  final List<String> actionPath = const [],
 
-  /// A failure data state when invalid data is provided to the server
+  /// Where the failure happened. Kept out of equality.
+  final StackTrace? stackTrace,
+
+  /// The error log entry `ErrorHandler` recorded this failure under, so
+  /// `trackFailure` marks it shown instead of adding a duplicate.
+  final String? errorId,
+}) extends DataState<T> {
+  this : super(message: message ?? CommonMessages.genericError, hasError: true);
+
+  /// The server rejected the request's data.
   factory badRequest({String? message, String? error, dynamic extra}) =>
       FailureState(
-        message: message ?? 'Bad client request. Please try again',
+        message: message ?? CommonMessages.badRequest,
         error: error,
+        origin: .remote,
         extra: extra,
       );
 
-  /// A failure data state when the user's token is expired
+  /// The session's token expired and couldn't be refreshed.
   factory tokenExpired() =>
-      const FailureState(message: 'Token expired, login again.');
+      const FailureState(message: CommonMessages.tokenExpired, origin: .remote);
 
-  /// A failure data state when the response of the server is invalid
+  /// The server answered with something we can't read.
   factory badResponse({String? message, String? error, dynamic extra}) =>
       FailureState(
-        message: message ?? 'Bad server response.',
+        message: message ?? CommonMessages.badResponse,
         error: error,
+        origin: .remote,
         extra: extra,
       );
 
-  /// A failure data state when error occurs in the server
+  /// The server failed.
   factory serverError({String? message, String? error, dynamic extra}) =>
       FailureState(
-        message: message ?? 'Server error occurred. $kCustomerSupport',
+        message: message ?? CommonMessages.serverError,
         error: error,
+        origin: .remote,
         extra: extra,
       );
 
-  /// A failure data state when there is no internet access
-  factory noInternet() =>
-      const FailureState(message: kNoInternet, error: kNoInternet);
+  /// No internet. `origin: .remote` is load-bearing: the UI uses it to tell
+  /// an offline failure from a local one.
+  factory noInternet({String? action}) => FailureState(
+    message: CommonMessages.noInternet,
+    error: CommonMessages.noInternet,
+    origin: .remote,
+    actionPath: [?action],
+  );
+
+  /// Adds [action] as the outermost level, unless it's null or already there.
+  FailureState<T> withAction(String? action) {
+    if (action == null || actionPath.firstOrNull == action) {
+      return this;
+    }
+    return _copyWith(actionPath: [action, ...actionPath]);
+  }
+
+  /// Keeps an existing trace: it's closer to where the failure happened.
+  FailureState<T> withStackTrace(StackTrace? stackTrace) {
+    if (stackTrace == null || this.stackTrace != null) {
+      return this;
+    }
+    return _copyWith(stackTrace: stackTrace);
+  }
+
+  /// This failure typed for another result, keeping every field.
+  FailureState<R> retype<R>() => FailureState<R>(
+    message: message,
+    error: error,
+    origin: origin,
+    extra: extra,
+    actionPath: actionPath,
+    stackTrace: stackTrace,
+    errorId: errorId,
+  );
+
+  FailureState<T> withErrorId(String errorId) => _copyWith(errorId: errorId);
+
+  /// A clearer user-facing [message]; skipped when null.
+  FailureState<T> withMessage(String? message) {
+    if (message == null) {
+      return this;
+    }
+    return _copyWith(message: message);
+  }
+
+  FailureState<T> _copyWith({
+    String? message,
+    List<String>? actionPath,
+    StackTrace? stackTrace,
+    String? errorId,
+  }) => FailureState<T>(
+    message: message ?? this.message,
+    error: error,
+    origin: origin,
+    extra: extra,
+    actionPath: actionPath ?? this.actionPath,
+    stackTrace: stackTrace ?? this.stackTrace,
+    errorId: errorId ?? this.errorId,
+  );
 }

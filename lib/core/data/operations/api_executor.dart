@@ -3,110 +3,55 @@ import 'package:clean_architecture/core/errors/error_handler.dart';
 import 'package:clean_architecture/core/types/types.dart';
 import 'package:dio/dio.dart';
 
-/// A dedicated executor for API operations, providing safe execution of
-/// HTTP requests, standard response normalization, and error mapping.
+/// Runs an HTTP request inside `ErrorHandler.execute` and parses the body.
 abstract final class ApiExecutor {
-  /// Executes a request and parses the response into [T].
-  ///
-  /// Use [fromJson] to deserialize the data. If [isStandardResponse] is true,
-  /// it extracts the payload from [responseDataKey] before parsing.
+  /// Parses the response into [T] with [fromJson] (a JSON object, or each
+  /// item of a JSON list). [dataKey] reads the payload from that key of the
+  /// body (`{"todos": [...]}`); null uses the whole body.
   static FutureData<T> call<T, R>(
     Future<Response<dynamic>> Function() request, {
+    required String action,
     R Function(JsonMap json)? fromJson,
-    bool isStandardResponse = true,
-    String responseDataKey = 'data',
-  }) {
-    return ErrorHandlerProvider.I.execute(() async {
-      final response = await request();
-      dynamic rawData = response.data;
-      String? responseMessage;
+    String? dataKey,
+  }) => ErrorHandlerProvider.I.execute(() async {
+    final response = await request();
+    dynamic body = response.data;
 
-      FailureState<T> failure(String error) =>
-          FailureState.badResponse(error: error, extra: response);
-      SuccessState<T> success(T data) =>
-          SuccessState(data: data, message: responseMessage, extra: response);
+    FailureState<T> failure(String error) =>
+        FailureState.badResponse(error: '$action: $error');
 
-      // 1. Get message from the response if provided
-      if (rawData case {'message': final String? message}) {
-        responseMessage = message;
+    if (dataKey != null) {
+      if (body case final JsonMap map when map.containsKey(dataKey)) {
+        body = map[dataKey];
+      } else {
+        return failure('missing key "$dataKey"');
       }
+    }
+    if (fromJson != null) {
+      return switch (body) {
+        final JsonMap json => SuccessState(
+          data: fromJson(json) as T,
+          origin: .remote,
+        ),
+        final List<dynamic> list => SuccessState(
+          data: list.cast<JsonMap>().map(fromJson).toList() as T,
+          origin: .remote,
+        ),
+        _ => failure('expected a JSON object or list, got ${body.runtimeType}'),
+      };
+    }
+    if (body is T) {
+      return SuccessState(data: body, origin: .remote);
+    }
+    return failure('expected $T, got ${body.runtimeType}');
+  }, action: action);
 
-      // 2. Handle standard API response structure if required
-      if (isStandardResponse) {
-        if (rawData is! JsonMap) {
-          return failure('Bad response format: ${rawData.runtimeType}');
-        }
-        if (!rawData.containsKey(responseDataKey)) {
-          return failure('Response missing expected key: "$responseDataKey"');
-        }
-        rawData = rawData[responseDataKey];
-      }
-      // 3. Handle JSON deserialization
-      if (fromJson != null) {
-        if (rawData is JsonMap) {
-          return success(fromJson(rawData) as T);
-        } else if (rawData is List) {
-          return success(
-            rawData.map((e) => fromJson(e as JsonMap)).toList() as T,
-          );
-        }
-        return failure('Expected Map or List but got ${rawData.runtimeType}');
-      }
-      // 4. Handle raw data without deserialization
-      if (rawData is T) {
-        return success(rawData);
-      }
-
-      return failure('Type mismatch: Expected $T, got ${rawData.runtimeType}');
-    });
-  }
-
-  /// Executes a request and returns a success state without data.
-  ///
-  /// Useful for endpoints where the response body is not needed.
-  static FutureVoid voidCall(Future<Response<dynamic>> Function() request) {
-    return ErrorHandlerProvider.I.execute(() async {
-      final response = await request();
-      final rawData = response.data;
-      String? responseMessage;
-
-      // 1. Get message from the response if provided
-      if (rawData case {'message': final String? message}) {
-        responseMessage = message;
-      }
-
-      return SuccessState<void>(
-        data: null,
-        message: responseMessage,
-
-        extra: response,
-      );
-    });
-  }
-
-  /// Executes a request and returns [staticData] on success.
-  ///
-  /// Useful when the API response is ignored in favor of a local value (e.g., returning `true`).
-  static FutureData<T> staticCall<T>(
+  /// Runs a request whose response body isn't needed.
+  static FutureVoid voidCall(
     Future<Response<dynamic>> Function() request, {
-    required T staticData,
-  }) {
-    return ErrorHandlerProvider.I.execute(() async {
-      final response = await request();
-      final rawData = response.data;
-      String? responseMessage;
-
-      // 1. Get message from the response if provided
-      if (rawData case {'message': final String? message}) {
-        responseMessage = message;
-      }
-
-      return SuccessState<T>(
-        data: staticData,
-        message: responseMessage,
-
-        extra: response,
-      );
-    });
-  }
+    required String action,
+  }) => ErrorHandlerProvider.I.execute(() async {
+    await request();
+    return const SuccessState.nil(origin: .remote);
+  }, action: action);
 }

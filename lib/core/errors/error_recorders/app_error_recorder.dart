@@ -1,29 +1,35 @@
-import 'dart:developer' show log;
+import 'dart:async';
 
-import 'package:clean_architecture/core/data/models/app_error_details.dart';
+import 'package:clean_architecture/core/clients/database/app_database.dart';
 import 'package:clean_architecture/core/data/states/data_state.dart';
 import 'package:clean_architecture/core/errors/error_recorders/error_recorder.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
+import 'package:uuid/uuid.dart';
 
-class AppErrorRecorder implements ErrorRecorder {
+/// Keeps the last [_maxEntries] errors in the local error log
+/// (`ErrorLogLocal`), marking the ones the user was shown.
+class AppErrorRecorder({required final AppDatabase _database})
+    implements ErrorRecorder {
+  static const _maxEntries = 500;
+  static final _urlQuery = RegExp(r'(https?://[^\s?#]+)[?#]\S*');
+
   @override
   void recordUncaughtErrors() {
-    try {
-      // Record all uncaught "fatal" errors from the framework.
-      FlutterError.onError = (errorDetails) {
-        record(error: errorDetails.exception, stackTrace: errorDetails.stack);
-      };
-      // Record all uncaught asynchronous errors.
-      PlatformDispatcher.instance.onError = (error, stack) {
-        record(error: error, stackTrace: stack);
-        return true;
-      };
-    } catch (e, stack) {
-      if (kDebugMode) {
-        log('App uncaught errors recording failed: $e\n$stack');
-      }
-    }
+    final previousFlutterOnError = FlutterError.onError;
+    FlutterError.onError = (details) {
+      previousFlutterOnError?.call(details);
+      _insert(
+        message: details.exceptionAsString(),
+        error: details.exception.toString(),
+        shown: false,
+      );
+    };
+    PlatformDispatcher.instance.onError = (error, stackTrace) {
+      _insert(message: error.toString(), error: error.toString(), shown: false);
+      return true;
+    };
   }
 
   @override
@@ -34,38 +40,103 @@ class AppErrorRecorder implements ErrorRecorder {
     required Object error,
     FailureState<dynamic>? failureState,
     StackTrace? stackTrace,
-  }) {
-    final errorDetails = AppErrorDetails(
-      title: 'App Error (${error.runtimeType})',
-      message: failureState?.message,
-      // Add the failure error if it exists otherwise fallback to the error.
-      error: failureState?.error ?? error.toString(),
-      stackTrace: stackTrace?.toString(),
-      appFlavor: '',
-      appVersion: '',
-      deviceDetails: '',
-      extras: {},
-    );
+  }) => _insert(
+    id: failureState?.errorId,
+    action: failureState?.actionPath.join(' > '),
+    message: failureState?.message ?? error.toString(),
+    error: failureState?.error ?? error.toString(),
+    shown: false,
+  );
 
-    _appErrors.insert(0, errorDetails);
+  /// Marks a failure the user is shown; [action] is the user's flow.
+  void trackFailure(
+    DataState<dynamic> dataState, {
+    String? action,
+    String? source,
+  }) {
+    if (dataState is! FailureState) {
+      return;
+    }
+    final path = dataState.withAction(action).actionPath.join(' > ');
+    if (dataState.errorId case final errorId?) {
+      unawaited(
+        _safely(
+          () =>
+              (_database.update(
+                _database.errorLogLocal,
+              )..where((t) => t.id.equals(errorId))).write(
+                ErrorLogLocalCompanion(
+                  action: Value(path),
+                  source: Value(source),
+                  shown: const Value(true),
+                ),
+              ),
+        ),
+      );
+      return;
+    }
+    _insert(
+      action: path,
+      source: source,
+      message: dataState.message ?? '',
+      error: dataState.error,
+      shown: true,
+    );
   }
 
-  final List<AppErrorDetails> _appErrors = [];
+  /// Logs a notifier-side error (validation, guards) the user is shown.
+  void trackError(String text, {String? action, String? source}) =>
+      _insert(action: action, source: source, message: text, shown: true);
 
-  List<AppErrorDetails> get getErrors => [..._appErrors];
+  void _insert({
+    required String message,
+    required bool shown,
+    String? id,
+    String? action,
+    String? source,
+    String? error,
+  }) => unawaited(
+    _safely(() async {
+      await _database
+          .into(_database.errorLogLocal)
+          .insertOnConflictUpdate(
+            ErrorLogLocalCompanion.insert(
+              id: id ?? const Uuid().v4(),
+              createdAt: DateTime.now(),
+              action: Value(action),
+              source: Value(source),
+              message: _stripQueries(message),
+              error: Value(error == null ? null : _stripQueries(error)),
+              shown: Value(shown),
+            ),
+          );
+      await _database.customStatement(
+        'DELETE FROM error_log WHERE id NOT IN '
+        '(SELECT id FROM error_log ORDER BY created_at DESC LIMIT $_maxEntries)',
+      );
+    }),
+  );
 
-  void removeError(String errorId) =>
-      _appErrors.removeWhere((error) => error.id == errorId);
+  // URLs can carry tokens in their query, so the log keeps only the path.
+  static String _stripQueries(String text) =>
+      text.replaceAllMapped(_urlQuery, (match) => match.group(1)!);
 
-  void clearAllErrors() => _appErrors.clear();
+  // Never let the error log throw: that would loop back into the recorder.
+  static Future<void> _safely(Future<void> Function() write) async {
+    try {
+      await write();
+    } catch (error) {
+      debugPrint('AppErrorRecorder: $error');
+    }
+  }
 }
 
-/// A util class for accessing/registering [AppErrorRecorder] singleton instance.
+/// Access to the [AppErrorRecorder] singleton.
 abstract final class AppErrorProvider {
-  /// Returns the [AppErrorRecorder] singleton instance.
   static AppErrorRecorder get I => GetIt.I<AppErrorRecorder>();
 
-  /// Register the [AppErrorRecorder] singleton instance as [AppErrorRecorder] lazily.
-  static void register() =>
-      GetIt.I.registerLazySingleton<AppErrorRecorder>(AppErrorRecorder.new);
+  static void register(AppDatabase database) =>
+      GetIt.I.registerSingleton<AppErrorRecorder>(
+        AppErrorRecorder(database: database),
+      );
 }

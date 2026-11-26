@@ -1,10 +1,9 @@
 import 'package:clean_architecture/core/data/states/data_state.dart';
 
-/// Interface for translating errors into [FailureState] instances.
+/// Translates a thrown error into a [FailureState].
 abstract interface class ErrorTranslator<E extends Object> {
-  /// Checks if the error can be translated by this translator.
+  /// Whether this translator handles [error].
   bool matches(Object error);
 
-  /// Translates the error into a [FailureState].
   FailureState<T> translate<T>(E error);
 }

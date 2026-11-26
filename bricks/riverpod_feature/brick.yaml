@@ -1,0 +1,33 @@
+name: riverpod_feature
+description: "A full feature: domain model + DTOs, repository contract and implementation, local and API services, a Notifier, and a screen."
+
+version: 0.2.0+1
+
+environment:
+  mason: ^0.1.2
+
+vars:
+  feature:
+    type: string
+    description: Feature name (snake/camel/pascal all work)
+    default: feature
+    prompt: What is the feature name?
+  notifier:
+    type: string
+    description: Notifier (ViewModel) name, without the Notifier suffix
+    default: feature
+    prompt: What is the notifier name?
+  view:
+    type: string
+    description: Screen name, without the Screen suffix
+    default: feature
+    prompt: What is the screen name?
+  model:
+    type: string
+    description: Read from config.json (name + variables)
+  response:
+    type: string
+    description: Read from config.json (name + variables)
+  request:
+    type: string
+    description: Read from config.json (name + variables)

@@ -1,0 +1,8 @@
+import 'package:clean_architecture/core/types/types.dart';
+import 'package:clean_architecture/domain/models/{{#model}}{{name.snakeCase()}}{{/model}}.dart';
+
+{{#request}}final class const {{name.pascalCase()}}Request({ {{#variables}}required final {{type}} {{name.camelCase()}}, {{/variables}} }) {
+  factory fromDomain({{#model}}{{name.pascalCase()}} {{name.camelCase()}}{{/model}}) => {{name.pascalCase()}}Request({{#variables}}{{name.camelCase()}}: {{#model}}{{name.camelCase()}}{{/model}}.{{name.camelCase()}}, {{/variables}});
+
+  JsonMap toJson() => { {{#variables}}'{{name.camelCase()}}': {{name.camelCase()}}, {{/variables}} };
+}{{/request}}

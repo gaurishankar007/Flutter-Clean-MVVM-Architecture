@@ -1,5 +1,7 @@
 bricks:
- cubit_feature:
-    path: bricks/cubit_feature
- cubit_page:
-    path: bricks/cubit_page
+  riverpod_feature:
+    path: bricks/riverpod_feature
+  riverpod_view:
+    path: bricks/riverpod_view
+  domain_data_model:
+    path: bricks/domain_data_model

@@ -11,62 +11,80 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 
 import 'package:clean_architecture/config/app_config.dart' as _i37;
-import 'package:clean_architecture/core/clients/local/local_storage_client.dart'
-    as _i1009;
+import 'package:clean_architecture/core/clients/database/app_database.dart'
+    as _i119;
 import 'package:clean_architecture/core/clients/remote/connectivity_client.dart'
     as _i398;
+import 'package:clean_architecture/core/clients/remote/http/http_auth_interceptor.dart'
+    as _i567;
 import 'package:clean_architecture/core/clients/remote/http/http_client.dart'
     as _i244;
-import 'package:clean_architecture/core/errors/error_handler.dart' as _i662;
-import 'package:clean_architecture/core/services/encryption_service.dart'
-    as _i285;
-import 'package:clean_architecture/core/services/package_info_service.dart'
-    as _i494;
-import 'package:clean_architecture/features/auth/data/data_sources/auth_local_data_source.dart'
-    as _i322;
-import 'package:clean_architecture/features/auth/data/data_sources/auth_remote_data_source.dart'
-    as _i141;
-import 'package:clean_architecture/features/auth/data/data_sources/session_local_data_source.dart'
-    as _i16;
-import 'package:clean_architecture/features/auth/data/repositories/auth_repository_impl.dart'
-    as _i527;
-import 'package:clean_architecture/features/auth/data/repositories/session_repository_impl.dart'
-    as _i943;
-import 'package:clean_architecture/features/auth/domain/repositories/auth_repository.dart'
-    as _i1003;
-import 'package:clean_architecture/features/auth/domain/repositories/session_repository.dart'
-    as _i150;
-import 'package:clean_architecture/features/auth/domain/use_cases/check_authentication_use_case.dart'
-    as _i481;
-import 'package:clean_architecture/features/auth/domain/use_cases/get_user_data_use_case.dart'
-    as _i817;
-import 'package:clean_architecture/features/auth/domain/use_cases/log_out_use_case.dart'
-    as _i294;
-import 'package:clean_architecture/features/auth/domain/use_cases/login_use_case.dart'
-    as _i68;
-import 'package:clean_architecture/features/auth/domain/use_cases/save_user_data_use_case.dart'
-    as _i661;
-import 'package:clean_architecture/features/auth/domain/use_cases/set_session_use_case.dart'
-    as _i636;
-import 'package:clean_architecture/features/auth/presentation/cubits/login/login_cubit.dart'
-    as _i912;
-import 'package:clean_architecture/features/auth/presentation/cubits/login/login_cubit_use_cases.dart'
-    as _i123;
-import 'package:clean_architecture/features/dashboard/presentation/cubits/app_error/app_error_cubit.dart'
+import 'package:clean_architecture/core/clients/remote/http/token_store.dart'
+    as _i885;
+import 'package:clean_architecture/data/repositories/app_info_repository_impl.dart'
+    as _i562;
+import 'package:clean_architecture/data/repositories/auth_repository_impl.dart'
+    as _i268;
+import 'package:clean_architecture/data/repositories/error_log_repository_impl.dart'
+    as _i738;
+import 'package:clean_architecture/data/repositories/notification_repository_impl.dart'
+    as _i218;
+import 'package:clean_architecture/data/repositories/settings_repository_impl.dart'
+    as _i1071;
+import 'package:clean_architecture/data/repositories/todo_repository_impl.dart'
     as _i761;
-import 'package:clean_architecture/features/dashboard/presentation/cubits/dashboard/dashboard_cubit.dart'
-    as _i278;
-import 'package:clean_architecture/features/dashboard/presentation/cubits/dashboard/dashboard_cubit_use_cases.dart'
-    as _i134;
-import 'package:clean_architecture/routing/navigation_client.dart' as _i192;
-import 'package:clean_architecture/routing/routes.dart' as _i671;
-import 'package:clean_architecture/shared_ui/cubits/screen_observer/screen_observer_cubit.dart'
-    as _i640;
+import 'package:clean_architecture/data/repositories/user_repository_impl.dart'
+    as _i971;
+import 'package:clean_architecture/data/services/local/error_log_local_service.dart'
+    as _i699;
+import 'package:clean_architecture/data/services/local/key_value_local_service.dart'
+    as _i787;
+import 'package:clean_architecture/data/services/local/notification_local_service.dart'
+    as _i387;
+import 'package:clean_architecture/data/services/local/session_local_service.dart'
+    as _i559;
+import 'package:clean_architecture/data/services/local/settings_local_service.dart'
+    as _i744;
+import 'package:clean_architecture/data/services/local/todo_local_service.dart'
+    as _i345;
+import 'package:clean_architecture/data/services/platform/app_info_service.dart'
+    as _i198;
+import 'package:clean_architecture/data/services/platform/image_picker_service.dart'
+    as _i671;
+import 'package:clean_architecture/data/services/remote/auth_api_service.dart'
+    as _i952;
+import 'package:clean_architecture/data/services/remote/todo_api_service.dart'
+    as _i411;
+import 'package:clean_architecture/data/services/remote/user_api_service.dart'
+    as _i281;
+import 'package:clean_architecture/domain/repositories/app_info_repository.dart'
+    as _i449;
+import 'package:clean_architecture/domain/repositories/auth_repository.dart'
+    as _i314;
+import 'package:clean_architecture/domain/repositories/error_log_repository.dart'
+    as _i299;
+import 'package:clean_architecture/domain/repositories/notification_repository.dart'
+    as _i612;
+import 'package:clean_architecture/domain/repositories/settings_repository.dart'
+    as _i76;
+import 'package:clean_architecture/domain/repositories/todo_repository.dart'
+    as _i42;
+import 'package:clean_architecture/domain/repositories/user_repository.dart'
+    as _i1038;
+import 'package:clean_architecture/domain/use_cases/login_use_case.dart'
+    as _i334;
+import 'package:clean_architecture/domain/use_cases/logout_use_case.dart'
+    as _i768;
+import 'package:clean_architecture/domain/use_cases/save_todo_use_case.dart'
+    as _i1013;
+import 'package:clean_architecture/domain/use_cases/set_todo_completed_use_case.dart'
+    as _i821;
+import 'package:clean_architecture/domain/use_cases/sync_todos_use_case.dart'
+    as _i642;
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
-import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
+import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 const String _staging = 'staging';
 const String _development = 'development';
@@ -74,145 +92,159 @@ const String _production = 'production';
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
-  Future<_i174.GetIt> initialize({
+  _i174.GetIt initialize({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
-  }) async {
+  }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    final localStorageClientModule = _$LocalStorageClientModule();
-    final httpClientModule = _$HttpClientModule();
-    final connectivityClientModule = _$ConnectivityClientModule();
-    final navigationClientModule = _$NavigationClientModule();
-    await gh.factoryAsync<_i460.SharedPreferences>(
-      () => localStorageClientModule.sharedPreferences,
-      preResolve: true,
-    );
-    gh.factory<bool>(() => httpClientModule.addInterceptors);
-    gh.factory<_i761.AppErrorCubit>(() => _i761.AppErrorCubit());
-    gh.factory<_i640.ScreenObserverCubit>(() => _i640.ScreenObserverCubit());
-    gh.lazySingleton<_i895.Connectivity>(
-      () => connectivityClientModule.connectivity,
-    );
-    gh.lazySingleton<_i361.Dio>(() => httpClientModule.dio);
-    gh.lazySingleton<_i244.HttpAuthInterceptor>(
-      () => _i244.HttpAuthInterceptor(),
-    );
-    gh.lazySingleton<_i671.AppRouter>(() => navigationClientModule.appRouter);
+    final connectivityModule = _$ConnectivityModule();
+    final imagePickerModule = _$ImagePickerModule();
+    final tokenStoreModule = _$TokenStoreModule();
+    gh.lazySingleton<_i895.Connectivity>(() => connectivityModule.connectivity);
+    gh.lazySingleton<_i198.AppInfoService>(() => _i198.AppInfoService());
+    gh.lazySingleton<_i183.ImagePicker>(() => imagePickerModule.imagePicker);
     gh.lazySingleton<_i398.ConnectivityClient>(
       () =>
           _i398.ConnectivityClientImpl(connectivity: gh<_i895.Connectivity>()),
     );
-    gh.lazySingleton<_i285.EncryptionService>(
-      () => _i285.EncryptionServiceImpl(),
+    gh.lazySingleton<_i449.AppInfoRepository>(
+      () => _i562.AppInfoRepositoryImpl(service: gh<_i198.AppInfoService>()),
     );
-    gh.lazySingleton<_i494.PackageInfoService>(
-      () => _i494.PackageInfoServiceImpl(),
+    gh.lazySingleton<_i671.ImagePickerService>(
+      () => _i671.ImagePickerService(picker: gh<_i183.ImagePicker>()),
     );
     gh.lazySingleton<_i37.AppConfig>(
       () => _i37.AppConfigStg(),
       registerFor: {_staging},
     );
+    gh.lazySingleton<_i699.ErrorLogLocalService>(
+      () => _i699.ErrorLogLocalService(database: gh<_i119.AppDatabase>()),
+    );
+    gh.lazySingleton<_i787.KeyValueLocalService>(
+      () => _i787.KeyValueLocalService(database: gh<_i119.AppDatabase>()),
+    );
+    gh.lazySingleton<_i387.NotificationLocalService>(
+      () => _i387.NotificationLocalService(database: gh<_i119.AppDatabase>()),
+    );
+    gh.lazySingleton<_i345.TodoLocalService>(
+      () => _i345.TodoLocalService(database: gh<_i119.AppDatabase>()),
+    );
     gh.lazySingleton<_i37.AppConfig>(
       () => _i37.AppConfigDev(),
       registerFor: {_development},
     );
-    gh.lazySingleton<_i192.NavigationClient>(
-      () => _i192.NavigationClientImpl(appRouter: gh<_i671.AppRouter>()),
+    gh.lazySingleton<_i299.ErrorLogRepository>(
+      () =>
+          _i738.ErrorLogRepositoryImpl(local: gh<_i699.ErrorLogLocalService>()),
     );
     gh.lazySingleton<_i37.AppConfig>(
       () => _i37.AppConfigProd(),
       registerFor: {_production},
     );
-    gh.lazySingleton<_i1009.LocalStorageClient>(
-      () => _i1009.LocalStorageClientImpl(
-        sharedPreferences: gh<_i460.SharedPreferences>(),
-        encryptionService: gh<_i285.EncryptionService>(),
+    gh.lazySingleton<_i612.NotificationRepository>(
+      () => _i218.NotificationRepositoryImpl(
+        local: gh<_i387.NotificationLocalService>(),
+      ),
+    );
+    gh.lazySingleton<_i559.SessionLocalService>(
+      () =>
+          _i559.SessionLocalService(keyValue: gh<_i787.KeyValueLocalService>()),
+    );
+    gh.lazySingleton<_i744.SettingsLocalService>(
+      () => _i744.SettingsLocalService(
+        keyValue: gh<_i787.KeyValueLocalService>(),
+      ),
+    );
+    gh.lazySingleton<_i76.SettingsRepository>(
+      () => _i1071.SettingsRepositoryImpl(
+        local: gh<_i744.SettingsLocalService>(),
+      ),
+    );
+    gh.lazySingleton<_i885.TokenStore>(
+      () => tokenStoreModule.tokenStore(gh<_i559.SessionLocalService>()),
+    );
+    gh.lazySingleton<_i567.HttpAuthInterceptor>(
+      () => _i567.HttpAuthInterceptor(
+        tokenStore: gh<_i885.TokenStore>(),
+        appConfig: gh<_i37.AppConfig>(),
       ),
     );
     gh.lazySingleton<_i244.HttpClient>(
       () => _i244.HttpClientImpl(
-        dio: gh<_i361.Dio>(),
         appConfig: gh<_i37.AppConfig>(),
-        authInterceptor: gh<_i244.HttpAuthInterceptor>(),
-        navigationClient: gh<_i192.NavigationClient>(),
-        addInterceptors: gh<bool>(),
+        authInterceptor: gh<_i567.HttpAuthInterceptor>(),
       ),
     );
-    gh.lazySingleton<_i16.SessionLocalDataSource>(
-      () => _i16.SessionLocalDataSourceImpl(gh<_i1009.LocalStorageClient>()),
+    gh.lazySingleton<_i952.AuthApiService>(
+      () => _i952.AuthApiService(http: gh<_i244.HttpClient>()),
     );
-    gh.lazySingleton<_i141.AuthRemoteDataSource>(
-      () => _i141.AuthRemoteDataSourceImpl(dioClient: gh<_i244.HttpClient>()),
+    gh.lazySingleton<_i411.TodoApiService>(
+      () => _i411.TodoApiService(http: gh<_i244.HttpClient>()),
     );
-    gh.lazySingleton<_i150.SessionRepository>(
-      () => _i943.SessionRepositoryImpl(
-        localDataSource: gh<_i16.SessionLocalDataSource>(),
+    gh.lazySingleton<_i281.UserApiService>(
+      () => _i281.UserApiService(http: gh<_i244.HttpClient>()),
+    );
+    gh.lazySingleton<_i1038.UserRepository>(
+      () => _i971.UserRepositoryImpl(
+        api: gh<_i281.UserApiService>(),
+        session: gh<_i559.SessionLocalService>(),
+        imagePicker: gh<_i671.ImagePickerService>(),
+        connectivity: gh<_i398.ConnectivityClient>(),
       ),
     );
-    gh.lazySingleton<_i322.AuthLocalDataSource>(
-      () => _i322.AuthLocalDataSourceImpl(
-        errorHandler: gh<_i662.ErrorHandler>(),
-        localDatabase: gh<_i1009.LocalStorageClient>(),
+    gh.lazySingleton<_i42.TodoRepository>(
+      () => _i761.TodoRepositoryImpl(
+        local: gh<_i345.TodoLocalService>(),
+        api: gh<_i411.TodoApiService>(),
+        connectivity: gh<_i398.ConnectivityClient>(),
       ),
     );
-    gh.lazySingleton<_i1003.AuthRepository>(
-      () => _i527.AuthRepositoryImpl(
-        internet: gh<_i398.ConnectivityClient>(),
-        remoteDataSource: gh<_i141.AuthRemoteDataSource>(),
-        localDataSource: gh<_i322.AuthLocalDataSource>(),
+    gh.lazySingleton<_i314.AuthRepository>(
+      () => _i268.AuthRepositoryImpl(
+        api: gh<_i952.AuthApiService>(),
+        session: gh<_i559.SessionLocalService>(),
       ),
     );
-    gh.lazySingleton<_i294.LogOutUseCase>(
-      () => _i294.LogOutUseCase(gh<_i150.SessionRepository>()),
-    );
-    gh.lazySingleton<_i636.SetSessionUseCase>(
-      () => _i636.SetSessionUseCase(gh<_i150.SessionRepository>()),
-    );
-    gh.lazySingleton<_i481.CheckAuthenticationUseCase>(
-      () => _i481.CheckAuthenticationUseCase(
-        authRepository: gh<_i1003.AuthRepository>(),
+    gh.factory<_i642.SyncTodosUseCase>(
+      () => _i642.SyncTodosUseCase(
+        todos: gh<_i42.TodoRepository>(),
+        users: gh<_i1038.UserRepository>(),
+        notifications: gh<_i612.NotificationRepository>(),
+        settings: gh<_i76.SettingsRepository>(),
       ),
     );
-    gh.lazySingleton<_i817.GetUserDataUseCase>(
-      () =>
-          _i817.GetUserDataUseCase(authRepository: gh<_i1003.AuthRepository>()),
-    );
-    gh.lazySingleton<_i68.LoginUseCase>(
-      () => _i68.LoginUseCase(authRepository: gh<_i1003.AuthRepository>()),
-    );
-    gh.lazySingleton<_i661.SaveUserDataUseCase>(
-      () => _i661.SaveUserDataUseCase(
-        authRepository: gh<_i1003.AuthRepository>(),
+    gh.factory<_i334.LoginUseCase>(
+      () => _i334.LoginUseCase(
+        auth: gh<_i314.AuthRepository>(),
+        notifications: gh<_i612.NotificationRepository>(),
+        syncTodos: gh<_i642.SyncTodosUseCase>(),
       ),
     );
-    gh.lazySingleton<_i123.LoginCubitUseCases>(
-      () => _i123.LoginCubitUseCases(
-        login: gh<_i68.LoginUseCase>(),
-        saveUserData: gh<_i661.SaveUserDataUseCase>(),
-        setSession: gh<_i636.SetSessionUseCase>(),
-        logOut: gh<_i294.LogOutUseCase>(),
+    gh.factory<_i768.LogoutUseCase>(
+      () => _i768.LogoutUseCase(
+        auth: gh<_i314.AuthRepository>(),
+        todos: gh<_i42.TodoRepository>(),
+        notifications: gh<_i612.NotificationRepository>(),
       ),
     );
-    gh.lazySingleton<_i134.DashboardCubitUseCases>(
-      () => _i134.DashboardCubitUseCases(
-        checkAuthentication: gh<_i481.CheckAuthenticationUseCase>(),
-        logOut: gh<_i294.LogOutUseCase>(),
+    gh.factory<_i1013.SaveTodoUseCase>(
+      () => _i1013.SaveTodoUseCase(
+        todos: gh<_i42.TodoRepository>(),
+        notifications: gh<_i612.NotificationRepository>(),
       ),
     );
-    gh.factory<_i912.LoginCubit>(
-      () => _i912.LoginCubit(useCases: gh<_i123.LoginCubitUseCases>()),
-    );
-    gh.factory<_i278.DashboardCubit>(
-      () => _i278.DashboardCubit(useCases: gh<_i134.DashboardCubitUseCases>()),
+    gh.factory<_i821.SetTodoCompletedUseCase>(
+      () => _i821.SetTodoCompletedUseCase(
+        todos: gh<_i42.TodoRepository>(),
+        notifications: gh<_i612.NotificationRepository>(),
+      ),
     );
     return this;
   }
 }
 
-class _$LocalStorageClientModule extends _i1009.LocalStorageClientModule {}
+class _$ConnectivityModule extends _i398.ConnectivityModule {}
 
-class _$HttpClientModule extends _i244.HttpClientModule {}
+class _$ImagePickerModule extends _i671.ImagePickerModule {}
 
-class _$ConnectivityClientModule extends _i398.ConnectivityClientModule {}
-
-class _$NavigationClientModule extends _i192.NavigationClientModule {}
+class _$TokenStoreModule extends _i559.TokenStoreModule {}

@@ -1,116 +1,119 @@
+import 'dart:async';
+
 import 'package:clean_architecture/core/data/states/data_state.dart';
 import 'package:clean_architecture/core/errors/error_recorders/error_recorder.dart';
 import 'package:clean_architecture/core/errors/error_translators/error_translator.dart';
 import 'package:clean_architecture/core/types/types.dart';
 import 'package:get_it/get_it.dart';
+import 'package:uuid/uuid.dart';
 
 abstract interface class ErrorHandler {
-  /// Configures error recorders for recording uncaught errors.
+  /// Hooks every recorder into uncaught errors.
   void configureErrorHandlers();
 
-  /// Execute a callback that returns a `FutureData<T>` and convert
-  /// thrown exceptions into appropriate `FailureState<T>` instances.
-  FutureData<T> execute<T>(FutureData<T> Function() callBack);
-
-  /// Run an async callback and log any exceptions (does not rethrow).
-  ///
-  /// Use this to execute `Future`-returning code where errors should be
-  /// logged for diagnostics but not propagated.
-  Future<void> executeSafe(Future<void> Function() callBack);
-
-  /// Run an async callback that returns `T`, logging exceptions.
-  ///
-  /// On error this returns the provided `valueOnError` fallback.
-  Future<T> executeSafeReturn<T>(
-    Future<T> Function() callBack, {
-    required T valueOnError,
+  /// Runs [callBack]; a thrown error becomes a recorded [FailureState].
+  /// [action] names the exact operation, e.g. `'todo.local.upsert'`.
+  FutureData<T> execute<T>(
+    FutureData<T> Function() callBack, {
+    required String action,
   });
 
-  /// Run a synchronous callback and log any exceptions (no rethrow).
-  void executeSafeSync(void Function() callBack);
+  /// Wraps [stream]'s values in [SuccessState]s; an error event becomes a
+  /// recorded [FailureState] event instead of breaking the stream.
+  StreamData<T> executeStream<T>(Stream<T> stream, {required String action});
 
-  /// Run a synchronous callback that returns `T`, logging exceptions.
-  ///
-  /// On error this returns the provided `valueOnError` fallback.
-  T executeSafeReturnSync<T>(T Function() callBack, {required T valueOnError});
+  /// Runs [callBack], recording (not rethrowing) any error.
+  Future<void> executeSafe(Future<void> Function() callBack);
+
+  /// Runs [callBack], recording any error and returning [onError]'s value.
+  Future<T> executeSafeReturn<T>(
+    Future<T> Function() callBack, {
+    required T Function(Object error) onError,
+  });
 }
 
 final class ErrorHandlerImpl({
   required final List<ErrorTranslator> _errorTranslators,
-  required final List<ErrorRecorder> _errorReporters,
+  required final List<ErrorRecorder> _errorRecorders,
 }) implements ErrorHandler {
   @override
   void configureErrorHandlers() {
-    for (final errorRecorder in _errorReporters) {
-      errorRecorder.recordUncaughtErrors();
+    for (final recorder in _errorRecorders) {
+      recorder.recordUncaughtErrors();
     }
   }
 
   @override
-  FutureData<T> execute<T>(FutureData<T> Function() callBack) async {
+  FutureData<T> execute<T>(
+    FutureData<T> Function() callBack, {
+    required String action,
+  }) async {
     try {
-      return await callBack();
+      final result = await callBack();
+      if (result case final FailureState<T> failure) {
+        return failure.withAction(action).withStackTrace(StackTrace.current);
+      }
+      return result;
     } catch (error, stackTrace) {
-      final failureState = _translateError<T>(error);
-      _reportError(
-        error: error,
-        failureState: failureState,
-        stackTrace: stackTrace,
-      );
-      return failureState;
+      final failure = _translate<T>(error)
+          .withAction(action)
+          .withStackTrace(stackTrace)
+          .withErrorId(const Uuid().v4());
+      _record(error: error, failureState: failure, stackTrace: stackTrace);
+      return failure;
     }
   }
+
+  @override
+  StreamData<T> executeStream<T>(Stream<T> stream, {required String action}) =>
+      stream.transform(
+        StreamTransformer.fromHandlers(
+          handleData: (data, sink) => sink.add(SuccessState(data: data)),
+          handleError: (error, stackTrace, sink) {
+            final failure = _translate<T>(error)
+                .withAction(action)
+                .withStackTrace(stackTrace)
+                .withErrorId(const Uuid().v4());
+            _record(
+              error: error,
+              failureState: failure,
+              stackTrace: stackTrace,
+            );
+            sink.add(failure);
+          },
+        ),
+      );
 
   @override
   Future<void> executeSafe(Future<void> Function() callBack) async {
     try {
       await callBack();
     } catch (error, stackTrace) {
-      _reportError(error: error, stackTrace: stackTrace);
+      _record(error: error, stackTrace: stackTrace);
     }
   }
 
   @override
   Future<T> executeSafeReturn<T>(
     Future<T> Function() callBack, {
-    required T valueOnError,
+    required T Function(Object error) onError,
   }) async {
     try {
       return await callBack();
     } catch (error, stackTrace) {
-      _reportError(error: error, stackTrace: stackTrace);
-      return valueOnError;
+      _record(error: error, stackTrace: stackTrace);
+      return onError(error);
     }
   }
 
-  @override
-  void executeSafeSync(void Function() callBack) {
-    try {
-      callBack();
-    } catch (error, stackTrace) {
-      _reportError(error: error, stackTrace: stackTrace);
-    }
-  }
-
-  @override
-  T executeSafeReturnSync<T>(T Function() callBack, {required T valueOnError}) {
-    try {
-      return callBack();
-    } catch (error, stackTrace) {
-      _reportError(error: error, stackTrace: stackTrace);
-      return valueOnError;
-    }
-  }
-
-  /// Report the error to all registered error reporters.
-  void _reportError({
+  void _record({
     required Object error,
     FailureState<dynamic>? failureState,
     StackTrace? stackTrace,
   }) {
-    for (final errorReporter in _errorReporters) {
-      if (errorReporter.isRecordable) {
-        errorReporter.record(
+    for (final recorder in _errorRecorders) {
+      if (recorder.isRecordable) {
+        recorder.record(
           error: error,
           failureState: failureState,
           stackTrace: stackTrace,
@@ -119,39 +122,27 @@ final class ErrorHandlerImpl({
     }
   }
 
-  /// Translate the error to a [FailureState<T>].
-  FailureState<T> _translateError<T>(Object error) {
-    // Step 1: Try to find an error translator that matches the error.
-    final translatorIndex = _errorTranslators.indexWhere(
-      (errorTranslator) => errorTranslator.matches(error),
-    );
-
-    // Step 2: If a matching error translator is found, translate the error.
-    if (translatorIndex >= 0) {
-      return _errorTranslators[translatorIndex].translate<T>(error);
+  FailureState<T> _translate<T>(Object error) {
+    for (final translator in _errorTranslators) {
+      if (translator.matches(error)) {
+        return translator.translate<T>(error);
+      }
     }
-
-    // Step 3: If no matching error translator is found,
-    // return a [FailureState] with the error.
     return FailureState<T>(error: error.toString());
   }
 }
 
-/// A util class for accessing/registering [ErrorHandler] singleton instance.
+/// Access to the [ErrorHandler] singleton.
 abstract final class ErrorHandlerProvider {
-  /// Returns the [ErrorHandler] singleton instance.
   static ErrorHandler get I => GetIt.I<ErrorHandler>();
 
-  /// Register the [ErrorHandler] singleton instance lazily.
-  /// Takes Dio, FirebaseAuth, GoogleSignIn, and WebCamera error translators.
-  /// Takes App, Firebase, and Logger error recorders.
   static void register({
     List<ErrorTranslator<Object>> errorTranslators = const [],
-    List<ErrorRecorder> errorReporters = const [],
+    List<ErrorRecorder> errorRecorders = const [],
   }) => GetIt.I.registerLazySingleton<ErrorHandler>(
     () => ErrorHandlerImpl(
       errorTranslators: errorTranslators,
-      errorReporters: errorReporters,
+      errorRecorders: errorRecorders,
     ),
   );
 }

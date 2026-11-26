@@ -1,50 +1,33 @@
-part of 'http_client.dart';
+import 'dart:async';
 
-/// Modifies http requests and responses. Used to
-/// * Add headers
-/// * Modify data
-/// * Refresh tokens
-@LazySingleton()
-interface class HttpAuthInterceptor extends Interceptor {
-  LocalStorageClient get _localStorageClient => GetIt.I<LocalStorageClient>();
-  NavigationClient get _navigationClient => GetIt.I<NavigationClient>();
+import 'package:clean_architecture/config/app_config.dart';
+import 'package:clean_architecture/core/clients/remote/http/token_store.dart';
+import 'package:clean_architecture/core/constants/api_endpoints.dart';
+import 'package:clean_architecture/core/constants/http_keys.dart';
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 
-  final Dio _dio = Dio()..httpClientAdapter = createHttpClientAdapter();
-
-  /// This flag is to prevent multiple refresh token requests. If the request
-  /// is in progress then other token refresh requests are discarded
-  bool _isTokenBeingRefreshed = false;
-
-  /// Whenever token is expired, the requests are added to the list.
-  /// So that even if simultaneously multiple requests are made and
-  /// token is expired, each requests are retried after refreshing token
-  final List<DioRequestData> _pendingRequests = [];
-
-  UserDataResponse? get _userData {
-    final stored = _localStorageClient.getString(LocalDbKeys.userData);
-    if (stored != null && stored.isNotEmpty) {
-      try {
-        final map = jsonDecode(stored) as Map<String, dynamic>;
-        return .fromJson(map);
-      } catch (_) {
-        return null;
-      }
-    }
-    return null;
-  }
+/// Adds the bearer token and, on a 401, refreshes it once and retries every
+/// request that failed meanwhile. A failed refresh expires the session; the
+/// UI reacts to that (it never navigates from here).
+@lazySingleton
+final class HttpAuthInterceptor({
+  required final TokenStore _tokenStore,
+  required AppConfig appConfig,
+}) extends QueuedInterceptor {
+  // A bare Dio, so the refresh call doesn't loop through this interceptor.
+  final Dio _refreshDio = Dio(BaseOptions(baseUrl: appConfig.apiBaseUrl));
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final hasAuthToken = options.headers.hasValue(HttpKeys.authorization);
-    final excludeAuth = options.extra.getBool(HttpKeys.excludeAuth);
-
-    // Add the user's token unless the caller set one or opted out.
-    final token = _userData?.accessToken;
-    if (!hasAuthToken && !excludeAuth && token != null && token.isNotEmpty) {
-      options.headers.addAll({HttpKeys.authorization: 'Bearer $token'});
+    final excluded = options.extra[HttpKeys.excludeAuth] == true;
+    final token = _tokenStore.accessToken;
+    if (!excluded &&
+        token != null &&
+        !options.headers.containsKey(HttpKeys.authorization)) {
+      options.headers[HttpKeys.authorization] = 'Bearer $token';
     }
-
-    return super.onRequest(options, handler);
+    handler.next(options);
   }
 
   @override
@@ -52,118 +35,66 @@ interface class HttpAuthInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    /// If the error contains a status code of 401. That means token is expired.
-    if (err.response?.statusCode == 401) {
-      _pendingRequests.add(DioRequestData(error: err, handler: handler));
+    final options = err.requestOptions;
+    final excluded = options.extra[HttpKeys.excludeAuth] == true;
+    if (err.response?.statusCode != 401 || excluded) {
+      return handler.next(err);
+    }
 
-      /// Don't refresh token again, if it is already being refreshed
-      if (_isTokenBeingRefreshed) {
-        return;
-      }
-      _isTokenBeingRefreshed = true;
-
-      final bool tokenRefreshSucceed = await _refreshToken(err.requestOptions);
-
-      /// If token refreshing is successful, retry the pending requests
-      if (tokenRefreshSucceed) {
-        for (final request in _pendingRequests) {
-          try {
-            final response = await _retryRequest(request.error.requestOptions);
-            request.handler.resolve(response);
-          } on DioException catch (error) {
-            if (kDebugMode) {
-              log('Retry request: ${error.response}');
-            }
-            request.handler.next(error);
-          } catch (error) {
-            if (kDebugMode) {
-              log('Retry request: $error');
-            }
-          }
-        }
-      }
-
-      /// Clear pending requests
-      _pendingRequests.clear();
-      _isTokenBeingRefreshed = false;
+    // QueuedInterceptor runs errors one at a time: a request queued behind
+    // the refresh retries with the token it already got.
+    final sentToken = options.headers[HttpKeys.authorization];
+    final currentToken = _tokenStore.accessToken;
+    if (currentToken != null && sentToken != 'Bearer $currentToken') {
+      await _retry(options, currentToken, err, handler);
       return;
     }
 
-    return super.onError(err, handler);
+    final refreshed = await _refresh();
+    if (refreshed == null) {
+      await _tokenStore.expire();
+      return handler.next(err);
+    }
+    await _retry(options, refreshed, err, handler);
   }
 
-  /// Try to refresh access token. Log out the user if it fails.
-  Future<bool> _refreshToken(RequestOptions requestOptions) async {
+  Future<String?> _refresh() async {
+    final refreshToken = _tokenStore.refreshToken;
+    if (refreshToken == null) {
+      return null;
+    }
     try {
-      final userData = _userData;
-      if (userData == null) {
-        _clearSessionData();
-        return false;
-      }
-
-      final request = RefreshTokenRequest(refreshToken: userData.refreshToken);
-      final response = await _dio.post<dynamic>(
+      final response = await _refreshDio.post<Map<String, dynamic>>(
         ApiEndpoints.refreshToken,
-        data: request.toJson(),
-        options: Options(headers: requestOptions.headers),
+        data: {'refreshToken': refreshToken},
       );
-
-      /// If api response is successful, update the accessToken
-      final ApiResponse<JsonMap> apiResponse = .fromResponse(response);
-      if (apiResponse.success) {
-        final tokenResponse = RefreshTokenResponse.fromJson(apiResponse.data);
-        final newUserData = userData
-          ..toDomain().copyWith(accessToken: tokenResponse.accessToken);
-        await _localStorageClient.setString(
-          LocalDbKeys.userData,
-          jsonEncode(newUserData.toJson()),
+      if (response.data case {
+        'accessToken': final String access,
+        'refreshToken': final String refresh,
+      }) {
+        await _tokenStore.saveTokens(
+          accessToken: access,
+          refreshToken: refresh,
         );
-        return true;
+        return access;
       }
-    } on DioException catch (_) {
-      _clearSessionData();
-    } catch (error) {
-      _clearSessionData();
-      if (kDebugMode) {
-        log('Token refresh: $error');
-      }
+    } on DioException {
+      // Falls through: the session expires.
     }
-
-    return false;
+    return null;
   }
 
-  void _clearSessionData() {
-    _localStorageClient.remove(LocalDbKeys.userData);
-    _navigationClient.replaceAllRoute([const LoginRoute()]);
-  }
-
-  Future<Response<dynamic>> _retryRequest(RequestOptions requestOptions) {
-    /// Reset authorization header
-    requestOptions.headers.remove(HttpKeys.authorization);
-    final token = _userData?.accessToken;
-    if (token != null) {
-      requestOptions.headers.addAll({HttpKeys.authorization: 'Bearer $token'});
+  Future<void> _retry(
+    RequestOptions options,
+    String token,
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
+    options.headers[HttpKeys.authorization] = 'Bearer $token';
+    try {
+      handler.resolve(await _refreshDio.fetch<dynamic>(options));
+    } on DioException catch (error) {
+      handler.next(error);
     }
-
-    /// RequestOptions with the same method, path, data,
-    /// query parameters, but with new access token.
-    final options = Options(
-      method: requestOptions.method,
-      headers: requestOptions.headers,
-    );
-
-    /// Retry the request with the new requestOptions.
-    return _dio.request(
-      requestOptions.path,
-      data: requestOptions.data,
-      queryParameters: requestOptions.queryParameters,
-      options: options,
-    );
   }
 }
-
-/// Stores failed dio request's data
-class const DioRequestData({
-  required final DioException error,
-  required final ErrorInterceptorHandler handler,
-});
