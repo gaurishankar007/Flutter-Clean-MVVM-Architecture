@@ -245,4 +245,8 @@ Builds reach testers through [Firebase App Distribution](https://firebase.google
 | Errors, messages, routing, networking, database | [docs/core/](docs/core/) |
 | Example features | [docs/features/](docs/features/) |
 | Testing | [testing.md](docs/testing/testing.md) |
-| SOLID, Flutter tips, command cheat sheets | [docs/guides/](docs/guides/) |
+| SOLID principles | [solid_principles.md](docs/guides/solid_principles.md) |
+| Flutter tips | [flutter_tips.md](docs/guides/flutter_tips.md) |
+| Flutter command cheat sheet | [flutter_commands_cheat_sheet.md](docs/guides/flutter_commands_cheat_sheet.md) |
+| Git command cheat sheet | [git_commands_cheat_sheet.md](docs/guides/git_commands_cheat_sheet.md) |
+| Flutter configuration guidelines | [flutter_configuration_guidelines.md](docs/guides/flutter_configuration_guidelines.md) |
