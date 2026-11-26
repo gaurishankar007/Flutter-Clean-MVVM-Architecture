@@ -1,18 +1,26 @@
 {
-  "feature": "test",
-  "entity": {
-    "name": "testUser",
+  "feature": "habit",
+  "notifier": "habits",
+  "view": "habits",
+  "model": {
+    "name": "habit",
     "variables": [
-      {
-        "name": "id",
-        "type": "int"
-      },
-      {
-        "name": "name",
-        "type": "String"
-      }
+      { "name": "id", "type": "int" },
+      { "name": "title", "type": "String" }
     ]
   },
-  "cubit": "test1",
-  "page": "test1"
+  "response": {
+    "name": "habit",
+    "variables": [
+      { "name": "id", "type": "int" },
+      { "name": "title", "type": "String" }
+    ]
+  },
+  "request": {
+    "name": "createHabit",
+    "variables": [
+      { "name": "id", "type": "int" },
+      { "name": "title", "type": "String" }
+    ]
+  }
 }

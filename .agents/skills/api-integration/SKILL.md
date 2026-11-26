@@ -1,174 +1,131 @@
 ---
 name: api-integration
-description: Automates the integration of a new API endpoint through the data source, repository, and domain layers in this project.
+description: Automates the integration of a new API endpoint through the service, repository, domain and ViewModel layers in this project.
 ---
 
 # API Integration Skill
 
-This skill guides integrating a new API endpoint into a feature, following the
-project's Clean Architecture layering (data/domain/presentation).
+Adds an endpoint end to end, following the layers in
+`docs/architecture/architecture.md`:
 
-## 1. Define the Endpoint
-
-Add the endpoint constant to `lib/core/constants/api_endpoints.dart`, reusing
-an existing base segment where the endpoint belongs to that resource, or
-adding a new one otherwise:
-
-```dart
-class ApiEndpoints {
-  ApiEndpoints._();
-
-  static const foo = 'api/foo/';
-  static const getFooDetails = '${foo}get-foo-details';
-}
+```
+ApiEndpoints → DTOs → remote service → repository (contract + impl) → [use case] → Notifier → View
 ```
 
-## 2. Models implement `DomainConvertible`, they don't extend the entity
+Use the `scaffolding` skill first when the endpoint belongs to a new feature.
 
-Response models **implement `DomainConvertible<R>`** and provide `R toDomain()`
-(see `core/data/models/domain_convertible.dart`) — they do not `extend` the
-domain entity directly:
+## 1. Endpoint
+
+Add the path to `lib/core/constants/api_endpoints.dart` (relative to
+`AppConfig.apiBaseUrl`; never hardcode a host):
 
 ```dart
-// domain/entities/foo.dart
-class Foo extends Equatable {
-  const Foo({required this.id, required this.name});
-  final int id;
-  final String name;
+static const habits = 'habits';
+static String habit(int id) => 'habits/$id';
+```
+
+## 2. Models
+
+- Domain model in `lib/domain/models/` (`Equatable`, primary constructor, no
+  JSON).
+- Response DTO in `lib/data/models/responses/` implementing
+  `DomainConvertible<Model>`:
+
+```dart
+final class const HabitResponse({required final int id, required final String title})
+    implements DomainConvertible<Habit> {
+  factory fromJson(JsonMap json) =>
+      HabitResponse(id: json['id'] as int, title: json['title'] as String? ?? '');
 
   @override
-  List<Object?> get props => [id, name];
-}
-
-// data/models/responses/foo_model.dart
-class FooModel implements DomainConvertible<Foo> {
-  const FooModel({required this.id, required this.name});
-  final int id;
-  final String name;
-
-  factory FooModel.fromJson(JsonMap json) => FooModel(
-    id: (json['id'] as num?)?.toInt() ?? 0,
-    name: json['name'] as String? ?? '',
-  );
-
-  @override
-  Foo toDomain() => Foo(id: id, name: name);
+  Habit toDomain() => Habit(id: id, title: title);
 }
 ```
 
-Request models live in `data/models/requests/` and expose a
-`factory FooRequest.fromDomain(Foo foo)` plus `toJson()`.
+- Request DTO in `lib/data/models/requests/` with `toJson()` (use null-aware
+  map entries `'phone': ?phone` for optional fields).
 
-## 3. `DataState` and shared typedefs
+## 3. Remote service — `ApiExecutor`
 
-Everything in the data layer returns a `DataState<T>`
-(`lib/core/data/states/data_state.dart`) — a sealed type with `SuccessState`,
-`FailureState`, `LoadingState`. Use the typedefs from
-`lib/core/types/types.dart` instead of spelling it out:
-
-| Typedef         | Expands to                    |
-| ---------------- | ------------------------------- |
-| `FutureData<T>`  | `Future<DataState<T>>`          |
-| `FutureList<T>`  | `Future<DataState<List<T>>>`    |
-| `FutureVoid`     | `Future<DataState<void>>`       |
-| `FutureBool`     | `Future<DataState<bool>>`       |
-| `FutureString`   | `Future<DataState<String>>`     |
-| `FutureInt`      | `Future<DataState<int>>`        |
-| `JsonMap`        | `Map<String, dynamic>`          |
-
-Use `FutureVoid` (not `FutureBool`) whenever no caller actually reads the
-returned value — only `hasData`/`errorType` matters. Return `SuccessState.nil`
-(never `SuccessState(data: null)` or `SuccessState(data: true)`) as the
-success value for a `FutureVoid`-typed method.
-
-## 4. Remote Data Sources — use `ApiExecutor`
-
-Location: `lib/features/<feature>/data/data_sources/<feature>_remote_data_source.dart`.
-
-`ApiExecutor` (`lib/core/data/operations/api_executor.dart`) wraps the request
-in `ErrorHandlerProvider.I.execute`, unwraps the backend's standard
-`{ success, msg, data }` envelope (treating `success: false` as a failure even
-on an HTTP 200). `request` is a **positional** argument. Pick the method by
-what the endpoint returns:
-
-**`ApiExecutor.call`** — parse a payload into a model (works for a single
-object or a list — `fromJson` is applied per-element automatically):
+`lib/data/services/remote/<feature>_api_service.dart`, `@lazySingleton`,
+taking `HttpClient`. Every call passes an `action:` label naming the exact
+operation (`'<feature>.api.<op>'`):
 
 ```dart
-@override
-FutureData<FooModel> getFoo(FooRequest request) {
-  return ApiExecutor.call(
-    () => _httpClient.post<dynamic>(ApiEndpoints.getFooDetails, data: request.toJson()),
-    fromJson: FooModel.fromJson,
-  );
-}
-```
+FutureList<HabitResponse> habits() => ApiExecutor.call(
+  () => _http.get<dynamic>(ApiEndpoints.habits),
+  action: 'habit.api.list',
+  fromJson: HabitResponse.fromJson,
+  dataKey: 'habits', // when the body is {"habits": [...]}; omit to use the whole body
+);
 
-**`ApiExecutor.voidCall`** — response body is irrelevant, for `FutureVoid`:
-
-```dart
-@override
-FutureVoid deleteFoo(int id) => ApiExecutor.voidCall(
-  () => _httpClient.post<dynamic>(ApiEndpoints.deleteFoo, data: {'id': id}),
+FutureVoid delete(int id) => ApiExecutor.voidCall(
+  () => _http.delete<dynamic>(ApiEndpoints.habit(id)),
+  action: 'habit.api.delete',
 );
 ```
 
-**`ApiExecutor.staticCall`** — ignore the response, return a fixed value
-(typically for a `FutureBool` "did it work" endpoint):
+- `ApiExecutor` wraps the request in `ErrorHandler.execute`, so a `DioException`
+  becomes a translated, recorded `FailureState` (see
+  `docs/core/error_handling.md`).
+- Auth headers and token refresh are automatic (`HttpAuthInterceptor`). Pass
+  `Options(extra: {HttpKeys.excludeAuth: true})` for public endpoints such as
+  login.
+
+## 4. Repository
+
+Contract in `lib/domain/repositories/` (domain models only), implementation
+in `lib/data/repositories/` with `@LazySingleton(as: Contract)`:
 
 ```dart
 @override
-FutureBool verifyFoo(FooRequest request) => ApiExecutor.staticCall(
-  () => _httpClient.post<dynamic>(ApiEndpoints.verifyFoo, data: request.toJson()),
-  staticData: true,
-);
-```
-
-## 5. Repositories — use `RepositoryFetcher`
-
-Location: `lib/features/<feature>/data/repositories/<feature>_repository_impl.dart`,
-implementing `lib/features/<feature>/domain/repositories/<feature>_repository.dart`
-(domain models only in the interface's signatures).
-
-**Always** check connectivity via `ConnectivityClient.isConnected` and pass it as
-the **named** `isInternetConnected` argument:
-
-```dart
-@override
-FutureData<Foo> getFoo(int fooId) {
-  return RepositoryFetcher.fetchWithFallbackAndMap(
-    isInternetConnected: _internet.isConnected,
-    remoteCallback: () => _remoteDataSource.getFoo(FooRequest(id: fooId)),
-  );
+FutureList<Habit> habits() async {
+  if (!_connectivity.isConnected) {
+    return FailureState.noInternet();
+  }
+  return (await _api.habits()).mapData((list) => [for (final r in list) r.toDomain()]);
 }
 ```
 
-- `fetchWithFallback`/`fetchWithFallbackAndMap`/`fetchWithFallbackAndMapList`
-  require the DTO type to implement `DomainConvertible<R>` — the `AndMap`
-  variants call `.toDomain()` for you, no manual mapping callback needed.
-- `fetchFromLocalAndMap`/`fetchFromLocalAndMapList` do the same for a
-  local-only read.
-- `onRemoteSuccess` (optional) runs only on a successful remote fetch — use
-  it for a caching hook if the feature has a local data source.
-  `localCallback` (optional) is the offline path; **if omitted, offline
-  returns `FailureState.noInternet()`**. Only add one if the feature
-  genuinely needs offline reads, and ask the user first if it's unclear
-  whether that's wanted.
+- Offline-first reads: `RepositoryFetcher.fetchWithFallback(AndMap)` with a
+  `local:` fallback and an `onRemoteSuccess:` cache hook (see
+  `TodoRepositoryImpl` for a full sync example).
+- `FutureVoid` methods return `const SuccessState.nil()`; use `FutureVoid`, not
+  `FutureBool`, when no caller reads the bool.
 
-## 6. Dependency Injection
+## 5. Use case (optional)
 
-Use `@LazySingleton(as: InterfaceName)` for data sources and repository
-implementations. After adding/changing any of these, run the `codegen` skill.
+Only when the flow combines several repositories (`lib/domain/use_cases/`,
+`@injectable`, implementing `UseCase0`/`UseCase1`). Single-repository flows
+call the repository from the Notifier directly.
 
-## Probing & Decision Making
+## 6. Notifier and View
 
-- If it's unclear whether a new endpoint belongs to an existing repository or
-  needs a new feature, **ASK the user**.
-- If it's unclear whether an endpoint needs offline/local support, **ASK the
-  user** — don't add a `localCallback` speculatively.
+```dart
+Future<void> load() => runFlow('habits.load', () async {
+  state = state.copyWith(status: .loading);
+  final result = await GetIt.I<HabitRepository>().habits();
+  if (!ref.mounted) {
+    return;
+  }
+  state = switch (result) {
+    SuccessState(:final data?) => state.copyWith(status: .loaded, habits: data),
+    _ => state.copyWith(status: .error, message: trackFailure(result)),
+  };
+});
+```
 
-## Validation
+The View calls `ref.listenMessages(habitsProvider, context)` to show the
+message. User-facing text goes in `app_messages.dart`.
+
+## 7. DI, mocks, verify
 
 1. Run the `codegen` skill.
-2. Run `flutter analyze` — zero issues required.
-3. Run `flutter test` — add/update tests per [`docs/testing.md`](../../../docs/testing.md).
+2. Add mocks for the new service/repository in `testing/mocks/`.
+3. `flutter analyze` (zero issues) and `flutter test`.
+
+## Ask the user when
+
+- It's unclear whether the endpoint belongs to an existing repository or a new
+  feature.
+- It's unclear whether it needs offline support (a local table + fallback).

@@ -2,19 +2,29 @@ include: package:leancode_lint/analysis_options.yaml
 
 linter:
   rules:
-    - always_use_package_imports
-    - prefer_const_constructors
-    - prefer_const_declarations
-    - unnecessary_const
-    - sort_constructors_first
-    - avoid_void_async
-    - always_put_control_body_on_new_line
-    - prefer_single_quotes
+    always_use_package_imports: true
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    unnecessary_const: true
+    sort_constructors_first: true
+    avoid_void_async: true
+    always_put_control_body_on_new_line: true
+    prefer_single_quotes: true
+    unnecessary_lambdas: true
+    use_declaring_parameters: true
+    unnecessary_primary_constructor_body: true
+    use_null_aware_elements: true
+    future_sync_value: true
+    # Off: it flags every constructor-less class (`class Foo()` adds nothing).
+    use_primary_constructors: false
 
 analyzer:
   exclude:
-    - bricks**
+    - bricks/**
     - build/**
     - android/**
     - ios/**
     - web/**
+    - lib/**/*.g.dart
+    - lib/**/*.gr.dart
+    - lib/**/*.config.dart

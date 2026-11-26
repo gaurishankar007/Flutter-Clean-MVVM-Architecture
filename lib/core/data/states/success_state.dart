@@ -1,10 +1,10 @@
 part of 'data_state.dart';
 
-/// A success data state when there is no any error and data is available
+/// A successful operation.
 final class SuccessState<T> extends DataState<T> {
-  const SuccessState({required super.data, super.message, super.extra})
+  const new({required super.data, super.message, super.origin, super.extra})
     : super(hasData: true);
 
-  /// A success data state when there is no any error and data is null
-  static const nil = SuccessState<void>(data: null);
+  /// Success without a payload; the result of every `FutureVoid` method.
+  const new nil({super.origin}) : super(data: null, hasData: true);
 }

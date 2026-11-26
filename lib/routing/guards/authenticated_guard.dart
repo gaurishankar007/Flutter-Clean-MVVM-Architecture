@@ -1,19 +1,15 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:clean_architecture/features/auth/domain/repositories/session_repository.dart';
+import 'package:clean_architecture/domain/repositories/auth_repository.dart';
 import 'package:clean_architecture/routing/routes.gr.dart';
 import 'package:get_it/get_it.dart';
 
-final class AuthenticatedGuard extends AutoRouteGuard {
-  const AuthenticatedGuard();
-
+/// Lets a signed-in user through; otherwise opens login.
+final class const AuthenticatedGuard() extends AutoRouteGuard {
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
-    if (GetIt.I<SessionRepository>().isLoggedIn) {
+    if (GetIt.I<AuthRepository>().isLoggedIn) {
       return resolver.next();
     }
-
-    // Settle the intercepted navigation before redirecting.
-    resolver.next(false);
-    router.replaceAll([const LoginRoute()]);
+    resolver.redirectUntil(const LoginRoute(), replace: true);
   }
 }

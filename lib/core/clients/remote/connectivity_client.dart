@@ -1,61 +1,49 @@
-import 'dart:async' show StreamSubscription;
+import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
+/// Whether the device has a network connection.
 abstract interface class ConnectivityClient {
   bool get isConnected;
-  Stream<List<ConnectivityResult>>? get connectivityStream;
-  Future<void> subscribeConnectivity();
-  void unSubscriptionConnectivity();
+
+  /// Emits on every change.
+  Stream<bool> get onConnectivityChanged;
+
+  /// Reads the current state and starts listening. Called at startup.
+  Future<void> initialize();
 }
 
 @module
-abstract class ConnectivityClientModule {
+abstract class ConnectivityModule {
   @lazySingleton
   Connectivity get connectivity => Connectivity();
 }
 
-/// Check whether the device is online or offline
 @LazySingleton(as: ConnectivityClient)
-final class ConnectivityClientImpl implements ConnectivityClient {
-  ConnectivityClientImpl({required this._connectivity});
-
-  final Connectivity _connectivity;
-  Stream<List<ConnectivityResult>>? _connectivityStream;
+final class ConnectivityClientImpl({required final Connectivity _connectivity})
+    implements ConnectivityClient {
+  final _controller = StreamController<bool>.broadcast();
   StreamSubscription<List<ConnectivityResult>>? _subscription;
-  bool _connection = true;
+  bool _isConnected = true;
 
   @override
-  bool get isConnected => _connection;
+  bool get isConnected => _isConnected;
 
   @override
-  Stream<List<ConnectivityResult>>? get connectivityStream =>
-      _connectivityStream;
+  Stream<bool> get onConnectivityChanged => _controller.stream;
 
-  /// Creates a broadcast stream and updates internet status
   @override
-  Future<void> subscribeConnectivity() async {
-    /// Broadcasts a stream which can be listen multiple times
-    _connectivityStream ??= _connectivity.onConnectivityChanged
-        .asBroadcastStream();
-
-    /// Listen to internet status changes
-    _subscription ??= _connectivityStream?.listen((results) {
-      _connection =
-          results.contains(ConnectivityResult.mobile) ||
-          results.contains(ConnectivityResult.wifi);
-    });
+  Future<void> initialize() async {
+    _update(await _connectivity.checkConnectivity());
+    _subscription ??= _connectivity.onConnectivityChanged.listen(_update);
   }
 
-  /// Stop listening to the internet status changes
-  @override
-  void unSubscriptionConnectivity() => _subscription?.cancel();
-}
-
-/// A util class for accessing [ConnectivityClient] singleton instance.
-abstract final class ConnectivityProvider {
-  /// Returns the [ConnectivityClient] singleton instance.
-  static ConnectivityClient get I => GetIt.I<ConnectivityClient>();
+  void _update(List<ConnectivityResult> results) {
+    final connected = results.any((r) => r != ConnectivityResult.none);
+    if (connected != _isConnected) {
+      _isConnected = connected;
+      _controller.add(connected);
+    }
+  }
 }

@@ -1,0 +1,10 @@
+import 'package:clean_architecture/core/data/models/domain_convertible.dart';
+import 'package:clean_architecture/core/types/types.dart';
+import 'package:clean_architecture/domain/models/{{#model}}{{name.snakeCase()}}{{/model}}.dart';
+
+{{#response}}final class const {{name.pascalCase()}}Response({ {{#variables}}required final {{type}} {{name.camelCase()}}, {{/variables}} }) implements DomainConvertible<{{#model}}{{name.pascalCase()}}{{/model}}> {
+  factory fromJson(JsonMap json) => {{name.pascalCase()}}Response({{#variables}}{{name.camelCase()}}: json['{{name.camelCase()}}'] as {{type}}, {{/variables}});
+
+  @override
+  {{#model}}{{name.pascalCase()}}{{/model}} toDomain() => {{#model}}{{name.pascalCase()}}{{/model}}({{#variables}}{{name.camelCase()}}: {{name.camelCase()}}, {{/variables}});
+}{{/response}}

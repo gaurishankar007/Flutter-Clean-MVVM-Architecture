@@ -1,31 +1,21 @@
 import 'package:clean_architecture/config/injector/injector.config.dart';
+import 'package:clean_architecture/core/clients/database/app_database.dart';
 import 'package:clean_architecture/core/errors/error_handler.dart';
 import 'package:clean_architecture/core/errors/error_recorders/app_error_recorder.dart';
-import 'package:clean_architecture/core/errors/error_recorders/firebase_error_recorder/firebase_error_recorder.dart';
 import 'package:clean_architecture/core/errors/error_recorders/logger_error_recorder.dart';
 import 'package:clean_architecture/core/errors/error_translators/dio_error_translator.dart';
-import 'package:clean_architecture/core/errors/error_translators/firebase_error_translator.dart';
-import 'package:clean_architecture/core/errors/error_translators/google_sign_in_error_translator.dart';
-import 'package:clean_architecture/core/errors/error_translators/web_camera_error_translator.dart';
+import 'package:clean_architecture/core/errors/error_translators/drift_error_translator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 @InjectableInit(initializerName: 'initialize')
-Future<void> configureDependencies({String? environment}) async {
-  /// Registration in the correct order.
-  AppErrorProvider.register();
+Future<void> configureDependencies({required String environment}) async {
+  // Order matters: the error log needs the database, the handler needs both.
+  final database = AppDatabaseProvider.register();
+  AppErrorProvider.register(database);
   ErrorHandlerProvider.register(
-    errorTranslators: [
-      DioErrorTranslator(),
-      FirebaseErrorTranslator(),
-      GoogleSignInErrorTranslator(),
-      WebCameraErrorTranslator(),
-    ],
-    errorReporters: [
-      GetIt.I<AppErrorRecorder>(),
-      FirebaseErrorRecorder(),
-      LoggerErrorRecorder(),
-    ],
+    errorTranslators: [DioErrorTranslator(), DriftErrorTranslator()],
+    errorRecorders: [AppErrorProvider.I, LoggerErrorRecorder()],
   );
-  await GetIt.I.initialize(environment: environment);
+  GetIt.I.initialize(environment: environment);
 }

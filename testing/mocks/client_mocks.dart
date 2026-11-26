@@ -1,15 +1,10 @@
-import 'package:clean_architecture/core/clients/local/local_storage_client.dart';
 import 'package:clean_architecture/core/clients/remote/connectivity_client.dart';
 import 'package:clean_architecture/core/clients/remote/http/http_client.dart';
-import 'package:clean_architecture/routing/navigation_client.dart';
+import 'package:clean_architecture/core/errors/error_recorders/app_error_recorder.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockHttpClient extends Mock implements HttpClient {}
+class MockHttpClient extends Mock implements HttpClient;
 
-class MockAuthInterceptor extends Mock implements HttpAuthInterceptor {}
+class MockConnectivityClient extends Mock implements ConnectivityClient;
 
-class MockInternetClient extends Mock implements ConnectivityClient {}
-
-class MockLocalStorageClient extends Mock implements LocalStorageClient {}
-
-class MockNavigationClient extends Mock implements NavigationClient {}
+class MockAppErrorRecorder extends Mock implements AppErrorRecorder;

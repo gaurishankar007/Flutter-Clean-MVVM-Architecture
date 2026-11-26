@@ -1,85 +1,82 @@
 ---
 name: scaffolding
-description: Automates code scaffolding (Mason) for features and pages in this project
+description: Automates code scaffolding (Mason) for features, screens and models in this project
 ---
 
-# Code Scaffolding Skill
+# Scaffolding Skill
 
-This skill explains how to scaffold new features and pages in this project
-using the **Mason** template engine. This ensures the generated code follows
-the project's Clean Architecture + Cubit pattern.
+Use [Mason](https://pub.dev/packages/mason_cli) to generate boilerplate that
+follows this project's Clean Architecture + MVVM layout (see
+`docs/architecture/architecture.md`). Bricks live in `bricks/` and are
+registered in `mason.yaml`.
 
-## Prerequisites
-
-Before running Mason templates, make sure the Mason CLI is installed and the
-project's bricks are loaded:
+## 0. Setup (once per machine)
 
 ```bash
 dart pub global activate mason_cli
 mason get
 ```
 
-## Scaffolding Commands
+If `mason make` says a brick can't be found, delete `.mason/` and
+`mason-lock.json` (both gitignored) and run `mason get` again.
 
-### 1. Generate a New Feature
+## 1. Edit `config.json`
 
-Generates a complete data/domain/presentation feature skeleton (data source,
-repository, entity/model, use case, Cubit, page). Create/edit `config.json`
-at the workspace root:
+Every brick reads its variables from `config.json` in the repo root (values on
+the command line don't override it, so edit the file):
 
 ```json
 {
-  "feature": "dashboard",
-  "entity": {
-    "name": "dashboardSummary",
+  "feature": "habit",
+  "notifier": "habits",
+  "view": "habits",
+  "model": {
+    "name": "habit",
     "variables": [
       { "name": "id", "type": "int" },
       { "name": "title", "type": "String" }
     ]
   },
-  "cubit": "dashboard",
-  "page": "dashboard"
+  "response": { "name": "habit", "variables": [ ... ] },
+  "request": { "name": "createHabit", "variables": [ ... ] }
 }
 ```
 
-- `entity.name` becomes the generated domain entity/model class name.
-- `entity.variables` becomes that entity/model's fields — each needs a
-  `name` and a Dart `type`.
+- `feature` → folder `lib/ui/features/<feature>/` and the `<Feature>Repository` / services.
+- `notifier` → `<Notifier>Notifier` + `<Notifier>State` and `<notifier>Provider`.
+- `view` → `<View>Screen` (`@RoutePage()`) and its `<View>Body` widget.
 
-**Command:**
+## 2. Pick a brick
 
-```bash
-mason make cubit_feature -c config.json
-```
-
-### 2. Generate a New Page + Cubit Within an Existing Feature
-
-Generates a single Cubit/state pair and a page, without the data/domain
-scaffolding. Use this when adding a new screen to a feature that already
-exists. `config.json` only needs `feature`, `cubit`, and `page`:
-
-```json
-{
-  "feature": "dashboard",
-  "cubit": "profileDetails",
-  "page": "profileDetails"
-}
-```
-
-**Command:**
+| Brick | Generates | When |
+| --- | --- | --- |
+| `riverpod_feature` | domain model, response + request DTOs, repository contract + impl, local + API services, Notifier + state, screen + body | A new feature with its own data |
+| `riverpod_view` | Notifier + state, screen + body | A new screen in a feature whose repository exists |
+| `domain_data_model` | domain model, response + request DTOs | A new model for an existing repository |
 
 ```bash
-mason make cubit_page -c config.json
+mason make riverpod_feature -c config.json
+mason make riverpod_view -c config.json
+mason make domain_data_model -c config.json
 ```
 
-## Important Notes
+## 3. Finish the wiring
 
-- Always review and update the values in `config.json` to match your
-  intended names before executing any `mason make` command.
-- The generated data source/repository/use-case files are skeletons with the
-  correct client types wired in (`HttpClient`, `LocalStorageClient`,
-  `ConnectivityClient`) but empty/placeholder method bodies — fill in the actual
-  endpoints and mapping logic. See the `api-integration` skill for the
-  patterns to follow.
-- After scaffolding, run the `codegen` skill if the new files involve
-  injectable dependencies or new routes.
+1. Add the screen to `lib/routing/routes.dart` (guard it with `_auth` when it
+   needs a session).
+2. Move the screen title and any text into `lib/core/messages/app_messages.dart`
+   and bump `kMessagesVersion`.
+3. Add a drift table under `lib/core/clients/database/tables/` and list it in
+   `AppDatabase` if the feature stores data locally.
+4. Run the `codegen` skill, then `dart format lib`.
+5. Add mocks for the new repository/services to `testing/mocks/`.
+
+## 4. Verify
+
+```bash
+flutter analyze   # zero issues
+flutter test
+```
+
+The skeletons carry documented `// ignore:` comments for fields that stay
+unused until you add the first method; remove them once the code uses them.

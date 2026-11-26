@@ -1,17 +1,13 @@
 import 'package:clean_architecture/core/data/states/data_state.dart';
 
-/// Interface for recording errors to different error reporting services.
+/// Records errors to one channel (console, local error log, crash reporter).
 abstract interface class ErrorRecorder {
-  /// Records all the uncaught errors thrown within the Flutter framework
-  /// and asynchronous errors that are not handled by the Flutter framework.
+  /// Hooks into uncaught Flutter and platform errors.
   void recordUncaughtErrors();
 
-  /// Returns true if the error should be recorded.
-  ///
-  /// If the error is not recordable, the [record] method will not be called.
+  /// Whether [record] should run at all.
   bool get isRecordable;
 
-  /// Records an error with its stack trace.
   void record({
     required Object error,
     FailureState<dynamic>? failureState,

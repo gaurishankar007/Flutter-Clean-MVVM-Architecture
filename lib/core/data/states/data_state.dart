@@ -1,3 +1,4 @@
+import 'package:clean_architecture/core/messages/app_messages.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart' show immutable;
 
@@ -5,101 +6,65 @@ part 'failure_state.dart';
 part 'loading_state.dart';
 part 'success_state.dart';
 
+/// Where a [DataState]'s data came from, when known. `null` means unknown.
+enum DataOrigin { local, remote }
+
+/// Sealed result of a data operation: `SuccessState`, `FailureState` or
+/// `LoadingState`.
 @immutable
-sealed class DataState<T> extends Equatable {
-  /// Base immutable sealed class representing the state of asynchronous
-  /// data operations. Subtypes are `SuccessState`, `FailureState` and
-  /// `LoadingState`. This class holds optional metadata useful for
-  /// UI and error handling.
-  const DataState({
-    this.data,
-    this.message,
-    this.error,
-    this.hasData = false,
-    this.hasError = false,
-    this.extra,
-  });
+sealed class const DataState<T>({
+  /// The payload of a success; `null` otherwise or when there's no data.
+  final T? data,
 
-  /// The payload for successful operations. May be `null` for
-  /// non-success states or when no data is available.
-  final T? data;
+  /// A user-facing message (from the message catalog or the server).
+  final String? message,
 
-  /// A user-facing, localized message suitable for display in UI.
-  /// Present when an operation failed but a friendly message is known.
-  final String? message;
-
-  /// A raw error string (e.g. exception message or debug info). This
-  /// is intended for logging or developer diagnostics rather than
-  /// direct user display.
-  final String? error;
-
-  /// Whether this state currently carries non-null data.
-  final bool hasData;
-
-  /// Whether this state represents an error condition.
-  final bool hasError;
-
-  final dynamic extra;
-
-  /// Executes the matching callback depending on runtime subtype.
-  /// - `success` receives the unwrapped `data` for `SuccessState`.
-  /// - `failure` receives the friendly `message` and `errorType`.
-  /// - `loading` is used for `LoadingState` and as a safe fallback.
+  /// A raw error for the error log, never shown to the user.
+  final String? error,
+  final bool hasData = false,
+  final bool hasError = false,
+  final DataOrigin? origin,
+  final dynamic extra,
+}) extends Equatable {
+  /// Runs the callback matching this state's subtype.
   R when<R>({
     required R Function(T data) success,
     required R Function(String? message, String? error) failure,
     required R Function() loading,
-  }) {
-    if (this is SuccessState<T>) {
-      return success((this as SuccessState<T>).data as T);
-    } else if (this is FailureState<T>) {
-      return failure(
-        (this as FailureState<T>).message,
-        (this as FailureState<T>).error,
-      );
-    } else if (this is LoadingState<T>) {
-      return loading();
-    } else {
-      // Defensive fallback: treat unknown cases as loading.
-      return loading();
-    }
-  }
+  }) => switch (this) {
+    SuccessState(:final data) => success(data as T),
+    FailureState(:final message, :final error) => failure(message, error),
+    LoadingState() => loading(),
+  };
 
-  /// Similar to `when`, but passes the concrete state instance to the
-  /// callbacks allowing access to all fields (`data`, `message`, etc.).
-  /// If the runtime subtype is unknown, return a fresh `LoadingState`.
-  R map<R>({
-    required R Function(SuccessState<T> value) success,
-    required R Function(FailureState<T> value) failure,
-    required R Function(LoadingState<T> value) loading,
-  }) {
-    if (this is SuccessState<T>) {
-      return success(this as SuccessState<T>);
-    } else if (this is FailureState<T>) {
-      return failure(this as FailureState<T>);
-    } else if (this is LoadingState<T>) {
-      return loading(this as LoadingState<T>);
-    } else {
-      return loading(LoadingState<T>());
-    }
-  }
-
-  /// Transforms the contained `data` from `T` to `R` when the state is
-  /// `SuccessState`. For `FailureState` and `LoadingState` the same
-  /// logical state is returned but typed to `R`.
-  DataState<R> mapData<R>(R Function(T data) transform) {
-    return when(
-      success: (data) => SuccessState<R>(
-        data: transform(data),
-        message: message,
-        extra: extra,
-      ),
-      failure: (message, errorType) =>
-          FailureState<R>(message: message, error: error, extra: extra),
-      loading: LoadingState<R>.new,
-    );
-  }
+  /// Maps a success's data to [R]; failures keep every field, retyped.
+  DataState<R> mapData<R>(R Function(T data) transform) => switch (this) {
+    SuccessState(:final data) => SuccessState<R>(
+      data: transform(data as T),
+      message: message,
+      origin: origin,
+      extra: extra,
+    ),
+    final FailureState<T> failure => failure.retype<R>(),
+    LoadingState() => LoadingState<R>(),
+  };
 
   @override
-  List<Object?> get props => [data, message, error, extra, hasData, hasError];
+  List<Object?> get props => [
+    data,
+    message,
+    error,
+    hasData,
+    hasError,
+    origin,
+    extra,
+  ];
+}
+
+extension DataStateActionPath<T> on DataState<T> {
+  /// Adds [action] as the outermost level of a failure's action path.
+  DataState<T> withAction(String? action) => switch (this) {
+    final FailureState<T> failure => failure.withAction(action),
+    _ => this,
+  };
 }

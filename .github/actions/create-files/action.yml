@@ -11,9 +11,6 @@ inputs:
   base_staging:
     description: "The staging base URL"
     required: true
-  encryption_key:
-    description: "The AES key for encrypting sensitive data"
-    required: true
   android_keystore_file:
     description: "The base64 encoded upload keystore (.jks)"
     required: false
@@ -44,7 +41,6 @@ runs:
         echo "BASE_PRODUCTION=${{ inputs.base_production }}" > .env
         echo "BASE_DEVELOPMENT=${{ inputs.base_development }}" >> .env
         echo "BASE_STAGING=${{ inputs.base_staging }}" >> .env
-        echo "ENCRYPTION_KEY=${{ inputs.encryption_key }}" >> .env
 
     # Without these, android/app/build.gradle.kts signs the release with the debug key.
     - name: Create Android Signing Files

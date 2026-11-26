@@ -1,0 +1,6 @@
+import 'package:equatable/equatable.dart';
+
+{{#model}}final class const {{name.pascalCase()}}({ {{#variables}}required final {{type}} {{name.camelCase()}}, {{/variables}} }) extends Equatable {
+  @override
+  List<Object?> get props => [{{#variables}}{{name.camelCase()}}, {{/variables}}];
+}{{/model}}

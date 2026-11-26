@@ -6,7 +6,7 @@ description: Runs the unit, widget, regression, and Patrol integration test suit
 # Testing Skill
 
 This skill explains how to run the automated test suites (unit, widget,
-regression, and integration) for this project. See `docs/testing.md` for how
+regression, and integration) for this project. See `docs/testing/testing.md` for how
 to write tests.
 
 ## 1. Unit & Widget Tests
@@ -49,17 +49,17 @@ Start an emulator/simulator or connect a device first.
 
 - **Mobile simulator/emulator:**
   ```bash
-  patrol test --target patrol_test/login_test.dart
+  patrol test --target patrol_test/todo_flow_test.dart
   ```
 - **Mobile hot-restart development mode:**
   ```bash
-  patrol develop --target patrol_test/login_test.dart
+  patrol develop --target patrol_test/todo_flow_test.dart
   ```
 - **Web (Chrome):**
   ```bash
-  patrol test --device chrome --target patrol_test/login_test.dart
+  patrol test --device chrome --target patrol_test/todo_flow_test.dart
   ```
 - **Physical iOS device** (needs `--release`):
   ```bash
-  patrol test --release --target patrol_test/login_test.dart
+  patrol test --release --target patrol_test/todo_flow_test.dart
   ```

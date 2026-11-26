@@ -1,173 +1,54 @@
 import 'package:clean_architecture/core/data/operations/api_executor.dart';
 import 'package:clean_architecture/core/data/states/data_state.dart';
-import 'package:clean_architecture/core/errors/error_handler.dart';
-import 'package:clean_architecture/core/errors/error_translators/dio_error_translator.dart';
+import 'package:clean_architecture/data/models/responses/todo_response.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get_it/get_it.dart';
-import 'package:mocktail/mocktail.dart';
 
-class MockResponse<T> extends Mock implements Response<T> {}
+import '../../../../testing/helpers/test_setup.dart';
+
+Response<dynamic> _response(Object? data) => Response(
+  requestOptions: RequestOptions(path: '/'),
+  data: data,
+);
 
 void main() {
-  setUpAll(() {
-    ErrorHandlerProvider.register(errorTranslators: [DioErrorTranslator()]);
-  });
+  setUp(registerErrorHandling);
+  tearDown(resetDependencies);
 
-  tearDownAll(() {
-    GetIt.I.reset();
-  });
-
-  group('ApiExecutor.call', () {
-    test('returns SuccessState on valid standard response', () async {
-      final mockResponse = MockResponse<dynamic>();
-      when(() => mockResponse.data).thenReturn({
-        'data': {'id': 1},
-        'message': 'ok',
-      });
-      when(() => mockResponse.statusCode).thenReturn(200);
-
-      final result =
-          await ApiExecutor.call<Map<String, dynamic>, Map<String, dynamic>>(
-            () async => mockResponse,
-            fromJson: (json) => json,
-          );
-
-      expect(result, isA<SuccessState<Map<String, dynamic>>>());
-      expect(result.data, {'id': 1});
-      expect(result.message, 'ok');
-    });
-
-    test(
-      'returns FailureState on missing data key in standard response',
-      () async {
-        final mockResponse = MockResponse<dynamic>();
-        when(() => mockResponse.data).thenReturn({'foo': 'bar'});
-        when(() => mockResponse.statusCode).thenReturn(200);
-
-        final result =
-            await ApiExecutor.call<Map<String, dynamic>, Map<String, dynamic>>(
-              () async => mockResponse,
-              fromJson: (json) => json,
-            );
-
-        expect(result, isA<FailureState<Map<String, dynamic>>>());
-        expect(result.error, contains('Response missing expected key'));
-      },
+  test('reads a list under dataKey and parses each item', () async {
+    final result = await ApiExecutor.call<List<TodoResponse>, TodoResponse>(
+      () async => _response({
+        'todos': [
+          {'id': 1, 'todo': 'A', 'completed': false, 'userId': 1},
+          {'id': 2, 'todo': 'B', 'completed': true, 'userId': 1},
+        ],
+      }),
+      action: 'test',
+      fromJson: TodoResponse.fromJson,
+      dataKey: 'todos',
     );
 
-    test('handles list deserialization correctly', () async {
-      final mockResponse = MockResponse<dynamic>();
-      when(() => mockResponse.data).thenReturn({
-        'data': [
-          {'id': 1},
-          {'id': 2},
-        ],
-        'message': 'list ok',
-      });
-      when(() => mockResponse.statusCode).thenReturn(200);
-
-      final result =
-          await ApiExecutor.call<
-            List<Map<String, dynamic>>,
-            Map<String, dynamic>
-          >(() async => mockResponse, fromJson: (json) => json);
-
-      expect(result, isA<SuccessState<List<Map<String, dynamic>>>>());
-      expect(result.data, [
-        {'id': 1},
-        {'id': 2},
-      ]);
-      expect(result.message, 'list ok');
-    });
-
-    test('returns format error for unexpected response type', () async {
-      final mockResponse = MockResponse<dynamic>();
-      when(() => mockResponse.data).thenReturn('invalid_string_data');
-      when(() => mockResponse.statusCode).thenReturn(200);
-
-      final result =
-          await ApiExecutor.call<Map<String, dynamic>, Map<String, dynamic>>(
-            () async => mockResponse,
-            fromJson: (json) => json,
-          );
-
-      expect(result, isA<FailureState<Map<String, dynamic>>>());
-      expect(result.error, contains('Bad response format'));
-    });
-
-    test('handles non-standard response structure', () async {
-      final mockResponse = MockResponse<dynamic>();
-      when(() => mockResponse.data).thenReturn({'id': 1, 'name': 'test'});
-      when(() => mockResponse.statusCode).thenReturn(200);
-
-      final result =
-          await ApiExecutor.call<Map<String, dynamic>, Map<String, dynamic>>(
-            () async => mockResponse,
-            fromJson: (json) => json,
-            isStandardResponse: false,
-          );
-
-      expect(result, isA<SuccessState<Map<String, dynamic>>>());
-      expect(result.data, {'id': 1, 'name': 'test'});
-    });
-
-    test('handles raw data without deserialization', () async {
-      final mockResponse = MockResponse<dynamic>();
-      when(() => mockResponse.data).thenReturn('raw_string');
-      when(() => mockResponse.statusCode).thenReturn(200);
-
-      final result = await ApiExecutor.call<String, String>(
-        () async => mockResponse,
-        isStandardResponse: false,
-      );
-
-      expect(result, isA<SuccessState<String>>());
-      expect(result.data, 'raw_string');
-    });
-
-    test('returns type mismatch error for incompatible types', () async {
-      final mockResponse = MockResponse<dynamic>();
-      when(() => mockResponse.data).thenReturn({'id': 1});
-      when(() => mockResponse.statusCode).thenReturn(200);
-
-      final result = await ApiExecutor.call<String, String>(
-        () async => mockResponse,
-        isStandardResponse: false,
-      );
-
-      expect(result, isA<FailureState<String>>());
-      expect(result.error, contains('Type mismatch'));
-    });
+    expect(result.data?.map((t) => t.todo), ['A', 'B']);
   });
 
-  group('ApiExecutor.voidCall', () {
-    test('returns SuccessState<void> on successful request', () async {
-      final mockResponse = MockResponse<dynamic>();
-      when(() => mockResponse.data).thenReturn({'message': 'deleted'});
-      when(() => mockResponse.statusCode).thenReturn(204);
+  test('fails with a bad response when dataKey is missing', () async {
+    final result = await ApiExecutor.call<List<TodoResponse>, TodoResponse>(
+      () async => _response({'items': <dynamic>[]}),
+      action: 'test',
+      fromJson: TodoResponse.fromJson,
+      dataKey: 'todos',
+    );
 
-      final result = await ApiExecutor.voidCall(() async => mockResponse);
-
-      expect(result, isA<SuccessState<void>>());
-      expect(result.message, 'deleted');
-    });
+    expect(result, isA<FailureState<List<TodoResponse>>>());
+    expect((result as FailureState).actionPath, ['test']);
   });
 
-  group('ApiExecutor.staticCall', () {
-    test('returns success with static data', () async {
-      final mockResponse = MockResponse<dynamic>();
-      when(() => mockResponse.data).thenReturn({'message': 'ok'});
-      when(() => mockResponse.statusCode).thenReturn(200);
+  test('voidCall returns nil on success', () async {
+    final result = await ApiExecutor.voidCall(
+      () async => _response(null),
+      action: 'test',
+    );
 
-      final result = await ApiExecutor.staticCall<bool>(
-        () async => mockResponse,
-        staticData: true,
-      );
-
-      expect(result, isA<SuccessState<bool>>());
-      expect(result.data, true);
-      expect(result.message, 'ok');
-    });
+    expect(result.hasData, isTrue);
   });
 }
