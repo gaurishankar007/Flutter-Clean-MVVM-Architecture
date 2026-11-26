@@ -20,6 +20,33 @@
       "problemMatcher": []
     },
     {
+      "label": "Flutter: pub upgrade (major versions)",
+      "detail": "Upgrades dependencies to the latest resolvable major versions",
+      "type": "flutter",
+      "command": "flutter",
+      "args": ["pub", "upgrade", "--major-versions"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Flutter: pub upgrade (tighten constraints)",
+      "detail": "Upgrades dependencies and tightens pubspec.yaml lower bounds",
+      "type": "flutter",
+      "command": "flutter",
+      "args": ["pub", "upgrade", "--tighten"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Flutter: pub upgrade (dry run)",
+      "detail": "Previews dependency upgrades without changing files",
+      "type": "flutter",
+      "command": "flutter",
+      "args": ["pub", "upgrade", "--dry-run"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
       "label": "Dart: build_runner",
       "detail": "Runs build_runner once to generate code artifacts",
       "type": "dart",
