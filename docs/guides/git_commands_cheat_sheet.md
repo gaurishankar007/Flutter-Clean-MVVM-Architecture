@@ -10,10 +10,10 @@ A collection of essential and frequently used git commands to boost your product
 - ✅ `git clone <url>`: Clones an existing Git repository.
 - ✅ `git status`: Shows the current state of the working directory.
 - ✅ `git add <file>`: Stages changes in a file.
-- ✅ `git add ."`: Stage all your changes.
+- ✅ `git add .`: Stage all your changes.
 - ✅ `git commit -m "<message>"`: Commits staged changes with a message.
 - ✅ `git remote add <remote_name> <url>`: Adds a new remote repository with a given name and URL.
-- ✅ `git push -u <remote_name> <branch_name>"`: Push your local branch to a remote repository and `-u` flag sets the upstream branch for your local branch. This means that subsequent git push commands to the same remote and branch will push your commits directly without specifying the remote and branch names again.
+- ✅ `git push -u <remote_name> <branch_name>`: Push your local branch to a remote repository and `-u` flag sets the upstream branch for your local branch. This means that subsequent git push commands to the same remote and branch will push your commits directly without specifying the remote and branch names again.
 
 ---
 
@@ -26,8 +26,8 @@ A collection of essential and frequently used git commands to boost your product
 - ✅ `git revert <commit>`: Reverts a specific commit.
 - ✅ `git tag <tag_name>`: Creates a tag at the current commit.
 - ✅ `git commit --amend -m "new message"`: Update the most recent commit message.
-  - ✅ `git push`: Push the changes to repository if you haven't pushed the commit before updating it's message.
-  - ✅ `git push --force`: Push the changes to repository if you had already pushed the commit before updating it's message.
+  - ✅ `git push`: Push the changes to repository if you haven't pushed the commit before updating its message.
+  - ✅ `git push --force-with-lease`: Push the changes to repository if you had already pushed the commit before updating its message. Unlike `--force`, it refuses to overwrite commits someone else pushed meanwhile.
 
 ---
 
@@ -53,7 +53,7 @@ A collection of essential and frequently used git commands to boost your product
 - ✅ `git branch -a`: Lists all local and remote branches.
 - ✅ `git branch -v`: Lists branches with additional information.
 - ✅ `git branch <branch_name>`: Creates a new branch.
-- ✅ `git checkout <branch_name>`: Switches1 to an existing branch.
+- ✅ `git checkout <branch_name>`: Switches to an existing branch.
 - ✅ `git checkout -b <branch_name>`: Creates a new branch based on the default branch and switches to it.
 - ✅ `git checkout -b <branch_name> <base_branch_name>`: Creates a new branch based on the specified branch and switches to it. This means that the new branch will start at the same commit as the specified branch.
 - ✅ `git branch -d <branch_name>`: Deletes a branch.

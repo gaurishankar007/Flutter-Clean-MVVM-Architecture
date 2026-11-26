@@ -1,11 +1,11 @@
 # Flutter Configuration Guidelines
 
-A collections of essential and frequently needed guidelines to setup flutter properly and boost your productivity.
+A collection of essential and frequently needed guidelines to set up Flutter properly and boost your productivity.
 
 ## 1. Activate Flutter Pub Executable Commands
 
 - `Windows`: Add this path `"C:\Users\{username}\AppData\Local\Pub\Cache\bin"` to system's Path.
-- `macOs`: Add this path `export PATH="$PATH":"$HOME/.pub-cache/bin` inside .zshrc file.
+- `macOs`: Add this path `export PATH="$PATH":"$HOME/.pub-cache/bin"` inside the `.zshrc` file.
 
 ## 2. Firebase CLI
 
@@ -21,11 +21,11 @@ A collections of essential and frequently needed guidelines to setup flutter pro
 
 ## 3. Change Java SDK Location Used by Flutter
 
-By default flutter/shorebird uses the jdk version used by the android studio (C:\Program Files\Android\Android Studio\jbr) in windows.
-Flutter/Shorebird neglects the JAVA_HOME version in the system variables. Therefore, either the android studio jbr should be removed or flutter
-jdk location should be changed. In case of shorebird, there in commands for changing the jdk location used by it like flutter, so only options remains
-to remove the android studio jbr folder so that It will use the JAVA_HOME version in the system variables.
+By default Flutter uses the JDK bundled with Android Studio (its `jbr` folder, e.g. `C:\Program Files\Android\Android Studio\jbr` on Windows) and ignores `JAVA_HOME`. To build with a different JDK, point Flutter at it.
 
-- ✅ `flutter configure --jdk-dir="<java-directory>"`: Change the Java SDK directory used by Flutter.
+This project needs **Java 21** (the Android Gradle Plugin 9 release lint requires it; CI uses the same version).
+
+- ✅ `flutter config --jdk-dir="<java-directory>"`: Change the Java SDK directory used by Flutter.
+- ✅ `flutter doctor --verbose`: Confirm which Java version Flutter now uses.
 
 ---
